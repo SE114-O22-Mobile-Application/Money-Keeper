@@ -17,14 +17,14 @@ fun MKNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "sign-in",
+        startDestination = "sign_in",
         modifier = modifier
     ) {
-        composable("sign-in") {
-            SignInScreen()
+        composable("sign_in") {
+            SignInScreen(navController)
         }
         composable("home") {
-            HomeScreen()
+            HomeScreen(navController)
         }
         composable("transaction") {
             // Replace with your own composable
