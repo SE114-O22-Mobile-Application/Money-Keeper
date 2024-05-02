@@ -38,7 +38,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
-
 data class Wallet(val name: String, val amount: Int)
 object SelectWallet {
     var Wallet: Wallet = Wallet("a",1)
@@ -245,4 +244,3 @@ fun formatNumberWithCommas(number: Int): String {
     println("After: " + formattedStringBuilder.reverse().toString())
     return formattedStringBuilder.toString()
 }
-
