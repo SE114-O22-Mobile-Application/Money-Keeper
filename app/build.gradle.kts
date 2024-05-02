@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.uit.moneykeeper"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -51,7 +51,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -72,4 +71,5 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.1.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("androidx.core:core-ktx:1.9.1")
 }

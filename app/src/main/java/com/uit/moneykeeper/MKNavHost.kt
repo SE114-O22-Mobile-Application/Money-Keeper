@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.uit.moneykeeper.home.HomeScreen
 import com.uit.moneykeeper.sign_in.SignInScreen
+import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
+import com.uit.moneykeeper.transaction.views.TransactionScreen
 
 @Composable
 fun MKNavHost(
@@ -27,8 +29,7 @@ fun MKNavHost(
             HomeScreen()
         }
         composable("transaction") {
-            // Replace with your own composable
-            Text(text = "Transaction")
+            TransactionScreen(viewModel = TransactionViewModel())
         }
         composable("budget") {
             // Replace with your own composable
