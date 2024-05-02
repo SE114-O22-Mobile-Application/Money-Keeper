@@ -59,13 +59,12 @@ fun HomeScreen() {
 
 @Composable
 fun MainContent(navController: NavController) {
-    var SelectWallet:Wallet
     val wallets = arrayOf(
         Wallet("Ví A", 1000000),
         Wallet("Ví B", 5000000),
         Wallet("Ví C", 2000000)
     )
-    var total:Int = 0;
+    var total = 0;
     for(wallet in wallets) {
         total +=  wallet.amount
     }
@@ -205,7 +204,7 @@ fun WalletCardItem(navController: NavController,wallet: Wallet) {
 @Composable
 fun ButtonAddWallet() {
 
-    Button(onClick = { /*TODO*/ },
+    Button(onClick = {  },
         modifier = Modifier
             .fillMaxWidth()
             .height(70.dp)
