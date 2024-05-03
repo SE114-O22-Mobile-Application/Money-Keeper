@@ -11,6 +11,8 @@ import com.uit.moneykeeper.home.HomeScreen
 import com.uit.moneykeeper.sign_in.SignInScreen
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 import com.uit.moneykeeper.transaction.views.TransactionScreen
+import com.uit.moneykeeper.transaction.views.NewTransactionScreen
+import com.uit.moneykeeper.transaction.viewmodel.NewTransactionViewModel
 
 @Composable
 fun MKNavHost(
@@ -28,8 +30,11 @@ fun MKNavHost(
         composable("home") {
             HomeScreen()
         }
+        composable("NewTransactionScreen") {
+            NewTransactionScreen(navController, viewModel = NewTransactionViewModel())
+        }
         composable("transaction") {
-            TransactionScreen(viewModel = TransactionViewModel())
+            TransactionScreen(navController, viewModel = TransactionViewModel())
         }
         composable("budget") {
             // Replace with your own composable

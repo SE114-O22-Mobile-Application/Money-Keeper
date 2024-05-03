@@ -9,15 +9,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavController
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 
 @Composable
-fun TransactionScreen(viewModel: TransactionViewModel) {
+fun TransactionScreen(navController: NavController,viewModel: TransactionViewModel) {
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = {navController.navigate("NewTransactionScreen")},
                 containerColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
             ) {
