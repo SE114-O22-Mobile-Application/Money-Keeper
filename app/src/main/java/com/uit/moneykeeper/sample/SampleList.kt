@@ -22,14 +22,14 @@ val taiKhoanList = listOf(
 
 // List of GiaoDichModel objects
 val giaoDichList = listOf(
-    GiaoDichModel(100.0, LocalDate.of(2024, 5, 1), "Mua hang", loaiGiaoDichList[0], taiKhoanList[0], 1),
-    GiaoDichModel(50.0, LocalDate.of(2024, 5, 1), "Nap tien", loaiGiaoDichList[2], taiKhoanList[0], 2),
-    GiaoDichModel(200.0, LocalDate.of(2024, 5, 2), "Tra tien", loaiGiaoDichList[1], taiKhoanList[1], 3),
-    GiaoDichModel(75.0, LocalDate.of(2024, 5, 2), "Rut tien", loaiGiaoDichList[1], taiKhoanList[0], 4),
-    GiaoDichModel(150.0, LocalDate.of(2024, 5, 3), "Chuyen khoan", loaiGiaoDichList[2], taiKhoanList[1], 5),
-    GiaoDichModel(100.0, LocalDate.of(2024, 5, 3), "Mua hang", loaiGiaoDichList[0], taiKhoanList[0], 6),
-    GiaoDichModel(50.0, LocalDate.of(2024, 5, 4), "Nap tien", loaiGiaoDichList[2], taiKhoanList[0], 7),
-    GiaoDichModel(200.0, LocalDate.of(2024, 5, 4), "Tra tien", loaiGiaoDichList[1], taiKhoanList[1], 8),
-    GiaoDichModel(75.0, LocalDate.of(2024, 5, 5), "Rut tien", loaiGiaoDichList[1], taiKhoanList[0], 9),
-    GiaoDichModel(150.0, LocalDate.of(2024, 5, 5), "Chuyen khoan", loaiGiaoDichList[2], taiKhoanList[1], 10)
+    GiaoDichModel(15000000.0, LocalDate.of(2024, 5, 1), "Mua hang", loaiGiaoDichList[0], taiKhoanList[0], 1),
+    GiaoDichModel(500000.0, LocalDate.of(2024, 5, 1), "Nap tien", loaiGiaoDichList[2], taiKhoanList[0], 2),
+    GiaoDichModel(200000.0, LocalDate.of(2024, 5, 2), "Tra tien", loaiGiaoDichList[1], taiKhoanList[1], 3),
+    GiaoDichModel(75000.0, LocalDate.of(2024, 5, 2), "Rut tien", loaiGiaoDichList[1], taiKhoanList[0], 4),
+    GiaoDichModel(150000.0, LocalDate.of(2024, 5, 3), "Chuyen khoan", loaiGiaoDichList[2], taiKhoanList[1], 5),
+    GiaoDichModel(100000.0, LocalDate.of(2024, 5, 3), "Mua hang", loaiGiaoDichList[0], taiKhoanList[0], 6),
+    GiaoDichModel(500000.0, LocalDate.of(2024, 5, 4), "Nap tien", loaiGiaoDichList[2], taiKhoanList[0], 7),
+    GiaoDichModel(200000.0, LocalDate.of(2024, 5, 4), "Tra tien", loaiGiaoDichList[1], taiKhoanList[1], 8),
+    GiaoDichModel(7500000.0, LocalDate.of(2024, 5, 5), "Rut tien", loaiGiaoDichList[1], taiKhoanList[0], 9),
+    GiaoDichModel(150000.0, LocalDate.of(2024, 5, 5), "Chuyen khoan", loaiGiaoDichList[2], taiKhoanList[1], 10)
 )

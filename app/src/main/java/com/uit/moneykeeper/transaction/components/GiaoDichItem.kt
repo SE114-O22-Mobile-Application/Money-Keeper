@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -19,15 +20,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.PhanLoai
+import java.util.Locale
+import kotlin.math.roundToLong
 
 @Composable
 fun GiaoDichItem(giaoDich: GiaoDichModel) {
-    val color = when (giaoDich.loaiGiaoDich.loai) {
+    val amountColor = when (giaoDich.loaiGiaoDich.loai) {
         PhanLoai.Chi -> Color.Red
         PhanLoai.Thu -> Color.Green
     }
 
-    val prefix = when (giaoDich.loaiGiaoDich.loai) {
+    val amountPrefix = when (giaoDich.loaiGiaoDich.loai) {
         PhanLoai.Chi -> "-"
         PhanLoai.Thu -> "+"
     }
@@ -37,9 +40,8 @@ fun GiaoDichItem(giaoDich: GiaoDichModel) {
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
@@ -67,8 +69,8 @@ fun GiaoDichItem(giaoDich: GiaoDichModel) {
                 }
 
                 Text(
-                    text = "$prefix${giaoDich.soTien}",
-                    color = color,
+                    text = "$amountPrefix${DoubleToStringConverter.convert(giaoDich.soTien)}",
+                    color = amountColor,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )

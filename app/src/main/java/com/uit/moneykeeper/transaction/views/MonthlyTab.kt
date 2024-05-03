@@ -17,10 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import com.uit.moneykeeper.sample.giaoDichList
 import com.uit.moneykeeper.transaction.components.DailyList
+import com.uit.moneykeeper.transaction.viewmodel.DailyListViewModel
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
-import java.util.Locale
 
 @Composable
 fun MonthlyTab(viewModel: TransactionViewModel) {
@@ -40,7 +39,7 @@ fun MonthlyTab(viewModel: TransactionViewModel) {
                 modifier = Modifier
                     .clickable { /* Show calendar here */ }
                     .heightIn(max = Dp.Infinity)
-                    .padding(PaddingValues(16.dp))
+                    .padding(PaddingValues(8.dp))
                     .align(Alignment.CenterVertically),
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
@@ -51,6 +50,7 @@ fun MonthlyTab(viewModel: TransactionViewModel) {
             }
         }
 
-        DailyList(giaoDichList = giaoDichList)
+        val listGiaoDich = viewModel.listGiaoDich.collectAsState()
+        DailyList(listGiaoDich.value)
     }
 }
