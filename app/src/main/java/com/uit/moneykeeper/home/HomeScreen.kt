@@ -50,7 +50,7 @@ fun HomeScreen() {
         composable("main-screen") {
             MainContent(navController = navController)
         }
-        composable("walletdetail-screen") {
+        composable("wallet-detail-screen") {
             WalletDetail(navController = navController)
         }
     }
@@ -63,11 +63,11 @@ fun MainContent(navController: NavController) {
         Wallet("Ví B", 5000000),
         Wallet("Ví C", 2000000)
     )
-    var total = 0;
+    var total = 0
     for(wallet in wallets) {
         total +=  wallet.amount
     }
-    println("total: " + total)
+    println("total: $total")
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Box(modifier = Modifier
@@ -111,7 +111,7 @@ fun MainContent(navController: NavController) {
 //                .height(IntrinsicSize.Min)
                 .background(Color(0xFFF8F8F8)))
             {
-                Column() {
+                Column {
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
@@ -132,7 +132,7 @@ fun MainContent(navController: NavController) {
 //                .height(IntrinsicSize.Min)
                 .background(Color(0xFFF8F8F8)))
             {
-                Column() {
+                Column {
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
@@ -152,14 +152,14 @@ fun MainContent(navController: NavController) {
 
 @Composable
 fun WalletCardItem(navController: NavController,wallet: Wallet) {
-    val WalletIcon = R.drawable.baseline_account_balance_wallet_24
-    println("id: " + WalletIcon)
+    val walletIcon = R.drawable.baseline_account_balance_wallet_24
+    println("id: $walletIcon")
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(8.dp)
         .clickable {
             SelectWallet.Wallet = wallet
-            navController.navigate("walletdetail-screen")
+            navController.navigate("wallet-detail-screen")
         }
     ) {
         Row(modifier = Modifier.fillMaxWidth(),
@@ -170,7 +170,7 @@ fun WalletCardItem(navController: NavController,wallet: Wallet) {
                 ) {
                 Icon(
                     ImageVector.vectorResource(
-                        WalletIcon
+                        walletIcon
                     ),
                     contentDescription = "Ví 1"
                 )
@@ -240,7 +240,7 @@ fun formatNumberWithCommas(number: Int): String {
             formattedStringBuilder.append(".")
         }
     }
-    println("Before: " + numberString)
+    println("Before: $numberString")
     println("After: " + formattedStringBuilder.reverse().toString())
     return formattedStringBuilder.toString()
 }

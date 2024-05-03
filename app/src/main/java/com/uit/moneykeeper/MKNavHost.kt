@@ -23,9 +23,9 @@ fun MKNavHost(
         composable("sign_in") {
             SignInScreen(navController)
         }
-        composable("home") {
-            HomeScreen(navController)
-        }
+        //composable("home") {
+        //    HomeScreen(navController)
+        //}
         composable("transaction") {
             // Replace with your own composable
             Text(text = "Transaction")
