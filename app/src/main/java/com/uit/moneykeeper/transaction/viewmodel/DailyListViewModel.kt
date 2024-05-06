@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.PhanLoai
+import com.uit.moneykeeper.models.ViModel
 import com.uit.moneykeeper.sample.GlobalObject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
 
-class DailyListViewModel(list: List<GiaoDichModel>) : ViewModel() {
+class DailyListViewModel(private val giaoDichList: List<GiaoDichModel>) : ViewModel() {
 
     private val _dailyItemList = MutableStateFlow<List<Pair<LocalDate, List<GiaoDichModel>>>>(emptyList())
     val dailyItemList: StateFlow<List<Pair<LocalDate, List<GiaoDichModel>>>> = _dailyItemList.asStateFlow()
@@ -26,12 +27,44 @@ class DailyListViewModel(list: List<GiaoDichModel>) : ViewModel() {
     private val _sum = MutableStateFlow(0.0)
     val sum: StateFlow<Double> = _sum.asStateFlow()
 
+    private val _idWallet = MutableStateFlow(0)
+    val idWallet: StateFlow<Int> = _idWallet.asStateFlow()
+
+    private val _idCategory = MutableStateFlow(0)
+    val idCategory: StateFlow<Int> = _idCategory.asStateFlow()
+
     init {
-        updateDailyItemList(list)
+        updateDailyItemList()
     }
 
-    fun updateDailyItemList(giaoDichList: List<GiaoDichModel>) {
-        val sortedGiaoDichList = giaoDichList.sortedByDescending { it.ngayGiaoDich }
+    fun updateWallet(id: Int) {
+        _idWallet.value = id
+        updateDailyItemList()
+    }
+
+    fun updateCategory(id: Int) {
+        _idCategory.value = id
+        updateDailyItemList()
+    }
+
+    fun updateDailyItemList() {
+        val filterCategory = if (idCategory.value == 0) {
+            giaoDichList
+        } else if (idCategory.value == -1) {
+            giaoDichList.filter { !it.loaiGiaoDich.loai.isChi }
+        } else if (idCategory.value == -2) {
+            giaoDichList.filter { it.loaiGiaoDich.loai.isChi }
+        } else {
+            giaoDichList.filter { it.loaiGiaoDich.id == idCategory.value }
+        }
+
+        val filterWallet = if (idWallet.value != 0) {
+            filterCategory.filter { it.taiKhoan.id == idWallet.value }
+        } else {
+            filterCategory
+        }
+
+        val sortedGiaoDichList = filterWallet.sortedByDescending { it.ngayGiaoDich }
         val groupedGiaoDichList = sortedGiaoDichList.groupBy { it.ngayGiaoDich }
         val dailyItemList = groupedGiaoDichList.map { (date, transactions) ->
             Pair(date, transactions)
@@ -39,10 +72,10 @@ class DailyListViewModel(list: List<GiaoDichModel>) : ViewModel() {
 
         _dailyItemList.value = dailyItemList
 
-        val sumIn = giaoDichList.filter { it.loaiGiaoDich.loai == PhanLoai.Thu }.sumOf { it.soTien }
+        val sumIn = sortedGiaoDichList.filter { it.loaiGiaoDich.loai == PhanLoai.Thu }.sumOf { it.soTien }
         _sumIn.value = sumIn
 
-        val sumOut = giaoDichList.filter { it.loaiGiaoDich.loai == PhanLoai.Chi }.sumOf { it.soTien }
+        val sumOut = sortedGiaoDichList.filter { it.loaiGiaoDich.loai == PhanLoai.Chi }.sumOf { it.soTien }
         _sumOut.value = sumOut
 
         _sum.value = sumIn - sumOut

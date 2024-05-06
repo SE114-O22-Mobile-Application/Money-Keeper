@@ -8,12 +8,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,8 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.PhanLoai
+import com.uit.moneykeeper.transaction.viewmodel.CategoryDropdownViewModel
 import com.uit.moneykeeper.transaction.viewmodel.DailyItemViewModel
 import com.uit.moneykeeper.transaction.viewmodel.DailyListViewModel
+import com.uit.moneykeeper.transaction.viewmodel.WalletListDropdownViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -51,52 +59,96 @@ fun DailyList(viewModel: DailyListViewModel) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     )  {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(all = 8.dp).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.AccountBalanceWallet,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+                tint = Color.Gray
+            )
+            WalletListDropdown(
+                viewModel = WalletListDropdownViewModel(),
+                onSelected = {
+                    viewModel.updateWallet(it)
+                },
+                modifier = Modifier.weight(1f)
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Icon(
+                imageVector = Icons.Filled.CreditCard,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+                tint = Color.Gray
+            )
+            CategoryDropdown(
+                viewModel = CategoryDropdownViewModel(),
+                onSelected = {
+                    viewModel.updateCategory(it)
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Column (
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Thu",
-                    fontWeight = Bold
-                )
+            if (sumIn != 0.0) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Thu",
+                        fontWeight = Bold
+                    )
 
-                Text(
-                    text = "+${DoubleToStringConverter.convert(sumIn)}",
-                    color = Color.Green
-                )
+                    Text(
+                        text = "+${DoubleToStringConverter.convert(sumIn)}",
+                        color = Color.Green
+                    )
+                }
             }
 
-            Column (
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Chi",
-                    fontWeight = Bold
-                )
+            if (sumOut != 0.0) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Chi",
+                        fontWeight = Bold
+                    )
 
-                Text(
-                    text = "-${DoubleToStringConverter.convert(sumOut)}",
-                    color = Color.Red
-                )
+                    Text(
+                        text = "-${DoubleToStringConverter.convert(sumOut)}",
+                        color = Color.Red
+                    )
+                }
             }
 
-            Column (
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Tổng",
-                    fontWeight = Bold
-                )
+            if (sumIn != 0.0 && sumOut != 0.0) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Tổng",
+                        fontWeight = Bold
+                    )
 
-                Text(
-                    text = "${if (sum < 0) "" else "+"}${DoubleToStringConverter.convert(sum)}",
-                    color = Color.Black
-                )
+                    Text(
+                        text = "${if (sum < 0) "" else "+"}${DoubleToStringConverter.convert(sum)}",
+                        color = Color.Black
+                    )
+                }
             }
         }
 

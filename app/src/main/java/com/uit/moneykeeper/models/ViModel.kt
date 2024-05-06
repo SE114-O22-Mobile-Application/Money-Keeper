@@ -5,9 +5,8 @@ import androidx.compose.runtime.setValue
 
 data class ViModel(
     val soDu: Double,
-    val ten: String
+    val ten: String,
+    val id: Int
 ) {
-    var id: String by mutableStateOf("")
-
-    constructor() : this(0.0, "")
+    constructor() : this(0.0, "", 0)
 }

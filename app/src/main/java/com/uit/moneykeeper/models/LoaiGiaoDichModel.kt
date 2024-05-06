@@ -9,11 +9,10 @@ data class LoaiGiaoDichModel(
     val mauSac: Color,
     val ten: String,
     val loai: PhanLoai,
-    val icon: IconEnum
+    val icon: IconEnum,
+    val id: Int
 ) {
-    var id: String by mutableStateOf("")
-
-    constructor() : this(Color.Unspecified, "", PhanLoai.Chi, IconEnum.Null)
+    constructor() : this(Color.Unspecified, "", PhanLoai.Chi, IconEnum.Null, 0)
 }
 
 enum class PhanLoai(val isChi: Boolean) {
