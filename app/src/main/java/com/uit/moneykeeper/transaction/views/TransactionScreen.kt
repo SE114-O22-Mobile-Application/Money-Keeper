@@ -9,6 +9,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import com.uit.moneykeeper.transaction.viewmodel.MonthlyTabViewModel
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 
 @Composable
@@ -45,7 +48,7 @@ fun TransactionScreen(viewModel: TransactionViewModel) {
 
             Box {
                 when (selectedTabIndex) {
-                    0 -> MonthlyTab(viewModel)
+                    0 -> MonthlyTab(viewModel = MonthlyTabViewModel())
                     1 -> YearlyTab(viewModel)
                 }
             }

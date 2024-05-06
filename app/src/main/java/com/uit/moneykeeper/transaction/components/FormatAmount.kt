@@ -1,23 +1,20 @@
 package com.uit.moneykeeper.transaction.components
 
-import java.util.Locale
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.text.NumberFormat
+import java.util.Currency
+import kotlin.math.roundToInt
 
 object DoubleToStringConverter {
-
     @JvmStatic
     fun convert(value: Double): String {
-        val amountString = value.toString().replace(".", ",")
-        val parts = amountString.split(",")
-
-        val integerPart = parts[0].reversed().chunked(3).joinToString(".").reversed()
-        val decimalPart = parts.getOrNull(1) ?: ""
-        val trimmedDecimalPart = decimalPart.trimEnd('0')
-        val roundedDecimalPart = if (trimmedDecimalPart.isNotEmpty()) {
-            String.format(Locale("vi"), "%.3f", trimmedDecimalPart.toDouble()).replace(".", "").trimEnd('0')
-        } else {
-            ""
+        val format = DecimalFormat()
+        format.maximumFractionDigits = 0
+        format.decimalFormatSymbols = DecimalFormatSymbols.getInstance().apply {
+            groupingSeparator = '.'
         }
 
-        return "$integerPart,${roundedDecimalPart.trimEnd(',')}đ"
+        return format.format(value.roundToInt()).plus("đ")
     }
 }
