@@ -86,6 +86,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("androidx.core:core-ktx:1.9.1")
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
     implementation("androidx.compose.runtime:runtime:1.1.0")
