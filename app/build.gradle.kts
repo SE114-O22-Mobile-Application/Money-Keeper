@@ -61,7 +61,6 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3.android)
     implementation(libs.androidx.core.i18n)
     implementation(libs.places)
     implementation(libs.material)
@@ -80,6 +79,7 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0-alpha03")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha03")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha05")
 
     implementation("com.google.dagger:hilt-android:2.49")
     kapt("com.google.dagger:hilt-android-compiler:2.44.2")

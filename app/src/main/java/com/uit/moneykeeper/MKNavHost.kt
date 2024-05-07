@@ -21,29 +21,29 @@ fun MKNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "sign_in",
+        startDestination = "transaction",
         modifier = modifier
     ) {
-        composable("sign_in") {
-            SignInScreen(navController)
-        }
+       // composable("sign_in") {
+            //SignInScreen(navController)
+        //}
         //composable("home") {
         //    HomeScreen(navController)
         //}
-        composable("NewTransactionScreen") {
-            NewTransactionScreen(navController, viewModel = NewTransactionViewModel())
-        }
-        composable("transaction") {
-            TransactionScreen(navController, viewModel = TransactionViewModel())
-        }
-        composable("budget") {
+       // composable("NewTransactionScreen") {
+            //NewTransactionScreen(navController, viewModel = NewTransactionViewModel())
+        //}
+        //composable("transaction") {
+          //  TransactionScreen(navController, viewModel = TransactionViewModel())
+        //}
+        //composable("budget") {
             // Replace with your own composable
-            Text(text = "Budget")
-        }
-        composable("account") {
+            //Text(text = "Budget")
+        //}
+        //composable("account") {
             // Replace with your own composable
-            Text(text = "Account")
-        }
+            //Text(text = "Account")
+        //}
 
     }
 
