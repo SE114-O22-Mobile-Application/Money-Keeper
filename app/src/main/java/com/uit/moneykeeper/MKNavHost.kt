@@ -21,15 +21,15 @@ fun MKNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "sign_in",
+        startDestination = "transaction",
         modifier = modifier
     ) {
-        composable("sign_in") {
-            SignInScreen(navController)
-        }
-        //composable("home") {
-        //    HomeScreen(navController)
-        //}
+//        composable("sign_in") {
+//            SignInScreen(navController)
+//        }
+//        composable("home") {
+//            HomeScreen(navController)
+//        }
         composable("NewTransactionScreen") {
             NewTransactionScreen(navController, viewModel = NewTransactionViewModel())
         }
