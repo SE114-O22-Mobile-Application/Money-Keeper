@@ -15,8 +15,11 @@ val loaiGiaoDichList = listOf(
 )
 
 val viList = listOf(
-    ViModel(1000.0, "Tien mat", 1),
-    ViModel(500.0, "Ngan hang", 2)
+    ViModel(1000000.0, "Tien mat", 1),
+    ViModel(50000.0, "Ngan hang", 2),
+    ViModel(9000000.0, "Vietcombank", 3),
+    ViModel(200000.9, "SCB", 4),
+    ViModel(700000.0, "BIDV", 5),
 )
 
 val giaoDichList = listOf(
