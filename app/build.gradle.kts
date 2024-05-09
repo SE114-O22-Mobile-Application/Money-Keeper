@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.core.i18n)
     implementation(libs.places)
     implementation(libs.material)
+    implementation(libs.androidx.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,7 +82,8 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha03")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
     implementation ("androidx.compose.material3:material3:1.2.0-alpha05")
-
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
     implementation("com.google.dagger:hilt-android:2.49")
     kapt("com.google.dagger:hilt-android-compiler:2.44.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")

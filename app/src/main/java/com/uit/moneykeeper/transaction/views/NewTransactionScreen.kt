@@ -3,12 +3,12 @@
 package com.uit.moneykeeper.transaction.views
 
 import android.annotation.SuppressLint
+import android.icu.util.Calendar
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -22,13 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.uit.moneykeeper.transaction.viewmodel.NewTransactionViewModel
 import kotlinx.datetime.*
+import com.uit.moneykeeper.components.YearPicker
+import androidx.compose.runtime.*
+import com.uit.moneykeeper.components.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api as ExperimentalMaterial3Api1
-
+import com.uit.moneykeeper.components.DatePicker
+import com.uit.moneykeeper.components.WeekPicker
+import com.uit.moneykeeper.components.YearPicker
+import com.uit.moneykeeper.components.MonthPicker
 val currentDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
 
@@ -59,31 +63,62 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                             navController.navigate("transaction")
                         }
                     }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back to Transaction screen") } }
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = "Back to Transaction screen"
+                        )
+                    }
+                }
             )
         }
     )
     {
         Column(modifier = Modifier.padding(16.dp)) {
             //Date Selector
-            TextField(value = amount, onValueChange = { newAmount -> viewModel.setAmount(newAmount) }, label = { Text("Ngày thực hiện giao dịch: ") })
-            TextField(value = amount, onValueChange = { newAmount -> viewModel.setAmount(newAmount) }, label = { Text("Số tiền: ") })
-            TextField(value = amount, onValueChange = { newAmount -> viewModel.setAmount(newAmount) }, label = { Text("Tên giao dịch: ") })
-            TextField(value = amount, onValueChange = { newAmount -> viewModel.setAmount(newAmount) }, label = { Text("Loại giao dịch: ") })
-            TextField(value = amount, onValueChange = { newAmount -> viewModel.setAmount(newAmount) }, label = { Text("Ví: ") })
+            TextField(
+                value = amount,
+                onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
+                label = { Text("Ngày thực hiện giao dịch: ") })
+            TextField(
+                value = amount,
+                onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
+                label = { Text("Số tiền: ") })
+            TextField(
+                value = amount,
+                onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
+                label = { Text("Tên giao dịch: ") })
+            TextField(
+                value = amount,
+                onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
+                label = { Text("Loại giao dịch: ") })
+            TextField(
+                value = amount,
+                onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
+                label = { Text("Ví: ") })
+            var date by remember {
+                mutableStateOf("")
+            }
+            var visible by remember {
+                mutableStateOf(true)
+
+            }
             //DropdownMenu(items = listOf("Thể loại 1", "Thể loại 2"), selectedItem = category) { newCategory -> viewModel.setCategory(newCategory) }
-            //DropdownMenu(items = listOf("Ví 1", "Ví 2"), selectedItem = wallet) { newWallet -> viewModel.setWallet(newWallet) }
-            TextField(value = note, onValueChange = { newNote -> viewModel.setNote(newNote) }, label = { Text("Ghi chú") })
+                //DropdownMenu(items = listOf("Ví 1", "Ví 2"), selectedItem = wallet) { newWallet -> viewModel.setWallet(newWallet) }
+                TextField(
+                    value = note,
+                    onValueChange = { newNote -> viewModel.setNote(newNote) },
+                    label = { Text("Ghi chú") })
+            }
+
+
         }
     }
-}
+    @Composable
+    fun DateSelector(selectedDate: LocalDate, onDateSelected: (LocalDate) -> Unit) {
+        // Show a date picker when the button is clicked
+    }
 
-@Composable
-fun DateSelector(selectedDate: LocalDate, onDateSelected: (LocalDate) -> Unit) {
-   // Show a date picker when the button is clicked
-}
-
-@Composable
-fun <T> DropdownMenu(items: List<T>, selectedItem: T, onItemSelect: (T) -> Unit) {
-    // Show a dropdown menu when the button is clicked
-}
+    @Composable
+    fun <T> DropdownMenu(items: List<T>, selectedItem: T, onItemSelect: (T) -> Unit) {
+        // Show a dropdown menu when the button is clicked
+    }
