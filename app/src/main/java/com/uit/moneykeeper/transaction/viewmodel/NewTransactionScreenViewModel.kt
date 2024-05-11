@@ -13,6 +13,9 @@ class NewTransactionViewModel : ViewModel() {
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> = _amount.asStateFlow()
 
+    private val _name = MutableStateFlow("")
+    val name: StateFlow<String> = _name.asStateFlow()
+
     private val _category = MutableStateFlow("")
     val category: StateFlow<String> = _category.asStateFlow()
 
@@ -28,6 +31,10 @@ class NewTransactionViewModel : ViewModel() {
 
     fun setAmount(newAmount: String) {
         _amount.value = newAmount
+    }
+
+    fun setName(newName: String) {
+        _name.value = newName
     }
 
     fun setCategory(newCategory: String) {
