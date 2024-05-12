@@ -1,10 +1,5 @@
 package com.uit.moneykeeper
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.ui.res.vectorResource
-
 interface MKDestination {
     val inactivatedIcon: Int
     val activatedIcon: Int
