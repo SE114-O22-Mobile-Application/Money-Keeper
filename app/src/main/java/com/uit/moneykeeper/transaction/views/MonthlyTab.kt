@@ -3,8 +3,8 @@ package com.uit.moneykeeper.transaction.views
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -15,23 +15,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
-import com.uit.moneykeeper.sample.giaoDichList
 import com.uit.moneykeeper.transaction.components.DailyList
 import com.uit.moneykeeper.transaction.viewmodel.DailyListViewModel
-import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
+import com.uit.moneykeeper.transaction.viewmodel.MonthlyTabViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun MonthlyTab(viewModel: TransactionViewModel) {
+fun MonthlyTab(viewModel: MonthlyTabViewModel) {
     val selectedMonth by viewModel.selectedMonth.collectAsState()
 
-    return Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconButton(onClick = viewModel::previousMonth) {
-                Icon(imageVector = Icons.Filled.KeyboardArrowLeft, contentDescription = "Tháng trước")
+                Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Tháng trước")
             }
 
             Text(
@@ -46,11 +45,10 @@ fun MonthlyTab(viewModel: TransactionViewModel) {
             )
 
             IconButton(onClick = viewModel::nextMonth) {
-                Icon(imageVector = Icons.Filled.KeyboardArrowRight, contentDescription = "Tháng sau")
+                Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Tháng sau")
             }
         }
 
-        val listGiaoDich = viewModel.listGiaoDich.collectAsState()
-        DailyList(listGiaoDich.value)
+        DailyList(viewModel = DailyListViewModel(viewModel.thisMonthList.collectAsState().value))
     }
 }

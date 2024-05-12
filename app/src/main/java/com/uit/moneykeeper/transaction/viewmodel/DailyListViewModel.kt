@@ -1,41 +1,84 @@
 package com.uit.moneykeeper.transaction.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.PhanLoai
+import com.uit.moneykeeper.models.ViModel
+import com.uit.moneykeeper.sample.GlobalObject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
 
-class DailyListViewModel(private val giaoDichList: List<GiaoDichModel>, inputMonth: LocalDate) : ViewModel() {
-    private val _currentDate = MutableStateFlow(inputMonth)
-    val currentDate: StateFlow<LocalDate> = _currentDate.asStateFlow()
+class DailyListViewModel(private val giaoDichList: List<GiaoDichModel>) : ViewModel() {
 
-    private val _currentIn = MutableStateFlow(0.0)
-    val currentIn: StateFlow<Double> = _currentIn.asStateFlow()
+    private val _dailyItemList = MutableStateFlow<List<Pair<LocalDate, List<GiaoDichModel>>>>(emptyList())
+    val dailyItemList: StateFlow<List<Pair<LocalDate, List<GiaoDichModel>>>> = _dailyItemList.asStateFlow()
 
-    private val _currentOut = MutableStateFlow(0.0)
-    val currentOut: StateFlow<Double> = _currentOut.asStateFlow()
+    private val _sumIn = MutableStateFlow(0.0)
+    val sumIn: StateFlow<Double> = _sumIn.asStateFlow()
 
-    private val _currentSum = MutableStateFlow(0.0)
-    val currentSum: StateFlow<Double> = _currentSum.asStateFlow()
+    private val _sumOut = MutableStateFlow(0.0)
+    val sumOut: StateFlow<Double> = _sumOut.asStateFlow()
 
-    private val _inputMonth = MutableStateFlow(inputMonth)
-    val inputMonth: StateFlow<LocalDate> = _inputMonth.asStateFlow()
+    private val _sum = MutableStateFlow(0.0)
+    val sum: StateFlow<Double> = _sum.asStateFlow()
 
-    var outputList: List<GiaoDichModel> = giaoDichList
+    private val _idWallet = MutableStateFlow(0)
+    val idWallet: StateFlow<Int> = _idWallet.asStateFlow()
+
+    private val _idCategory = MutableStateFlow(0)
+    val idCategory: StateFlow<Int> = _idCategory.asStateFlow()
 
     init {
-        outputList = outputList
-            .filter { it.ngayGiaoDich == inputMonth }
-            .sortedBy { it.ngayGiaoDich }
+        updateDailyItemList()
     }
 
-    fun updateCurrentDate(newDate: LocalDate) {
-        if (newDate != currentDate.value) {
-            _currentDate.value = newDate
+    fun updateWallet(id: Int) {
+        _idWallet.value = id
+        updateDailyItemList()
+    }
+
+    fun updateCategory(id: Int) {
+        _idCategory.value = id
+        updateDailyItemList()
+    }
+
+    fun updateDailyItemList() {
+        val filterCategory = if (idCategory.value == 0) {
+            giaoDichList
+        } else if (idCategory.value == -1) {
+            giaoDichList.filter { !it.loaiGiaoDich.loai.isChi }
+        } else if (idCategory.value == -2) {
+            giaoDichList.filter { it.loaiGiaoDich.loai.isChi }
+        } else {
+            giaoDichList.filter { it.loaiGiaoDich.id == idCategory.value }
         }
+
+        val filterWallet = if (idWallet.value != 0) {
+            filterCategory.filter { it.taiKhoan.id == idWallet.value }
+        } else {
+            filterCategory
+        }
+
+        val sortedGiaoDichList = filterWallet.sortedByDescending { it.ngayGiaoDich }
+        val groupedGiaoDichList = sortedGiaoDichList.groupBy { it.ngayGiaoDich }
+        val dailyItemList = groupedGiaoDichList.map { (date, transactions) ->
+            Pair(date, transactions)
+        }
+
+        _dailyItemList.value = dailyItemList
+
+        val sumIn = sortedGiaoDichList.filter { it.loaiGiaoDich.loai == PhanLoai.Thu }.sumOf { it.soTien }
+        _sumIn.value = sumIn
+
+        val sumOut = sortedGiaoDichList.filter { it.loaiGiaoDich.loai == PhanLoai.Chi }.sumOf { it.soTien }
+        _sumOut.value = sumOut
+
+        _sum.value = sumIn - sumOut
     }
 }
+
