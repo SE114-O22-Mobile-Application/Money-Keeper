@@ -16,7 +16,9 @@ import com.uit.moneykeeper.home.views.WalletDetail
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 import com.uit.moneykeeper.transaction.views.TransactionScreen
 import com.uit.moneykeeper.transaction.viewmodel.NewTransactionViewModel
-import com.uit.moneykeeper.models.ViModel
+import com.uit.moneykeeper.transaction.viewmodel.EditTransactionViewModel
+import com.uit.moneykeeper.transaction.views.EditTransactionScreen
+import com.uit.moneykeeper.transaction.views.NewTransactionScreen
 
 @Composable
 fun MKNavHost(

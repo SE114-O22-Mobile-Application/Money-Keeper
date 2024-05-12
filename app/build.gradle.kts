@@ -94,6 +94,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.7")
     implementation("androidx.compose.runtime:runtime:1.6.7")
     implementation("androidx.compose.material:material:1.6.7")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.3.0")
 }
