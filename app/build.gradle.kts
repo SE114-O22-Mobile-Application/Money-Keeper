@@ -4,7 +4,7 @@ plugins {
     id("com.google.gms.google-services")
     id ("kotlin-parcelize")
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android") version "2.51.1"
+    id("com.google.dagger.hilt.android")
 }
 
 android {
