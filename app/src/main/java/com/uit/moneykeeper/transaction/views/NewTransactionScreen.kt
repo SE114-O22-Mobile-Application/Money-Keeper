@@ -95,13 +95,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                 value = amount,
                 onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
                 label = { Text("Ví: ") })
-            var date by remember {
-                mutableStateOf("")
-            }
-            var visible by remember {
-                mutableStateOf(true)
 
-            }
             //DropdownMenu(items = listOf("Thể loại 1", "Thể loại 2"), selectedItem = category) { newCategory -> viewModel.setCategory(newCategory) }
                 //DropdownMenu(items = listOf("Ví 1", "Ví 2"), selectedItem = wallet) { newWallet -> viewModel.setWallet(newWallet) }
                 TextField(
@@ -109,6 +103,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                     onValueChange = { newNote -> viewModel.setNote(newNote) },
                     label = { Text("Ghi chú") })
             }
+
 
 
         }
