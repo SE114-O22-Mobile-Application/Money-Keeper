@@ -102,19 +102,15 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                         }
                     }
                     .fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.White,
-                    unfocusedIndicatorColor = Color.White,
-                    disabledIndicatorColor = Color.White
-                )
             )
+
             TextField(
                 value = amount,
                 onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
                 label = { Text("Số tiền: ") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White),
+                    .background(Color.Red),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.White,
                     unfocusedIndicatorColor = Color.White,

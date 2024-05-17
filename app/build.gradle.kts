@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.compose.material)
     implementation(libs.firebase.firestore)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,6 +75,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation ("co.yml:ycharts:2.1.0")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.1.1")
@@ -98,4 +100,5 @@ dependencies {
     implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.3.0")
+
 }

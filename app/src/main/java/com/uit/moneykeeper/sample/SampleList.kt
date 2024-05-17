@@ -42,5 +42,5 @@ val giaoDichList = listOf(
     GiaoDichModel("Luong", 500000.0, LocalDate.of(2024, 6, 6), "Nap tien", loaiGiaoDichList[2], viList[0], 17),
     GiaoDichModel("Du lich", 250000.0, LocalDate.of(2024, 6, 6), "", loaiGiaoDichList[1], viList[1], 18),
     GiaoDichModel("Du lich", 750000.0, LocalDate.of(2024, 6, 7), "Rut tien", loaiGiaoDichList[1], viList[0], 19),
-    GiaoDichModel("Luong", 150000.0, LocalDate.of(2024, 6, 8), "Chuyen khoan", loaiGiaoDichList[2], viList[1], 20)
+    GiaoDichModel("Luong", 150000.0, LocalDate.of(2024, 6, 8), "Chuyen khoan", loaiGiaoDichList[2], viList[1], 20),
 )

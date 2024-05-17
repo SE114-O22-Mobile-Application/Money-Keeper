@@ -32,22 +32,32 @@ import androidx.navigation.NavController
 import com.uit.moneykeeper.models.ViModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.zIndex
 import com.uit.moneykeeper.home.viewmodel.ListWalletViewModel
+import com.uit.moneykeeper.home.components.Statistical
 import com.uit.moneykeeper.home.views.SelectWallet
 import com.uit.moneykeeper.sample.GlobalObject
 import com.uit.moneykeeper.transaction.viewmodel.MonthlyTabViewModel
 import com.uit.moneykeeper.transaction.views.MonthlyTab
 import com.uit.moneykeeper.transaction.views.YearlyTab
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletDetail(navController: NavController, viModel: State<ViModel>) {
-    val walletList = ListWalletViewModel().walletList
+    val totalCost = ListWalletViewModel().walletList.sumOf { it.soDu }
+    val wltmp: MutableList<ViModel> = mutableListOf();
+    wltmp.add(ViModel(totalCost, "Tất cả", 0));
+    ListWalletViewModel().walletList.forEach() {
+        item ->
+        wltmp.add(item);
+    }
+    val walletList = wltmp;
     val wallet = viModel.value
     var isOpenSelectWallet by remember { mutableStateOf(false) }
     var selectedWallet by remember { mutableStateOf(wallet) }
@@ -153,7 +163,50 @@ fun WalletDetail(navController: NavController, viModel: State<ViModel>) {
         ) {
             if(selectedTabIndex == 0) {
                 item {
-                    Text(text = "Tháng")
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                    ) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+
+                        ) {
+                            Text("Thu",
+                                modifier = Modifier.align(Alignment.Center),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFFeb7434)
+                                )
+                            )
+                        }
+                        Statistical(selectedWallet, LocalDate.of(2024, 5, 16), LocalDate.of(2024, 5, 16), "Month", "Thu")
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                    ) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+
+                            ) {
+                            Text("Chi",
+                                modifier = Modifier.align(Alignment.Center),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF4e6df5)
+                                )
+                            )
+                        }
+                        Statistical(selectedWallet, LocalDate.of(2024, 5, 16), LocalDate.of(2024, 5, 16), "Month", "Chi")
+                    }
                 }
             }
             else {
