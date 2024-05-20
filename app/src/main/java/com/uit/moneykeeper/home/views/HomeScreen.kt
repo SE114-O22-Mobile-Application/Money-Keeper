@@ -13,10 +13,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -47,6 +50,7 @@ import com.uit.moneykeeper.models.ViModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.zIndex
 import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
 
 
@@ -80,26 +84,34 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                 .background(Color(0xFFF8F8F8)))
             {
                 Column {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                        horizontalArrangement = Arrangement.Center
+                    Column( modifier = Modifier
+                        .clickable {
+                            selectedWalletViewModel.setViModel(ViModel(total, "Tất cả", 0))
+                            navController.navigate("WalletDetail")
+                        }
                     ) {
-                        Text(text = "Số dư",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "Số dư",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp
+                            )
+                        }
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = formatNumberWithCommas(total),
+                                fontSize = 20.sp,
+                                color = Color.Blue
+                            )
+                        }
                     }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = formatNumberWithCommas(total),
-                            fontSize = 20.sp,
-                            color = Color.Blue
-                        )
-                    }
+
                     for(wallet in wallets) {
                         WalletCardItem(navController,wallet,selectedWalletViewModel)
                     }
@@ -150,6 +162,14 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                         )
                     }
                     Text(text = "Biểu đồ cột")
+                    OutlinedTextField(
+                        value = "",
+                        onValueChange = {  },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Red), // Đặt màu nền đỏ ở đây
+                        label = { Text("Nhập văn bản") }
+                    )
                 }
             }
             Box(modifier = Modifier
@@ -171,6 +191,7 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                         )
                     }
                     Text(text = "Phần thống kê")
+
                 }
             }
             if (showDialog) {
