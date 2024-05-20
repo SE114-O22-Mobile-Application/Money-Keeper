@@ -7,13 +7,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import com.uit.moneykeeper.components.MKNavigationBar
 import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
+import com.uit.moneykeeper.sample.uploadLoaiGiaoDichSamples
+import com.uit.moneykeeper.sample.uploadViSamples
+import com.uit.moneykeeper.sample.uploadgiaoDichSamples
 import com.uit.moneykeeper.ui.theme.MoneyKeeperTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    val db = Firebase.firestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -32,5 +39,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        uploadgiaoDichSamples()
+        uploadLoaiGiaoDichSamples()
+        uploadViSamples()
     }
 }
