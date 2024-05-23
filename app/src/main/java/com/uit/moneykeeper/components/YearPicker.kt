@@ -66,7 +66,7 @@ fun YearPicker() {
             // Update the selected date when the text field value changes
             selectedDate = it.text
         },
-        label = { Text("Selected Date") },
+        label = { Text("Năm: ") },
         enabled = false, // Disable editing
         modifier = Modifier.padding(16.dp)
     )
@@ -90,7 +90,7 @@ fun YearPicker() {
                     override fun onDateSelected(date: Date) {
                         val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
                         val formattedDate = dateFormat.format(date)
-                        Log.i("Selected Date: ", formattedDate) // Log the selected date
+                        Log.i("Năm đã chọn: ", formattedDate) // Log the selected date
                         selectedDate = formattedDate // You may update this as needed
                         val selectedYear = yearFromDate(date)
                         initialCalendar.apply {
@@ -110,7 +110,6 @@ private fun monthFromDate(date: Date): Int {
     val calendar = Calendar.getInstance()
     calendar.time = date
     return calendar.get(Calendar.MONTH)
-
 }
 private fun yearFromDate(date: Date): Int {
     val calendar = Calendar.getInstance()

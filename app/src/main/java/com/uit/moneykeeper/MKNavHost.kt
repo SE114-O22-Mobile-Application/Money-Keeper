@@ -3,35 +3,48 @@ package com.uit.moneykeeper
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.uit.moneykeeper.home.HomeScreen
-import com.uit.moneykeeper.sign_in.SignInScreen
+import com.uit.moneykeeper.home.viewmodel.DetailWalletViewModel
+import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
+import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
+import com.uit.moneykeeper.home.views.HomeScreen
+import com.uit.moneykeeper.home.views.WalletDetail
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 import com.uit.moneykeeper.transaction.views.TransactionScreen
-import com.uit.moneykeeper.transaction.views.NewTransactionScreen
 import com.uit.moneykeeper.transaction.viewmodel.NewTransactionViewModel
+import com.uit.moneykeeper.transaction.viewmodel.EditTransactionViewModel
+import com.uit.moneykeeper.transaction.views.EditTransactionScreen
+import com.uit.moneykeeper.transaction.views.NewTransactionScreen
 
 @Composable
 fun MKNavHost(
     navController: NavHostController,
+    selectedWalletViewModel: SelectedWalletViewModel,
     modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = "transaction",
+        startDestination = "home",
         modifier = modifier
     ) {
 //        composable("sign_in") {
 //            SignInScreen(navController)
 //        }
-//        composable("home") {
-//            HomeScreen(navController)
-//        }
+        composable("home") {
+            HomeScreen(navController, viewModel = HomeScreenViewModel() , selectedWalletViewModel)
+        }
+        composable("WalletDetail") {
+            WalletDetail(navController = navController, viModel = selectedWalletViewModel.getViModel())
+        }
         composable("NewTransactionScreen") {
             NewTransactionScreen(navController, viewModel = NewTransactionViewModel())
+        }
+        composable("EditTransactionScreen") {
+            EditTransactionScreen(navController, viewModel = EditTransactionViewModel())
         }
         composable("transaction") {
             TransactionScreen(navController, viewModel = TransactionViewModel())

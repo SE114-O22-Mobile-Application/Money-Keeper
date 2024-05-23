@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.uit.moneykeeper.components.MKNavigationBar
+import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
 import com.uit.moneykeeper.ui.theme.MoneyKeeperTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     MKNavHost(
                         navController = navController,
+                        selectedWalletViewModel = SelectedWalletViewModel(),
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

@@ -1,4 +1,4 @@
-package com.uit.moneykeeper.home
+package com.uit.moneykeeper.home.views
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -33,41 +34,43 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.uit.moneykeeper.home.viewmodel.ListWalletViewModel
+import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
+import com.uit.moneykeeper.models.ViModel
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
+
 
 data class Wallet(val name: String, val amount: Int)
 object SelectWallet {
     var Wallet: Wallet = Wallet("a",1)
 }
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController,viewModel: HomeScreenViewModel , selectedWalletViewModel: SelectedWalletViewModel) {
 //    Text(text = "This is Home Screen 3")
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "main-screen" ) {
-        composable("main-screen") {
-            MainContent(navController = navController)
-        }
-        composable("wallet-detail-screen") {
-            WalletDetail(navController = navController)
-        }
-    }
+    println("is call home")
+    MainContent(navController = navController,viewModel ,selectedWalletViewModel)
 }
 
 @Composable
-fun MainContent(navController: NavController) {
-    val wallets = arrayOf(
-        Wallet("Ví A", 1000000),
-        Wallet("Ví B", 5000000),
-        Wallet("Ví C", 2000000)
-    )
-    var total = 0
+fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, selectedWalletViewModel: SelectedWalletViewModel) {
+    val wallets = ListWalletViewModel().walletList
+    var total = 0.0
+    var showDialog by remember { mutableStateOf(false) }
+    var textInput_ten by remember { mutableStateOf("") }
+    var textInput_soDu by remember { mutableStateOf("") }
     for(wallet in wallets) {
-        total +=  wallet.amount
+        total +=  wallet.soDu
     }
-    println("total: $total")
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Box(modifier = Modifier
@@ -98,9 +101,33 @@ fun MainContent(navController: NavController) {
                         )
                     }
                     for(wallet in wallets) {
-                        WalletCardItem(navController,wallet)
+                        WalletCardItem(navController,wallet,selectedWalletViewModel)
                     }
-                    ButtonAddWallet()
+                    Button(onClick = { showDialog = true },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(70.dp)
+                            .padding(8.dp),
+
+                        colors = ButtonDefaults.buttonColors(Color(0xFF00c190)),
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add, // Replace with your desired icon
+                                contentDescription = "Home icon"
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Thêm ví",
+                                fontSize = 20.sp,)
+                        }
+                    }
                 }
 
             }
@@ -146,20 +173,69 @@ fun MainContent(navController: NavController) {
                     Text(text = "Phần thống kê")
                 }
             }
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text("Thêm ví mới",
+                                    textAlign = TextAlign.Center,
+                                    style = TextStyle(fontSize = 20.sp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()) },
+                    text = {
+                        Column {
+                            // Ô nhập văn bản
+                            TextField(
+                                value = textInput_ten,
+                                onValueChange = { textInput_ten = it },
+                                label = { Text("Tên ví") }
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            TextField(
+                                value = textInput_soDu,
+                                onValueChange = { textInput_soDu = it },
+                                label = { Text("Số dư") },
+                                modifier = Modifier
+                                    .padding(top = 10.dp)
+                            )
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = { showDialog = false
+                                        viewModel.AddNewWallet("Cancel",textInput_ten,textInput_soDu.toDouble(), walletList = wallets)},
+                            colors = ButtonDefaults.buttonColors(Color(0xFFf25207))
+                        )             {
+                            Text("Huỷ")
+                        }
+                    },
+                    confirmButton = {
+                        // Nút xác nhận
+                        Button( modifier = Modifier,
+                            onClick = {
+                                viewModel.AddNewWallet("Add",textInput_ten,textInput_soDu.toDouble(), walletList = wallets)
+                                showDialog = false
+                            },
+                            colors = ButtonDefaults.buttonColors(Color(0xFF1cba46))
+                        ) {
+                            Text("Thêm")
+                        }
+                    }
+
+                )
+            }
         }
     }
 }
 
 @Composable
-fun WalletCardItem(navController: NavController,wallet: Wallet) {
+fun WalletCardItem(navController: NavController,wallet: ViModel, selectedWalletViewModel: SelectedWalletViewModel) {
     val walletIcon = R.drawable.baseline_account_balance_wallet_24
-    println("id: $walletIcon")
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(8.dp)
         .clickable {
-            SelectWallet.Wallet = wallet
-            navController.navigate("wallet-detail-screen")
+            selectedWalletViewModel.setViModel(wallet)
+            navController.navigate("WalletDetail")
         }
     ) {
         Row(modifier = Modifier.fillMaxWidth(),
@@ -175,7 +251,7 @@ fun WalletCardItem(navController: NavController,wallet: Wallet) {
                     contentDescription = "Ví 1"
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = wallet.name)
+                Text(text = wallet.ten)
 
             }
             Row(modifier = Modifier
@@ -183,7 +259,7 @@ fun WalletCardItem(navController: NavController,wallet: Wallet) {
                 horizontalArrangement = Arrangement.End
             ) {
                 // Your row content here
-                Text(formatNumberWithCommas(wallet.amount)) // Example content
+                Text(formatNumberWithCommas(wallet.soDu)) // Example content
             }
         }
         Row(modifier = Modifier
@@ -229,18 +305,30 @@ fun ButtonAddWallet() {
         }
     }
 }
+fun formatNumberWithCommas(doubleValue: Double): String {
+    val formattedValue = String.format("%.2f", doubleValue) // Format với hai số sau dấu phẩy
+    val parts = formattedValue.split('.') // Tách phần nguyên và phần thập phân
 
-fun formatNumberWithCommas(number: Int): String {
-    val numberString = number.toString()
-    val reversedNumberString = numberString.reversed()
-    val formattedStringBuilder = StringBuilder()
-    for (i in reversedNumberString.indices) {
-        formattedStringBuilder.append(reversedNumberString[i])
-        if ((i + 1) % 3 == 0 && (i + 1) != reversedNumberString.length) {
-            formattedStringBuilder.append(".")
-        }
+    var integerPart = parts[0] // Phần nguyên
+    var decimalPart = parts.getOrElse(1) { "" } // Phần thập phân, mặc định là chuỗi trống nếu không có phần thập phân
+
+    // Đổi mỗi 3 chữ số của phần nguyên thành một dấu chấm
+    val integerLength = integerPart.length
+    var index = 0
+    while (integerLength - index > 3) {
+        integerPart = integerPart.substring(0, integerLength - 3 - index) + "." + integerPart.substring(integerLength - 3 - index)
+        index += 3
     }
-    println("Before: $numberString")
-    println("After: " + formattedStringBuilder.reverse().toString())
-    return formattedStringBuilder.toString()
+
+    // Xóa các số 0 không cần thiết sau dấu phẩy nếu có
+    while (decimalPart.isNotEmpty() && decimalPart.last() == '0') {
+        decimalPart = decimalPart.dropLast(1)
+    }
+
+    // Nếu phần thập phân không còn chữ số nào thì không cần hiển thị dấu phẩy
+    if (decimalPart.isEmpty()) {
+        return integerPart
+    }
+
+    return "$integerPart,$decimalPart"
 }
