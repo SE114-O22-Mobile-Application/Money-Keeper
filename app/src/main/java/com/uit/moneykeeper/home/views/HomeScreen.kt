@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
@@ -48,7 +49,9 @@ import com.uit.moneykeeper.home.viewmodel.ListWalletViewModel
 import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
 import com.uit.moneykeeper.models.ViModel
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
@@ -67,14 +70,23 @@ fun HomeScreen(navController: NavController,viewModel: HomeScreenViewModel , sel
 
 @Composable
 fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, selectedWalletViewModel: SelectedWalletViewModel) {
-    val wallets = ListWalletViewModel().walletList
+    val walletList = ListWalletViewModel().walletList
+    val wallets = remember { mutableStateListOf<ViModel>() }
     var total = 0.0
     var showDialog by remember { mutableStateOf(false) }
     var textInput_ten by remember { mutableStateOf("") }
     var textInput_soDu by remember { mutableStateOf("") }
+    LaunchedEffect(key1 = walletList ) {
+        print("Launch")
+        wallets.clear();
+        for(wallet in walletList) {
+            wallets.add(wallet);
+        }
+    }
     for(wallet in wallets) {
         total +=  wallet.soDu
     }
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Box(modifier = Modifier
@@ -85,6 +97,7 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
             {
                 Column {
                     Column( modifier = Modifier
+                        .fillMaxWidth()
                         .clickable {
                             selectedWalletViewModel.setViModel(ViModel(total, "Tất cả", 0))
                             navController.navigate("WalletDetail")
@@ -111,10 +124,19 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                             )
                         }
                     }
-
-                    for(wallet in wallets) {
-                        WalletCardItem(navController,wallet,selectedWalletViewModel)
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        ) {
+                        LazyColumn(modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn( max = 200.dp)) {
+                            items(wallets.size) {index ->
+                                WalletCardItem(navController,wallets[index],selectedWalletViewModel)
+                            }
+                        }
                     }
+
                     Button(onClick = { showDialog = true },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -213,8 +235,12 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                             Spacer(modifier = Modifier.height(10.dp))
                             TextField(
                                 value = textInput_soDu,
-                                onValueChange = { textInput_soDu = it },
+                                onValueChange = {newValue ->
+                                    if(newValue.all { it.isDigit() })
+                                    textInput_soDu = newValue
+                                                },
                                 label = { Text("Số dư") },
+                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                                 modifier = Modifier
                                     .padding(top = 10.dp)
                             )
@@ -223,7 +249,9 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                     dismissButton = {
                         Button(
                             onClick = { showDialog = false
-                                        viewModel.AddNewWallet("Cancel",textInput_ten,textInput_soDu.toDouble(), walletList = wallets)},
+                                textInput_ten = ""
+                                textInput_soDu = ""
+                                      },
                             colors = ButtonDefaults.buttonColors(Color(0xFFf25207))
                         )             {
                             Text("Huỷ")
@@ -234,7 +262,10 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                         Button( modifier = Modifier,
                             onClick = {
                                 viewModel.AddNewWallet("Add",textInput_ten,textInput_soDu.toDouble(), walletList = wallets)
+                                wallets.add(ViModel(textInput_soDu.toDouble(), textInput_ten, wallets.size+1))
                                 showDialog = false
+                                textInput_ten = ""
+                                textInput_soDu = ""
                             },
                             colors = ButtonDefaults.buttonColors(Color(0xFF1cba46))
                         ) {

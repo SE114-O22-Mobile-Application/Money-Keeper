@@ -3,10 +3,12 @@ package com.uit.moneykeeper.home.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -37,7 +43,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.max
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import com.uit.moneykeeper.components.MonthPicker
 import com.uit.moneykeeper.home.viewmodel.ListWalletViewModel
 import com.uit.moneykeeper.home.components.Statistical
 import com.uit.moneykeeper.home.views.SelectWallet
@@ -45,7 +53,18 @@ import com.uit.moneykeeper.sample.GlobalObject
 import com.uit.moneykeeper.transaction.viewmodel.MonthlyTabViewModel
 import com.uit.moneykeeper.transaction.views.MonthlyTab
 import com.uit.moneykeeper.transaction.views.YearlyTab
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import java.time.Month
 import java.time.LocalDate
+import java.time.format.TextStyle as TimeTextStyle
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,6 +81,9 @@ fun WalletDetail(navController: NavController, viModel: State<ViModel>) {
     var isOpenSelectWallet by remember { mutableStateOf(false) }
     var selectedWallet by remember { mutableStateOf(wallet) }
     var selectedTabIndex by remember { mutableStateOf(0)}
+    var selectedTime by remember { mutableStateOf(LocalDate.now())}
+    var openSelectMonth by remember { mutableStateOf(false) }
+    var openSelectYear by remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
         // Combobox ở đây
         Box(
@@ -155,12 +177,77 @@ fun WalletDetail(navController: NavController, viModel: State<ViModel>) {
                 )
             }
         }
+        Row(modifier = Modifier
+            .padding(top = 100.dp)
+            .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBackIos,
+                contentDescription = "Menu",
+                tint = Color.Black,
+                modifier = Modifier
+                    .padding(start = 10.dp, top = 10.dp)
+                    .clickable {
+                        selectedTime =
+                            if (selectedTabIndex == 0) selectedTime.minusMonths(1) else selectedTime.minusYears(
+                                1
+                            )
+                    }
+            )
+            if(selectedTabIndex == 0)
+                Text(text = "${selectedTime.monthValue}/${selectedTime.year}",
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .clickable { openSelectMonth = true},
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp))
+            else
+                Text(text = "${selectedTime.year}",
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .clickable { openSelectYear = true },
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp))
+            Icon(
+                imageVector = Icons.Default.ArrowForwardIos,
+                contentDescription = "Menu",
+                tint = Color.Black,
+                modifier = Modifier
+                    .padding(start = 10.dp, top = 10.dp)
+                    .clickable {
+                        selectedTime =
+                            if (selectedTabIndex == 0) selectedTime.plusMonths(1) else selectedTime.plusYears(
+                                1
+                            )
+                    }
+            )
+        }
         // LazyColumn chiếm phần còn lại của màn hình
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 100.dp) // Để đẩy nó xuống dưới Combobox
+                .padding(top = 150.dp) // Để đẩy nó xuống dưới Combobox
         ) {
+            if(openSelectMonth)
+                item {
+                    MonthPickerDialog(
+                        initialDate = selectedTime,
+                        onDismissRequest = { openSelectMonth = false },
+                        onDateSelected = {date ->
+                            selectedTime = date
+                        }
+                    )
+                }
+            if(openSelectYear)
+                item {
+                    YearPickerDialog(
+                        initialDate = selectedTime,
+                        onDismissRequest = { openSelectYear = false },
+                        onDateSelected = {date ->
+                            selectedTime = date
+                        }
+                    )
+                }
             if(selectedTabIndex == 0) {
                 item {
                     Column(
@@ -178,14 +265,16 @@ fun WalletDetail(navController: NavController, viModel: State<ViModel>) {
                                 style = TextStyle(
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFeb7434)
+                                    color = Color(0xFF4e6df5)
                                 )
                             )
                         }
-                        Statistical(selectedWallet, LocalDate.of(2024, 5, 16), LocalDate.of(2024, 5, 16), "Month", "Thu")
+                        Statistical(selectedWallet, selectedTime, selectedTime, "Month", "Thu")
                     }
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier
+                        .height(40.dp)
+                        .background(Color.Red))
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -201,20 +290,253 @@ fun WalletDetail(navController: NavController, viModel: State<ViModel>) {
                                 style = TextStyle(
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF4e6df5)
+                                    color = Color(0xFFeb7434)
                                 )
                             )
                         }
-                        Statistical(selectedWallet, LocalDate.of(2024, 5, 16), LocalDate.of(2024, 5, 16), "Month", "Chi")
+                        Statistical(selectedWallet, selectedTime, selectedTime, "Month", "Chi")
                     }
                 }
             }
             else {
                 item {
-                    Text(text = "Năm")
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                    ) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+
+                            ) {
+                            Text("Thu",
+                                modifier = Modifier.align(Alignment.Center),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF4e6df5)
+                                )
+                            )
+                        }
+                        Statistical(selectedWallet, selectedTime, selectedTime, "Year", "Thu")
+                    }
+
+                    Spacer(modifier = Modifier
+                        .height(40.dp)
+                        .background(Color.Red))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                    ) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+
+                            ) {
+                            Text("Chi",
+                                modifier = Modifier.align(Alignment.Center),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFFeb7434)
+                                )
+                            )
+                        }
+                        Statistical(selectedWallet, selectedTime, selectedTime, "Year", "Chi")
+                    }
                 }
             }
 
+        }
+    }
+}
+
+@Composable
+fun MonthPickerDialog(
+    initialDate: LocalDate,
+    onDismissRequest: () -> Unit,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    var selectedYear by remember { mutableStateOf(initialDate.year) }
+    var selectedMonth by remember { mutableStateOf(initialDate.month.value) }
+
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = Color.White,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Chọn Tháng",
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = {
+                            if (selectedMonth > 1) {
+                                selectedMonth -= 1
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowBackIos, contentDescription = "Previous Month")
+                    }
+
+                    Text(
+                        text = "Tháng $selectedMonth",
+                        style = TextStyle(fontSize = 18.sp)
+                    )
+
+                    IconButton(
+                        onClick = {
+                            if (selectedMonth < 12) {
+                                selectedMonth += 1
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowForwardIos, contentDescription = "Next Month")
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = {
+                            if (selectedYear > 1) {
+                                selectedYear -= 1
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowBackIos, contentDescription = "Previous Month")
+                    }
+
+                    Text(
+                        text = "Năm $selectedYear",
+                        style = TextStyle(fontSize = 18.sp)
+                    )
+
+                    IconButton(
+                        onClick = {
+                            selectedYear += 1
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowForwardIos, contentDescription = "Next Month")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(onClick = onDismissRequest) {
+                        Text("Hủy")
+                    }
+                    Button(
+                        onClick = {
+                            onDateSelected(LocalDate.of(selectedYear, selectedMonth, 1))
+                            onDismissRequest()
+                        }
+                    ) {
+                        Text("Xác nhận")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun YearPickerDialog(
+    initialDate: LocalDate,
+    onDismissRequest: () -> Unit,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    var selectedYear by remember { mutableStateOf(initialDate.year) }
+    var selectedMonth by remember { mutableStateOf(initialDate.month.value) }
+
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = Color.White,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Chọn Năm",
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = {
+                            if (selectedYear > 1) {
+                                selectedYear -= 1
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowBackIos, contentDescription = "Previous Month")
+                    }
+
+                    Text(
+                        text = "Năm $selectedYear",
+                        style = TextStyle(fontSize = 18.sp)
+                    )
+
+                    IconButton(
+                        onClick = {
+                            selectedYear += 1
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowForwardIos, contentDescription = "Next Month")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(onClick = onDismissRequest) {
+                        Text("Huỷ")
+                    }
+                    Button(
+                        onClick = {
+                            onDateSelected(LocalDate.of(selectedYear, selectedMonth, 1))
+                            onDismissRequest()
+                        }
+                    ) {
+                        Text("Xác nhận")
+                    }
+                }
+            }
         }
     }
 }
