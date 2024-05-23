@@ -43,86 +43,84 @@ fun PieChartScreen(
     option: String,
     typeOfTrans: String,
 ) {
-    val transactions = filterData(wallet, date1, date2, option, typeOfTrans);
-    val totalCost = transactions.sumOf { it.soTien }
-    val totalData = PieChartData.Slice("Tổng",totalCost.toFloat(),Color.White);
-    var selectedSlice by remember { mutableStateOf(totalData) }
-    println("---------------------------");
-    println(wallet.ten);
-    println("Totals: " + totalData)
-    println("Slices: " + selectedSlice)
-    if(transactions.size < 1) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Không có dữ liệu",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.Center),
-                style = TextStyle(
-                    fontSize = 18.sp)
-            )
+    var transactions by remember { mutableStateOf(filterData(wallet, date1, date2, option, typeOfTrans)) }
+    var totalCost by remember { mutableStateOf(transactions.sumOf { it.soTien }) }
+    var selectedSlice by remember { mutableStateOf(PieChartData.Slice("Tổng", totalCost.toFloat(), Color.White)) }
+
+    val colorList = if (typeOfTrans == "Thu") colorListThu else colorListChi
+    val slices = remember { mutableStateListOf<PieChartData.Slice>() }
+
+    // Function to update slices
+    fun updateSlices() {
+        val loaiGiaoDichTongTienMap = transactions.groupBy { it.loaiGiaoDich }
+            .mapValues { (_, transactions) -> transactions.sumOf { it.soTien } }
+        slices.clear()
+        loaiGiaoDichTongTienMap.forEach { (loaiGiaoDich, tongTien) ->
+            val color = colorList[slices.size % colorList.size]
+            val percentage = (tongTien.toFloat() / totalCost * 100)
+            val slice = PieChartData.Slice(loaiGiaoDich.ten + "(" + String.format("%.2f", percentage) + "%)", tongTien.toFloat(), color)
+            slices.add(slice)
         }
-        return
     }
 
-    val loaiGiaoDichTongTienMap = transactions.groupBy { it.loaiGiaoDich }
-        .mapValues { (_, transactions) -> transactions.sumOf { it.soTien } }
-    val slices = mutableListOf<PieChartData.Slice>()
-    var cnt = transactions.size ;
-    println(typeOfTrans);
-    for (transaction in transactions) {
-        println(transaction.id);
+    // Initial update of slices
+    LaunchedEffect(wallet, date1, date2, option, typeOfTrans) {
+        transactions = filterData(wallet, date1, date2, option, typeOfTrans)
+        totalCost = transactions.sumOf { it.soTien }
+        selectedSlice = PieChartData.Slice("Tổng", totalCost.toFloat(), Color.White)
+        updateSlices()
     }
 
-    val colorList: List<Color>;
-    if(typeOfTrans == "Thu")  colorList = colorListThu;
-    else colorList = colorListChi;
-    var iColor = 0;
-    slices.clear();
-    loaiGiaoDichTongTienMap.forEach { (loaiGiaoDich, tongTien) ->
-        val slice = PieChartData.Slice(loaiGiaoDich.ten, tongTien.toFloat(), colorList[iColor])
-        slices.add(slice)
-        iColor = (iColor + 1) % 10;
-    }
-
-    val pieChartData = PieChartData(
-        slices = slices,
-        plotType = PlotType.Pie
-    )
-    println("Slices - i: " + pieChartData.slices);
-    val pieChartConfig = PieChartConfig(
-        isSumVisible = true,
-        isAnimationEnable = true,
-        showSliceLabels = true,
-        animationDuration = 600,
-        activeSliceAlpha = 0.5f
-    )
-    Column(
-    ) {
-        PieChart(
-            modifier = Modifier
-                .fillMaxSize(),
-            pieChartData = pieChartData,
-            pieChartConfig = pieChartConfig,
-            onSliceClick = {slice ->
-                if(slice != selectedSlice)
-                    selectedSlice = slice
-                else
-                    selectedSlice = totalData
-                Print("abc")
-            },
-
+    // PieChartData and PieChartConfig
+    val pieChartData by remember { derivedStateOf { PieChartData(slices = slices, plotType = PlotType.Pie) } }
+    val pieChartConfig by remember {
+        mutableStateOf(
+            PieChartConfig(
+                isSumVisible = true,
+                isAnimationEnable = true,
+                showSliceLabels = true,
+                animationDuration = 600,
+                activeSliceAlpha = 0.5f
             )
-        Text(
-            text = "${selectedSlice.label}: ${formatNumberWithCommas(selectedSlice.value.toDouble())}",
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.CenterHorizontally),
-            style = TextStyle(
-                fontSize = 18.sp)
         )
     }
+
+    // UI components
+    Column {
+        if (transactions.isEmpty() || slices.isEmpty()) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Không có dữ liệu",
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.Center),
+                    style = TextStyle(fontSize = 18.sp)
+                )
+            }
+        } else {
+            PieChart(
+                modifier = Modifier.fillMaxSize(),
+                pieChartData = pieChartData,
+                pieChartConfig = pieChartConfig,
+                onSliceClick = { slice ->
+                    selectedSlice = if (slice == selectedSlice) {
+                        PieChartData.Slice("Tổng", totalCost.toFloat(), Color.White)
+                    } else {
+                        slice
+                    }
+                },
+            )
+            Text(
+                text = "${selectedSlice.label}: ${formatNumberWithCommas(selectedSlice.value.toDouble())}",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally),
+                style = TextStyle(fontSize = 18.sp)
+            )
+        }
+    }
 }
+
 
 fun Print(label: String) {
     println(label);
