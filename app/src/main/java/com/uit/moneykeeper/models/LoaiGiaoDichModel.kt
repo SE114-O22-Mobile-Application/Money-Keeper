@@ -1,7 +1,5 @@
 package com.uit.moneykeeper.models
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.graphics.Color
 import com.uit.moneykeeper.transaction.components.IconEnum
 
@@ -12,7 +10,7 @@ data class LoaiGiaoDichModel(
     val icon: IconEnum,
     val id: Int
 ) {
-    constructor() : this(Color.Unspecified, "", PhanLoai.Chi, IconEnum.Null, 0)
+    constructor() : this(Color.Black, "", PhanLoai.Chi, IconEnum.Null, 0)
 }
 
 enum class PhanLoai(val isChi: Boolean) {
