@@ -1,6 +1,5 @@
 package com.uit.moneykeeper.transaction.views
 
-
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -54,32 +55,38 @@ import com.uit.moneykeeper.transaction.viewmodel.NewTransactionViewModel
 import kotlinx.datetime.LocalDate
 import java.time.format.DateTimeFormatter
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressWarnings("SpellCheckingInspection")
 
 @Composable
 fun NewTransactionScreen(navController: NavController, viewModel: NewTransactionViewModel) {
     val date by viewModel.date.collectAsState()
     val amount by viewModel.amount.collectAsState()
     val name by viewModel.name.collectAsState()
-    val categoryOptions = listOf("Thể loại 1", "Thể loại 2")
-    var selectedCatOptionText by remember { mutableStateOf(categoryOptions[0]) }
-    val walletOptions = listOf("Ví 1", "Ví 2")
-    var selectedWalletOptionText by remember { mutableStateOf(walletOptions[0]) }
-
+    val category by viewModel.category.collectAsState()
+    val categoryOptions = viewModel.categoryOptions.collectAsState().value
+    var selectedCatOptionText by remember { mutableStateOf(if (categoryOptions.isNotEmpty()) categoryOptions[0] else "") }
+    val wallet by viewModel.wallet.collectAsState()
+    val walletOptions = viewModel.walletOptions.collectAsState().value
+    var selectedWalletOptionText by remember { mutableStateOf(if (walletOptions.isNotEmpty()) walletOptions[0] else "") }
     val note by viewModel.note.collectAsState()
 
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val dateString = date.format(formatter)
+
     val focusRequester = remember { FocusRequester() }
     val decoyFocusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+
     val calendarState = rememberUseCaseState()
     var isCalendarDialogShowing by remember { mutableStateOf(false) }
 
+    val catFocusRequester = remember { FocusRequester() }
+    val walletFocusRequester = remember { FocusRequester() }
     var expandedCat by remember { mutableStateOf(false) }
     var expandedWallet by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
 
     CalendarDialog(
@@ -158,6 +165,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.LightGray,
                     focusedContainerColor = Color.Transparent,
@@ -181,13 +189,19 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
             )
             ExposedDropdownMenuBox(
                 expanded = expandedCat,
-                onExpandedChange = { expandedCat = !expandedCat }
+                onExpandedChange = {
+                    expandedCat = !expandedCat
+                    if (expandedCat) {
+                        catFocusRequester.requestFocus()
+                    }
+                }
             ){
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .menuAnchor()
-                            .background(Color.White),
+                            .background(Color.White)
+                            .focusRequester(catFocusRequester),
                     readOnly = true,
                     value = selectedCatOptionText,
                     onValueChange = {},
@@ -218,13 +232,19 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
             }
             ExposedDropdownMenuBox(
                 expanded = expandedWallet,
-                onExpandedChange = { expandedWallet = !expandedWallet }
+                onExpandedChange = {
+                    expandedWallet = !expandedWallet
+                    if (expandedWallet) {
+                        walletFocusRequester.requestFocus()
+                    }
+                }
             ){
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor()
-                        .background(Color.White),
+                        .background(Color.White)
+                        .focusRequester(walletFocusRequester),
                     readOnly = true,
                     value = selectedWalletOptionText,
                     onValueChange = {},
@@ -241,7 +261,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                     expanded = expandedWallet,
                     onDismissRequest = { expandedWallet = false }
                 ){
-                    walletOptions.forEach {selectedwalletopt -> // Use walletOptions here
+                    walletOptions.forEach {selectedwalletopt ->
                         DropdownMenuItem(
                             text={Text(selectedwalletopt) },
                             onClick = {
