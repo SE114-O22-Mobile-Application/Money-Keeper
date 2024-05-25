@@ -48,7 +48,7 @@ fun YearPicker() {
 
 
     // State to control the visibility of the picker
-    val (open, setOpen) = remember { mutableStateOf(true) }
+    val (open, setOpen) = remember { mutableStateOf(false) }
 
     Icon(
         imageVector = Icons.Default.CalendarToday,
