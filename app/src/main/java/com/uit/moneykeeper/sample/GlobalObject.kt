@@ -1,6 +1,5 @@
 package com.uit.moneykeeper.sample
 
-import com.uit.moneykeeper.budget.viewmodel.BudgetScreenViewModel
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
 import com.uit.moneykeeper.models.ViModel
@@ -10,9 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
 
 object GlobalObject {
 
-    private val _listNganSach = MutableStateFlow(
-        BudgetScreenViewModel(year = 2024, monthlyBudgets = initialBudgets)
-    val listNganSach: StateFlow<BudgetScreenViewModel> = _listNganSach.asStateFlow()
     private val _listGiaoDich = MutableStateFlow<List<GiaoDichModel>>(emptyList())
     val listGiaoDich: StateFlow<List<GiaoDichModel>> = _listGiaoDich.asStateFlow()
 
@@ -39,5 +35,4 @@ object GlobalObject {
     fun updateListLoaiGiaoDich(list: List<LoaiGiaoDichModel>) {
         _listLoaiGiaoDich.value = list
     }
-    val listNganSach: StateFlow<BudgetScreenViewModel> = _listNganSach.asStateFlow()
 }

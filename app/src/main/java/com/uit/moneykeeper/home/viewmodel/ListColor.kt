@@ -1,7 +1,9 @@
 package com.uit.moneykeeper.home.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.compose.ui.graphics.Color
 
+@SuppressLint("InvalidColorHexValue")
 val colorListChi: List<Color> = listOf(
     Color(0xFFc92f04),
     Color(0xFFe05002),
@@ -14,6 +16,7 @@ val colorListChi: List<Color> = listOf(
     Color(0xFF7ecc00),
     Color(0xFF706bd0f),
 )
+@SuppressLint("InvalidColorHexValue")
 val colorListThu: List<Color> = listOf(
     Color(0xFF7ecc00),
     Color(0xFF706bd0f),
