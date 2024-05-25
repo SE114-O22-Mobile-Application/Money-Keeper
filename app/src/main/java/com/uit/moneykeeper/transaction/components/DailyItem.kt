@@ -36,6 +36,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
+import com.uit.moneykeeper.ui.theme.Do
+import com.uit.moneykeeper.ui.theme.XanhLa
 
 @Composable
 fun DailyItem(viewModel: DailyItemViewModel) {
@@ -84,7 +86,7 @@ fun DailyItem(viewModel: DailyItemViewModel) {
                     if (viewModel.currentIn != 0.0) {
                         Text(
                             text = "+${DoubleToStringConverter.convert(viewModel.currentIn)}",
-                            color = Color.Green,
+                            color = XanhLa,
                             textAlign = TextAlign.Right
                         )
                     }
@@ -92,7 +94,7 @@ fun DailyItem(viewModel: DailyItemViewModel) {
                     if (viewModel.currentOut != 0.0) {
                         Text(
                             text = "–${DoubleToStringConverter.convert(viewModel.currentOut)}",
-                            color = Color.Red,
+                            color = Do,
                             textAlign = TextAlign.Right
                         )
                     }

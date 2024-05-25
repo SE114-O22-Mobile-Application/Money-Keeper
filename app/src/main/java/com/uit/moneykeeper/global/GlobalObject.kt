@@ -1,4 +1,4 @@
-package com.uit.moneykeeper.sample
+package com.uit.moneykeeper.global
 
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
@@ -34,4 +34,5 @@ object GlobalObject {
     fun updateListLoaiGiaoDich(list: List<LoaiGiaoDichModel>) {
         _listLoaiGiaoDich.value = list
     }
+
 }

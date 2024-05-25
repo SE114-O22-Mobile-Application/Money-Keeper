@@ -1,12 +1,9 @@
 package com.uit.moneykeeper.transaction.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.uit.moneykeeper.models.GiaoDichModel
-import com.uit.moneykeeper.sample.giaoDichList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.time.LocalDate
 import java.util.Calendar
 
 class TransactionViewModel : ViewModel() {

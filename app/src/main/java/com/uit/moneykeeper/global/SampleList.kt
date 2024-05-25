@@ -1,4 +1,4 @@
-package com.uit.moneykeeper.sample
+package com.uit.moneykeeper.global
 
 import androidx.compose.ui.graphics.Color
 import com.google.firebase.Firebase
@@ -54,7 +54,7 @@ fun uploadgiaoDichSamples() {
         val giaoDichMap = mapOf(
             "ten" to giaoDich.ten,
             "soTien" to giaoDich.soTien,
-            "ngayGiaoDich" to giaoDich.ngayGiaoDich.toString(),
+            "ngayGiaoDich" to GlobalFunction.convertLocalDateToTimestamp(giaoDich.ngayGiaoDich),
             "ghiChu" to giaoDich.ghiChu,
             "loaiGiaoDich" to giaoDich.loaiGiaoDich,
             "taiKhoan" to giaoDich.taiKhoan,

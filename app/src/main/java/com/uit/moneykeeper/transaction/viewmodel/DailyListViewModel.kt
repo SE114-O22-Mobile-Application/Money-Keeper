@@ -1,17 +1,12 @@
 package com.uit.moneykeeper.transaction.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.PhanLoai
-import com.uit.moneykeeper.models.ViModel
-import com.uit.moneykeeper.sample.GlobalObject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.Calendar
 
 class DailyListViewModel(private val giaoDichList: List<GiaoDichModel>) : ViewModel() {
 

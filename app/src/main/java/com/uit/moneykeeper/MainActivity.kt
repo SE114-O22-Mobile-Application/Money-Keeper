@@ -11,6 +11,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.uit.moneykeeper.components.MKNavigationBar
 import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
+import com.uit.moneykeeper.global.uploadgiaoDichSamples
 import com.uit.moneykeeper.ui.theme.MoneyKeeperTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-//        uploadgiaoDichSamples()
+        uploadgiaoDichSamples()
 //        uploadLoaiGiaoDichSamples()
 //        uploadViSamples()
     }

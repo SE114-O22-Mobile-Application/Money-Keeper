@@ -3,7 +3,7 @@ package com.uit.moneykeeper.home.viewmodel
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.PhanLoai
 import com.uit.moneykeeper.models.ViModel
-import com.uit.moneykeeper.sample.GlobalObject
+import com.uit.moneykeeper.global.GlobalObject
 import java.time.LocalDate
 import androidx.compose.ui.graphics.Color
 

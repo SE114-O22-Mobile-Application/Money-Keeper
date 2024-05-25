@@ -1,9 +1,7 @@
 package com.uit.moneykeeper.home.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.uit.moneykeeper.models.ViModel
-import com.uit.moneykeeper.sample.GlobalObject
+import com.uit.moneykeeper.global.GlobalObject
 
 class HomeScreenViewModel {
     fun AddNewWallet(Action: String, tenVi: String, soDu: Double, walletList: List<ViModel>) {
