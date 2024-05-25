@@ -1,6 +1,8 @@
 package com.uit.moneykeeper.sample
 
 import androidx.compose.ui.graphics.Color
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
 import com.uit.moneykeeper.models.PhanLoai
@@ -44,3 +46,73 @@ val giaoDichList = listOf(
     GiaoDichModel("Du lich", 750000.0, LocalDate.of(2024, 6, 7), "Rut tien", loaiGiaoDichList[1], viList[0], 19),
     GiaoDichModel("Luong", 150000.0, LocalDate.of(2024, 6, 8), "Chuyen khoan", loaiGiaoDichList[2], viList[1], 20)
 )
+
+fun uploadgiaoDichSamples() {
+    val db = Firebase.firestore
+
+    giaoDichList.forEach { giaoDich ->
+        val giaoDichMap = mapOf(
+            "ten" to giaoDich.ten,
+            "soTien" to giaoDich.soTien,
+            "ngayGiaoDich" to giaoDich.ngayGiaoDich.toString(),
+            "ghiChu" to giaoDich.ghiChu,
+            "loaiGiaoDich" to giaoDich.loaiGiaoDich,
+            "taiKhoan" to giaoDich.taiKhoan,
+            "id" to giaoDich.id
+        )
+
+        db.collection("giaoDich")
+            .add(giaoDichMap)
+            .addOnSuccessListener { documentReference ->
+                println("DocumentSnapshot added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                println("Error adding document: $e")
+            }
+    }
+}
+
+fun uploadLoaiGiaoDichSamples(){
+    val db = Firebase.firestore
+
+    loaiGiaoDichList.forEach { loaiGiaoDich ->
+        val loaiGiaoDichMap = mapOf(
+            "mauSac" to loaiGiaoDich.mauSac.toString(),
+            "ten" to loaiGiaoDich.ten,
+            "loai" to loaiGiaoDich.loai.toString(),
+            "icon" to loaiGiaoDich.icon.toString(),
+            "id" to loaiGiaoDich.id
+        )
+
+        db.collection("loaiGiaoDich")
+            .add(loaiGiaoDichMap)
+            .addOnSuccessListener { documentReference ->
+                println("DocumentSnapshot added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                println("Error adding document: $e")
+            }
+    }
+}
+
+fun uploadViSamples(){
+    val db = Firebase.firestore
+
+    viList.forEach { vi ->
+        val viMap = mapOf(
+            "soDu" to vi.soDu,
+            "ten" to vi.ten,
+            "id" to vi.id
+        )
+
+        db.collection("vi")
+            .add(viMap)
+            .addOnSuccessListener { documentReference ->
+                println("DocumentSnapshot added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                println("Error adding document: $e")
+            }
+    }
+
+}
