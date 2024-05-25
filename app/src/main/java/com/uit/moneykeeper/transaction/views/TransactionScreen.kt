@@ -1,22 +1,28 @@
 package com.uit.moneykeeper.transaction.views
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import com.uit.moneykeeper.transaction.viewmodel.MonthlyTabViewModel
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.uit.moneykeeper.transaction.viewmodel.MonthlyTabViewModel
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 
 @Composable
-fun TransactionScreen(navController: NavController,viewModel: TransactionViewModel) {
+fun TransactionScreen(navController: NavController, viewModel: TransactionViewModel) {
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
     Scaffold(
         floatingActionButton = {
@@ -49,7 +55,7 @@ fun TransactionScreen(navController: NavController,viewModel: TransactionViewMod
 
             Box {
                 when (selectedTabIndex) {
-                    0 -> MonthlyTab(viewModel = MonthlyTabViewModel())
+                    0 -> MonthlyTab(navController,viewModel = MonthlyTabViewModel())
                     1 -> YearlyTab(viewModel)
                 }
             }

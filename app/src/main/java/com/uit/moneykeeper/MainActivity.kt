@@ -5,13 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.uit.moneykeeper.components.MKNavigationBar
+//import com.uit.moneykeeper.global.uploadLoaiGiaoDichSamples
+//import com.uit.moneykeeper.global.uploadViSamples
+//import com.uit.moneykeeper.global.uploadgiaoDichSamples
 import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
-import com.uit.moneykeeper.global.uploadgiaoDichSamples
 import com.uit.moneykeeper.ui.theme.MoneyKeeperTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,20 +28,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             MoneyKeeperTheme {
                 val navController = rememberNavController()
+                val showNavigationBar = remember { mutableStateOf(true) }
                 Scaffold(
                     bottomBar = {
-                        MKNavigationBar(navController = navController)
+                        if (showNavigationBar.value) {
+                            MKNavigationBar(navController = navController)
+                        }
                     }
                 ) { innerPadding ->
                     MKNavHost(
                         navController = navController,
                         selectedWalletViewModel = SelectedWalletViewModel(),
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        showNavigationBar = showNavigationBar
                     )
                 }
             }
         }
-        uploadgiaoDichSamples()
+//        uploadgiaoDichSamples()
 //        uploadLoaiGiaoDichSamples()
 //        uploadViSamples()
     }

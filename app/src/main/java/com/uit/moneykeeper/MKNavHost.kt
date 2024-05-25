@@ -2,12 +2,16 @@ package com.uit.moneykeeper
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.uit.moneykeeper.components.MKNavigationBar
 import com.uit.moneykeeper.home.viewmodel.DetailWalletViewModel
 import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
 import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
@@ -24,7 +28,8 @@ import com.uit.moneykeeper.transaction.views.NewTransactionScreen
 fun MKNavHost(
     navController: NavHostController,
     selectedWalletViewModel: SelectedWalletViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showNavigationBar: MutableState<Boolean>
 ) {
     NavHost(
         navController = navController,
@@ -35,31 +40,36 @@ fun MKNavHost(
 //            SignInScreen(navController)
 //        }
         composable("home") {
+            showNavigationBar.value = true
             HomeScreen(navController, viewModel = HomeScreenViewModel() , selectedWalletViewModel)
         }
         composable("WalletDetail") {
+            showNavigationBar.value = true
             WalletDetail(navController = navController, viModel = selectedWalletViewModel.getViModel())
         }
         composable("NewTransactionScreen") {
+            showNavigationBar.value = false
             NewTransactionScreen(navController, viewModel = NewTransactionViewModel())
         }
         composable("EditTransactionScreen") {
+            showNavigationBar.value = false
             EditTransactionScreen(navController, viewModel = EditTransactionViewModel())
         }
         composable("transaction") {
+            showNavigationBar.value = true
             TransactionScreen(navController, viewModel = TransactionViewModel())
         }
         composable("budget") {
+            showNavigationBar.value = true
             // Replace with your own composable
             Text(text = "Budget")
         }
         composable("account") {
+            showNavigationBar.value = true
             // Replace with your own composable
             Text(text = "Account")
         }
-
     }
-
 }
 
 fun NavHostController.navigateSingleTopTo(route: String) =

@@ -99,7 +99,7 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                     Column( modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            selectedWalletViewModel.setViModel(ViModel(total, "Tất cả", 0))
+                            selectedWalletViewModel.setViModel(ViModel(0, "Tất cả", total))
                             navController.navigate("WalletDetail")
                         }
                     ) {
@@ -261,8 +261,8 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                         // Nút xác nhận
                         Button( modifier = Modifier,
                             onClick = {
-                                viewModel.AddNewWallet("Add",textInput_ten,textInput_soDu.toDouble(), walletList = wallets)
-                                wallets.add(ViModel(textInput_soDu.toDouble(), textInput_ten, wallets.size+1))
+                                viewModel.AddNewWallet("Add",walletList = wallets, textInput_ten, textInput_soDu.toDouble())
+                                wallets.add(ViModel(wallets.size+1, textInput_ten, textInput_soDu.toDouble()))
                                 showDialog = false
                                 textInput_ten = ""
                                 textInput_soDu = ""

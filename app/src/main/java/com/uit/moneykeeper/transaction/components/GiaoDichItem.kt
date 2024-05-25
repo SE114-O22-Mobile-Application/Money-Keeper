@@ -28,14 +28,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.uit.moneykeeper.models.PhanLoai
 import com.uit.moneykeeper.transaction.viewmodel.GiaoDichItemViewModel
 import com.uit.moneykeeper.ui.theme.Do
 import com.uit.moneykeeper.ui.theme.XanhLa
 
 @Composable
-fun GiaoDichItem(viewModel: GiaoDichItemViewModel) {
+fun GiaoDichItem(navController: NavController, viewModel: GiaoDichItemViewModel) {
     val giaoDich = viewModel.giaoDich
     var backgroundColor by remember { mutableStateOf(Color.White) }
 
@@ -52,7 +54,9 @@ fun GiaoDichItem(viewModel: GiaoDichItemViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { backgroundColor = Color.LightGray }, // Change the color when clicked
+            .clickable {
+                    navController.navigate("NewTransactionScreen")
+                },
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor, // Use the color state here
         ),
@@ -104,7 +108,7 @@ fun GiaoDichItem(viewModel: GiaoDichItemViewModel) {
                         )
 
                         Text(
-                            text = giaoDich.taiKhoan.ten,
+                            text = giaoDich.vi.ten,
                             color = Color.Black,
                             fontSize = 16.sp,
                         )

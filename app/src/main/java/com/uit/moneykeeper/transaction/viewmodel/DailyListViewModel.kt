@@ -54,7 +54,7 @@ class DailyListViewModel(private val giaoDichList: List<GiaoDichModel>) : ViewMo
         }
 
         val filterWallet = if (idWallet.value != 0) {
-            filterCategory.filter { it.taiKhoan.id == idWallet.value }
+            filterCategory.filter { it.vi.id == idWallet.value }
         } else {
             filterCategory
         }

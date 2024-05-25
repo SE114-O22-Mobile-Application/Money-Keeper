@@ -4,9 +4,9 @@ import com.uit.moneykeeper.models.ViModel
 import com.uit.moneykeeper.global.GlobalObject
 
 class HomeScreenViewModel {
-    fun AddNewWallet(Action: String, tenVi: String, soDu: Double, walletList: List<ViModel>) {
+    fun AddNewWallet(Action: String, walletList: List<ViModel>, tenVi: String, soDu: Double) {
         if(Action == "Cancel") return;
-        val newWallet = ViModel(soDu = soDu, ten = tenVi, id = walletList.size+1)
+        val newWallet = ViModel(id = walletList.size+1, ten = tenVi, soDu = soDu)
         val updateWallet = walletList + newWallet
         println("new wallets: " + updateWallet)
         GlobalObject.updateListVi(updateWallet)

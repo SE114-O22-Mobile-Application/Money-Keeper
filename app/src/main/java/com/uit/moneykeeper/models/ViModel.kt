@@ -4,9 +4,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 data class ViModel(
-    val soDu: Double,
+    val id: Int,
     val ten: String,
-    val id: Int
+    val soDu: Double,
 ) {
-    constructor() : this(0.0, "", 0)
+    constructor() : this(0, "", 0.0)
 }

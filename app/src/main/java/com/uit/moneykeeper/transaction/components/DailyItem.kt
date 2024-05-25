@@ -3,12 +3,10 @@ package com.uit.moneykeeper.transaction.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -16,11 +14,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,19 +21,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.uit.moneykeeper.models.GiaoDichModel
-import com.uit.moneykeeper.models.PhanLoai
+import androidx.navigation.NavController
 import com.uit.moneykeeper.transaction.viewmodel.DailyItemViewModel
 import com.uit.moneykeeper.transaction.viewmodel.GiaoDichItemViewModel
+import com.uit.moneykeeper.ui.theme.Do
+import com.uit.moneykeeper.ui.theme.XanhLa
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
-import com.uit.moneykeeper.ui.theme.Do
-import com.uit.moneykeeper.ui.theme.XanhLa
 
 @Composable
-fun DailyItem(viewModel: DailyItemViewModel) {
+fun DailyItem(navController: NavController, viewModel: DailyItemViewModel) {
     Card (
         modifier = Modifier.fillMaxWidth().padding(8.dp),
         colors = CardDefaults.cardColors(
@@ -105,7 +97,7 @@ fun DailyItem(viewModel: DailyItemViewModel) {
                 Divider(color = Color.LightGray, thickness = 0.5.dp)
 
                 val giaoDichViewModel = GiaoDichItemViewModel(giaoDich)
-                GiaoDichItem(viewModel = giaoDichViewModel)
+                GiaoDichItem(navController = navController , viewModel = giaoDichViewModel)
             }
         }
     }

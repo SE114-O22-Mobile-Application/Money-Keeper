@@ -1,7 +1,14 @@
 package com.uit.moneykeeper.transaction.views
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -14,14 +21,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.uit.moneykeeper.transaction.components.DailyList
 import com.uit.moneykeeper.transaction.viewmodel.DailyListViewModel
 import com.uit.moneykeeper.transaction.viewmodel.MonthlyTabViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun MonthlyTab(viewModel: MonthlyTabViewModel) {
+fun MonthlyTab(navController: NavController, viewModel: MonthlyTabViewModel) {
     val selectedMonth by viewModel.selectedMonth.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -49,6 +59,6 @@ fun MonthlyTab(viewModel: MonthlyTabViewModel) {
             }
         }
 
-        DailyList(viewModel = DailyListViewModel(viewModel.thisMonthList.collectAsState().value))
+        DailyList(navController = navController,viewModel = DailyListViewModel(viewModel.thisMonthList.collectAsState().value))
     }
 }

@@ -46,7 +46,7 @@ import java.time.LocalDate
 fun WalletDetail(navController: NavController, viModel: State<ViModel>) {
     val totalCost = ListWalletViewModel().walletList.sumOf { it.soDu }
     val wltmp: MutableList<ViModel> = mutableListOf();
-    wltmp.add(ViModel(totalCost, "Tất cả", 0));
+    wltmp.add(ViModel(0, "Tất cả", totalCost));
     ListWalletViewModel().walletList.forEach() {
         item ->
         wltmp.add(item);

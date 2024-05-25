@@ -2,13 +2,13 @@ package com.uit.moneykeeper.models
 import java.time.LocalDate
 
 data class GiaoDichModel(
-    val ten: String,
-    val soTien: Double,
+    val id: Int,
     val ngayGiaoDich: LocalDate,
-    val ghiChu: String,
+    val soTien: Double,
+    val ten: String,
     val loaiGiaoDich: LoaiGiaoDichModel,
-    val taiKhoan: ViModel,
-    val id: Int
+    val vi: ViModel,
+    val ghiChu: String
 ) {
-    constructor() : this("",0.0, LocalDate.now(), "", LoaiGiaoDichModel(), ViModel(), 0)
+    constructor() : this(0, LocalDate.now(), 0.0, "", LoaiGiaoDichModel(), ViModel(), "")
 }

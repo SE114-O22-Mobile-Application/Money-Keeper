@@ -25,7 +25,7 @@ fun filterData(wallet: ViModel, date1: LocalDate, date2: LocalDate, option: Stri
     }
 
     val filteredByWallet = if (wallet.id != 0) {
-        filteredByDate.filter { trans -> trans.taiKhoan.id == wallet.id } // Filter for transactions in the specified wallet
+        filteredByDate.filter { trans -> trans.vi.id == wallet.id } // Filter for transactions in the specified wallet
     } else {
         filteredByDate
     }

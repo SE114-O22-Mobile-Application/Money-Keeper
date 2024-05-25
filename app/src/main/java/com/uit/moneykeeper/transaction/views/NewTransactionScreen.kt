@@ -49,10 +49,7 @@ import androidx.navigation.NavController
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import com.uit.moneykeeper.components.MonthPicker
-import com.uit.moneykeeper.components.WeekPicker
 import com.uit.moneykeeper.transaction.viewmodel.NewTransactionViewModel
-import kotlinx.datetime.LocalDate
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -138,7 +135,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
             OutlinedTextField(
                 value = dateString,
                 onValueChange = { /* Do nothing as we don't want to allow manual date input */ },
-                label = { Text("Ngày thực hiện giao dịch: ") },
+                label = { Text("Ngày thực hiện giao dịch") },
                 readOnly = true,
                 modifier = Modifier
                     .background(Color.Transparent)
@@ -161,7 +158,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
             OutlinedTextField(
                 value = amount,
                 onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
-                label = { Text("Số tiền: ") },
+                label = { Text("Số tiền") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White),
@@ -176,7 +173,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
             OutlinedTextField(
                 value = name,
                 onValueChange = { newName -> viewModel.setName(newName) },
-                label = { Text("Tên giao dịch: ") },
+                label = { Text("Tên giao dịch") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White),
@@ -223,6 +220,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                                 text={Text(selectedcatopt) },
                                 onClick = {
                                     selectedCatOptionText = selectedcatopt
+                                    viewModel.setSelectedCatOptionText(selectedCatOptionText)
                                     expandedCat = false
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -266,6 +264,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                             text={Text(selectedwalletopt) },
                             onClick = {
                                 selectedWalletOptionText = selectedwalletopt
+                                viewModel.setSelectedWalletOptionText(selectedWalletOptionText)
                                 expandedWallet = false
                             },
                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -308,40 +307,19 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(
-                    onClick = {
-                        if (!navController.popBackStack().not()) {
-                            navController.navigate("transaction")
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.White,
-                        disabledContentColor = Color.White,
-                        disabledContainerColor = Color.Gray
-                    )
-                ) {
-                    Text("Cancel")
-                }
-
-                Button(
                     onClick = { viewModel.saveTransaction(navController, context) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Green,
                         contentColor = Color.White,
                         disabledContentColor = Color.White,
                         disabledContainerColor = Color.Gray
-                    )
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Save")
                 }
-
-                Button(
-                    onClick = { navController.navigate("EditTransactionScreen") }
-                ) {
-                    Text("Edit")
-                }
             }
         }
-            }
+        }
     }
 }

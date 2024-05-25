@@ -2,11 +2,14 @@ package com.uit.moneykeeper.transaction.viewmodel
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.ui.graphics.toArgb
+import androidx.core.graphics.toColor
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
+import com.uit.moneykeeper.global.GlobalFunction
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
 import com.uit.moneykeeper.models.ViModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -113,18 +116,16 @@ class NewTransactionViewModel : ViewModel() {
     fun saveTransaction(navController: NavController, context: Context) {
         val db = Firebase.firestore
 
-
-            db.collection("giaoDich")
-                .orderBy("id", Query.Direction.DESCENDING)
-                .limit(1)
-                .get()
-                .addOnSuccessListener { documents ->
-                    val highestId = if (documents.isEmpty) {
-                        0
-                    } else {
-                        documents.documents[0].getLong("id")?.toInt() ?: 0
-                    }
-
+        db.collection("giaoDich")
+            .orderBy("id", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                val highestId = if (documents.isEmpty) {
+                    0
+                } else {
+                    documents.documents[0].getLong("id")?.toInt() ?: 0
+                }
                     val newId = highestId + 1
 
                     val selectedCategory =
@@ -132,14 +133,29 @@ class NewTransactionViewModel : ViewModel() {
                     val selectedWallet =
                         _wallet.value.firstOrNull { it.ten.equals(_selectedWalletOptionText.value, ignoreCase = true)}
 
+
                     val transactionMap = mapOf(
                         "id" to newId,
                         "ten" to name.value,
                         "soTien" to amount.value.toDouble(),
-                        "ngayGiaoDich" to date.value.toString(),
+                        "ngayGiaoDich" to GlobalFunction.convertLocalDateToTimestamp(date.value),
                         "ghiChu" to note.value,
-                        "loaiGiaoDich" to selectedCategory,
-                        "taiKhoan" to selectedWallet
+                        "loaiGiaoDich" to selectedCategory?.let {
+                            mapOf(
+                                "id" to it.id,
+                                "ten" to it.ten,
+                                "loai" to it.loai.name,
+                                "mauSac" to it.mauSac.toString(),
+                                "icon" to it.icon.name
+                            )
+                        },
+                        "vi" to selectedWallet?.let {
+                            mapOf(
+                                "id" to it.id,
+                                "ten" to it.ten,
+                                "soDu" to it.soDu
+                            )
+                        }
                     )
 
                     db.collection("giaoDich")
