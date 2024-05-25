@@ -66,7 +66,7 @@ fun MonthPicker() {
             // Update the selected date when the text field value changes
             selectedDate = it.text
         },
-        label = { Text("Selected Date") },
+        label = { Text("Tháng đã chọn: ") },
         enabled = false, // Disable editing
         modifier = Modifier.padding(16.dp)
     )

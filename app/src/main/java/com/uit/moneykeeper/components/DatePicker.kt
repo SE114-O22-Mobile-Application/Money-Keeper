@@ -35,8 +35,8 @@ fun DatePicker(){
             yearSelection = true
         ),
         selection = CalendarSelection.Date {
-            date ->
-            Log.d("SelectedDate", "$date")
+                date ->
+            Log.d("Ngày đã chọn: ", "$date")
             selectedDate=date
         }
     )
@@ -56,7 +56,7 @@ fun DatePicker(){
             content = {
                 Icon(
                     imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "Select Week",
+                    contentDescription = "Tuần đã chọn: ",
                     tint = Color.Black // Set the icon color to black
                 )
             }

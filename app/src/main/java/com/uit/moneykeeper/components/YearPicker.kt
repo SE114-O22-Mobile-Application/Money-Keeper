@@ -1,6 +1,7 @@
 package com.uit.moneykeeper.components
 
 import android.util.Log
+import android.util.LogPrinter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -34,7 +36,6 @@ fun YearPicker() {
         set(Calendar.MONTH, 1)
         set(Calendar.DAY_OF_MONTH, 1)
     }
-    var Year : Int =2024
     val calendarMax = Calendar.getInstance().apply {
         set(Calendar.YEAR, 2100)
         set(Calendar.MONTH, 0)
@@ -42,10 +43,12 @@ fun YearPicker() {
     }
 
     val initialCalendar = Calendar.getInstance().apply {
-        set(Calendar.YEAR, Year)    }
+        set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR))
+    }
+
 
     // State to control the visibility of the picker
-    val (open, setOpen) = remember { mutableStateOf(false) }
+    val (open, setOpen) = remember { mutableStateOf(true) }
 
     Icon(
         imageVector = Icons.Default.CalendarToday,
@@ -63,7 +66,7 @@ fun YearPicker() {
             // Update the selected date when the text field value changes
             selectedDate = it.text
         },
-        label = { Text("Selected Date") },
+        label = { Text("Năm: ") },
         enabled = false, // Disable editing
         modifier = Modifier.padding(16.dp)
     )
@@ -72,7 +75,7 @@ fun YearPicker() {
             Modifier
                 .fillMaxWidth(0.8f)
                 .fillMaxHeight(0.7f)
-        ) {
+        ){
             ComposeCalendar(
                 minDate = calendar.time,
                 maxDate = calendarMax.time,
@@ -82,14 +85,19 @@ fun YearPicker() {
                 buttonTextSize = 15.sp,
                 calendarType = CalendarType.ONLY_YEAR,
                 monthViewType = MonthViewType.ONLY_NUMBER_ONE_COLUMN,
+
                 listener = object : SelectDateListener {
                     override fun onDateSelected(date: Date) {
-                        Log.i("Selected Date: ", date.toString())
-                        selectedDate = yearFromDate(date).toString()
-                        initialCalendar.set(Calendar.YEAR,Year)
+                        val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
+                        val formattedDate = dateFormat.format(date)
+                        Log.i("Năm đã chọn: ", formattedDate) // Log the selected date
+                        selectedDate = formattedDate // You may update this as needed
+                        val selectedYear = yearFromDate(date)
+                        initialCalendar.apply {
+                            set(Calendar.YEAR, selectedYear)
+                        }
                         setOpen(false)
                     }
-
                     override fun onCanceled() {
                         setOpen(false)
                     }

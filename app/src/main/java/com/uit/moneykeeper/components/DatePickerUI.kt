@@ -97,52 +97,63 @@ fun CalendarHeader(
     setShowMonths: (Boolean) -> Unit,
     title: String,
     calendarType: CalendarType,
-    themeColor:Color,
+    themeColor: Color,
     monthViewType: MonthViewType?,
 ) {
-    val monthAsNumber = String.format("%02d",selectedMonth.index.plus(1))
-    val monthText = if (monthViewType== MonthViewType.ONLY_MONTH) selectedMonth.name.uppercase() else monthAsNumber
+    val monthAsNumber = String.format("%02d", selectedMonth.index.plus(1))
+    val monthText = if (monthViewType == MonthViewType.ONLY_MONTH) selectedMonth.name.uppercase() else monthAsNumber
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .background(themeColor),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = title,
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White), // Changed to white background
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
             fontSize = 16.sp,
             modifier = Modifier.padding(top = 16.dp),
-            color = Color.White)
-        Row() {
+            color = Color.Black // Changed text color to black for contrast
+        )
+        Row {
             if (calendarType != CalendarType.ONLY_YEAR) {
                 Text(
                     text = monthText,
                     fontSize = 35.sp,
                     modifier = Modifier
-                        .padding(bottom = 20.dp,
+                        .padding(
+                            bottom = 20.dp,
                             start = if (calendarType == CalendarType.ONLY_MONTH) 0.dp else 30.dp,
-                            end = if (calendarType == CalendarType.ONLY_MONTH) 0.dp else 10.dp)
+                            end = if (calendarType == CalendarType.ONLY_MONTH) 0.dp else 10.dp
+                        )
                         .clickable { setShowMonths(true) },
-                    color = if (calendarType == CalendarType.ONE_SCREEN_MONTH_AND_YEAR){
-                        Color.White
+                    color = if (calendarType == CalendarType.ONE_SCREEN_MONTH_AND_YEAR) {
+                        Color.Black // Changed to black for contrast
                     } else {
-                        if (showMonths) Color.White else Color.LightGray
-                    })
+                        if (showMonths) Color.Black else Color.Gray
+                    }
+                )
             }
-            if (calendarType != CalendarType.ONLY_MONTH && calendarType != CalendarType.ONLY_YEAR){
-                Text(text = "/",fontSize = 35.sp,color = Color.White)
+            if (calendarType != CalendarType.ONLY_MONTH && calendarType != CalendarType.ONLY_YEAR) {
+                Text(text = "/", fontSize = 35.sp, color = Color.Black) // Changed to black for contrast
             }
-            if (calendarType != CalendarType.ONLY_MONTH ) {
-                Text(text = selectedYear.toString(),
+            if (calendarType != CalendarType.ONLY_MONTH) {
+                Text(
+                    text = selectedYear.toString(),
                     fontSize = 35.sp,
                     modifier = Modifier
-                        .padding(bottom = 20.dp,
+                        .padding(
+                            bottom = 20.dp,
                             start = if (calendarType == CalendarType.ONLY_YEAR) 0.dp else 10.dp,
-                            end = if (calendarType == CalendarType.ONLY_YEAR) 0.dp else 30.dp)
+                            end = if (calendarType == CalendarType.ONLY_YEAR) 0.dp else 30.dp
+                        )
                         .clickable { setShowMonths(false) },
-                    color =  if (calendarType == CalendarType.ONE_SCREEN_MONTH_AND_YEAR){
-                        Color.White
+                    color = if (calendarType == CalendarType.ONE_SCREEN_MONTH_AND_YEAR) {
+                        Color.Black // Changed to black for contrast
                     } else {
-                        if (showMonths) Color.LightGray else Color.White
-                    })
+                        if (showMonths) Color.Gray else Color.Black
+                    }
+                )
             }
         }
     }
