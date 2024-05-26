@@ -3,26 +3,23 @@ package com.uit.moneykeeper
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.uit.moneykeeper.components.MKNavigationBar
-import com.uit.moneykeeper.home.viewmodel.DetailWalletViewModel
 import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
 import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
 import com.uit.moneykeeper.home.views.HomeScreen
 import com.uit.moneykeeper.home.views.WalletDetail
-import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
-import com.uit.moneykeeper.transaction.views.TransactionScreen
-import com.uit.moneykeeper.transaction.viewmodel.NewTransactionViewModel
 import com.uit.moneykeeper.transaction.viewmodel.EditTransactionViewModel
+import com.uit.moneykeeper.transaction.viewmodel.NewTransactionViewModel
+import com.uit.moneykeeper.transaction.viewmodel.TransactionDetailViewModel
+import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 import com.uit.moneykeeper.transaction.views.EditTransactionScreen
 import com.uit.moneykeeper.transaction.views.NewTransactionScreen
+import com.uit.moneykeeper.transaction.views.TransactionDetailScreen
+import com.uit.moneykeeper.transaction.views.TransactionScreen
 
 @Composable
 fun MKNavHost(
@@ -54,6 +51,10 @@ fun MKNavHost(
         composable("EditTransactionScreen") {
             showNavigationBar.value = false
             EditTransactionScreen(navController, viewModel = EditTransactionViewModel())
+        }
+        composable("TransactionDetailScreen"){
+            showNavigationBar.value = false
+            TransactionDetailScreen(navController, viewModel = TransactionDetailViewModel())
         }
         composable("transaction") {
             showNavigationBar.value = true

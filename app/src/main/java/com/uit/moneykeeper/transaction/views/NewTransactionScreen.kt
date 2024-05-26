@@ -3,7 +3,6 @@ package com.uit.moneykeeper.transaction.views
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -146,8 +145,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                             isCalendarDialogShowing = true
                             decoyFocusRequester.requestFocus()
                         }
-                    }
-                    .fillMaxWidth(),
+                    },
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.LightGray,
                     focusedContainerColor = Color.Transparent,
@@ -303,8 +301,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                 )
             )
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
                     onClick = { viewModel.saveTransaction(navController, context) },
