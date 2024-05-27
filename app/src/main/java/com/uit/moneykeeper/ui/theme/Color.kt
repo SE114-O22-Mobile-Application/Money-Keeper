@@ -12,5 +12,5 @@ val Pink40 = Color(0xFF7D5260)
 
 val Xanh = Color(0xFF147CF6)
 val Do = Color(0xFFF45523)
-val Nen = Color(0xFFF8F8F8)
+val Nen = Color(0xFFc4c4c4)
 val XanhLa = Color(0xFF08a600)

@@ -4,8 +4,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.uit.moneykeeper.models.CTNganSachModel
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
+import com.uit.moneykeeper.models.NganSachModel
 import com.uit.moneykeeper.models.PhanLoai
 import com.uit.moneykeeper.models.ViModel
 import com.uit.moneykeeper.transaction.components.IconEnum
@@ -46,6 +48,18 @@ val giaoDichList = listOf(
     GiaoDichModel(18, LocalDate.of(2024, 6, 6), 250000.0, "Du lich", loaiGiaoDichList[1], viList[1], ""),
     GiaoDichModel(19, LocalDate.of(2024, 6, 7), 750000.0, "Du lich", loaiGiaoDichList[1], viList[0], "Rut tien"),
     GiaoDichModel(20, LocalDate.of(2024, 6, 8), 150000.0, "Luong", loaiGiaoDichList[2], viList[1], "Chuyen khoan")
+)
+
+val nganSachList = listOf(
+    NganSachModel(2, LocalDate.now().minusMonths(2), 5000000.0),
+    NganSachModel(1, LocalDate.now().minusMonths(1), 5000000.0),
+)
+
+val ctNganSachList = listOf(
+    CTNganSachModel(1, nganSachList[0], loaiGiaoDichList[0].ten, loaiGiaoDichList[0],3000000.0),
+    CTNganSachModel(2, nganSachList[0], loaiGiaoDichList[1].ten, loaiGiaoDichList[1],2000000.0),
+    CTNganSachModel(3, nganSachList[1], loaiGiaoDichList[0].ten, loaiGiaoDichList[0],1000000.0),
+    CTNganSachModel(4, nganSachList[1], loaiGiaoDichList[1].ten, loaiGiaoDichList[1],4000000.0),
 )
 
 //fun uploadgiaoDichSamples() {
