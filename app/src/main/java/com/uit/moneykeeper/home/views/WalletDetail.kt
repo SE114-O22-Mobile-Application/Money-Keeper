@@ -39,11 +39,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import com.uit.moneykeeper.home.viewmodel.ListWalletViewModel
 import com.uit.moneykeeper.home.components.Statistical
+import com.uit.moneykeeper.home.viewmodel.DetailWalletViewModel
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletDetail(navController: NavController, viModel: State<ViModel>) {
+fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel ,viModel: State<ViModel>) {
+    println("Duma sao cai nay lai dc goi?");
     val totalCost = ListWalletViewModel().walletList.sumOf { it.soDu }
     val wltmp: MutableList<ViModel> = mutableListOf();
     wltmp.add(ViModel(0, "Tất cả", totalCost));

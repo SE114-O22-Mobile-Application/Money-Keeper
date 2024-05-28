@@ -3,11 +3,21 @@ package com.uit.moneykeeper
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.uit.moneykeeper.budget.viewmodel.NewBudgetViewModel
+import com.uit.moneykeeper.budget.viewmodel.getListNganSachByMonthYear
+import com.uit.moneykeeper.budget.views.BudgetScreen
+import com.uit.moneykeeper.budget.views.NewBudget
+import com.uit.moneykeeper.global.GlobalObject
+import com.uit.moneykeeper.home.viewmodel.DetailWalletViewModel
 import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
 import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
 import com.uit.moneykeeper.home.views.HomeScreen
@@ -18,6 +28,7 @@ import com.uit.moneykeeper.transaction.viewmodel.TransactionDetailViewModel
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 import com.uit.moneykeeper.transaction.views.EditTransactionScreen
 import com.uit.moneykeeper.transaction.views.NewTransactionScreen
+import java.time.LocalDate
 import com.uit.moneykeeper.transaction.views.TransactionDetailScreen
 import com.uit.moneykeeper.transaction.views.TransactionScreen
 
@@ -25,24 +36,37 @@ import com.uit.moneykeeper.transaction.views.TransactionScreen
 fun MKNavHost(
     navController: NavHostController,
     selectedWalletViewModel: SelectedWalletViewModel,
+    newbudgetViewModel: NewBudgetViewModel,
     modifier: Modifier = Modifier,
     showNavigationBar: MutableState<Boolean>
 ) {
+    var previousBackStackEntry by remember { mutableStateOf<NavBackStackEntry?>(null) }
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+    LaunchedEffect(currentBackStackEntry) {
+        if (previousBackStackEntry?.destination?.route != "home" && currentBackStackEntry?.destination?.route == "WalletDetail") {
+            navController.popBackStack();
+        }
+
+        else if (currentBackStackEntry != null && currentBackStackEntry != previousBackStackEntry) {
+            // Update the previous back stack entry
+            previousBackStackEntry = currentBackStackEntry
+        }
+    }
+    val listNS = getListNganSachByMonthYear(LocalDate.now())
+    println("List NS: $listNS")
     NavHost(
         navController = navController,
-        startDestination = "home",
+        startDestination = if(listNS.isEmpty()) "home" else "home",
         modifier = modifier
     ) {
-//        composable("sign_in") {
-//            SignInScreen(navController)
-//        }
         composable("home") {
             showNavigationBar.value = true
-            HomeScreen(navController, viewModel = HomeScreenViewModel() , selectedWalletViewModel)
+            HomeScreen(navController, viewModel = HomeScreenViewModel(), selectedWalletViewModel)
         }
         composable("WalletDetail") {
             showNavigationBar.value = true
-            WalletDetail(navController = navController, viModel = selectedWalletViewModel.getViModel())
+            WalletDetail(navController = navController, viewModel = DetailWalletViewModel(), viModel = selectedWalletViewModel.getViModel())
         }
         composable("NewTransactionScreen") {
             showNavigationBar.value = false
@@ -62,30 +86,27 @@ fun MKNavHost(
         }
         composable("budget") {
             showNavigationBar.value = true
-            // Replace with your own composable
-            Text(text = "Budget")
+            BudgetScreen(navController = navController, newbudgetViewModel)
+        }
+        composable("newbudget") {
+            showNavigationBar.value = false
+//            Text(text = "Account")
+            NewBudget(navController = navController, thoiGian = newbudgetViewModel.getTime())
         }
         composable("account") {
             showNavigationBar.value = true
-            // Replace with your own composable
             Text(text = "Account")
+//            NewBudget(navController = navController, thoiGian = newbudgetViewModel.getTime())
         }
     }
 }
 
 fun NavHostController.navigateSingleTopTo(route: String) =
     this.navigate(route) {
-        // Pop up to the start destination of the graph to
-        // avoid building up a large stack of destinations
-        // on the back stack as users select items
-        popUpTo(
-            this@navigateSingleTopTo.graph.findStartDestination().id
-        ) {
+        println("Route to: $route")
+        popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) {
             saveState = true
         }
-        // Avoid multiple copies of the same destination when
-        // reselecting the same item
         launchSingleTop = true
-        // Restore state when reselecting a previously selected item
         restoreState = true
     }

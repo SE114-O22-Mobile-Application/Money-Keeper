@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.uit.moneykeeper.budget.viewmodel.NewBudgetViewModel
 import com.uit.moneykeeper.components.MKNavigationBar
 //import com.uit.moneykeeper.global.uploadLoaiGiaoDichSamples
 //import com.uit.moneykeeper.global.uploadViSamples
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
                     MKNavHost(
                         navController = navController,
                         selectedWalletViewModel = SelectedWalletViewModel(),
+                        newbudgetViewModel = NewBudgetViewModel(),
                         modifier = Modifier.padding(innerPadding),
                         showNavigationBar = showNavigationBar
                     )
