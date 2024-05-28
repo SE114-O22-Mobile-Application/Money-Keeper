@@ -249,8 +249,11 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                             Spacer(modifier = Modifier.height(10.dp))
                             androidx.compose.material3.OutlinedTextField(
                                 value = textInput_soDu,
-                                onValueChange = { textInput_soDu = it },
+                                onValueChange = { newValue ->
+                                    if(newValue.all { it.isDigit() })
+                                        textInput_soDu = newValue },
                                 label = { Text("Số dư") },
+                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(Color.White),
