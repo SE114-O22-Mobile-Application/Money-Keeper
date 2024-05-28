@@ -49,7 +49,7 @@ import androidx.navigation.NavController
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import com.uit.moneykeeper.transaction.viewmodel.EditTransactionViewModel
+import com.uit.moneykeeper.transaction.viewmodel.TransactionDetailViewModel
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +57,7 @@ import java.time.format.DateTimeFormatter
 @SuppressWarnings("SpellCheckingInspection")
 
 @Composable
-fun EditTransactionScreen(navController: NavController, viewModel: EditTransactionViewModel) {
+fun TransactionDetailScreen(navController: NavController, viewModel: TransactionDetailViewModel) {
     val date by viewModel.date.collectAsState()
     val amount by viewModel.amount.collectAsState()
     val name by viewModel.name.collectAsState()
@@ -107,7 +107,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
             TopAppBar(
                 title = {
                     Text(
-                        text = "Sửa giao dịch",
+                        text = "Chi tiết giao dịch",
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
@@ -134,9 +134,10 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
             {
                 OutlinedTextField(
                     value = dateString,
-                    onValueChange = { /* Do nothing as we don't want to allow manual date input */ },
+                    onValueChange = { /* Do nothing */ },
                     label = { Text("Ngày thực hiện giao dịch") },
                     readOnly = true,
+                    enabled = false,
                     modifier = Modifier
                         .background(Color.Transparent)
                         .focusRequester(focusRequester)
@@ -159,6 +160,8 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                     value = amount,
                     onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
                     label = { Text("Số tiền") },
+                    readOnly = true,
+                    enabled = false,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.White),
@@ -174,6 +177,8 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                     value = name,
                     onValueChange = { newName -> viewModel.setName(newName) },
                     label = { Text("Tên giao dịch") },
+                    readOnly = true,
+                    enabled = false,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.White),
@@ -186,12 +191,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                 )
                 ExposedDropdownMenuBox(
                     expanded = expandedCat,
-                    onExpandedChange = {
-                        expandedCat = !expandedCat
-                        if (expandedCat) {
-                            catFocusRequester.requestFocus()
-                        }
-                    }
+                    onExpandedChange = {}
                 ){
                     OutlinedTextField(
                         modifier = Modifier
@@ -200,6 +200,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                             .background(Color.White)
                             .focusRequester(catFocusRequester),
                         readOnly = true,
+                        enabled = false,
                         value = selectedCatOptionText,
                         onValueChange = {},
                         label = { Text("Loại giao dịch") },
@@ -230,12 +231,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                 }
                 ExposedDropdownMenuBox(
                     expanded = expandedWallet,
-                    onExpandedChange = {
-                        expandedWallet = !expandedWallet
-                        if (expandedWallet) {
-                            walletFocusRequester.requestFocus()
-                        }
-                    }
+                    onExpandedChange = {}
                 ){
                     OutlinedTextField(
                         modifier = Modifier
@@ -244,6 +240,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                             .background(Color.White)
                             .focusRequester(walletFocusRequester),
                         readOnly = true,
+                        enabled = false,
                         value = selectedWalletOptionText,
                         onValueChange = {},
                         label = { Text("Ví") },
@@ -276,6 +273,8 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                     value = note,
                     onValueChange = { newNote -> viewModel.setNote(newNote) },
                     label = { Text("Ghi chú") },
+                    readOnly = true,
+                    enabled = false,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.White),
@@ -290,6 +289,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                     value = "", //decoy textfield to handle focus
                     onValueChange = { /* decoy do nothing */ },
                     readOnly = true,
+                    enabled = false,
                     label = { Text("") }, // empty label
                     modifier = Modifier.fillMaxWidth().focusRequester(decoyFocusRequester),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -307,16 +307,27 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(
-                        onClick = { /*SAVE*/ },
+                        onClick = { /* DELETE */ },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Green,
+                            containerColor = Color.Red,
                             contentColor = Color.White,
                             disabledContentColor = Color.White,
                             disabledContainerColor = Color.Gray
-                        ),
-                        modifier = Modifier.fillMaxWidth()
+                        )
                     ) {
-                        Text("Save")
+                        Text("Delete")
+                    }
+
+                    Button(
+                        onClick = { navController.navigate("EditTransactionScreen") },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Blue,
+                            contentColor = Color.White,
+                            disabledContentColor = Color.White,
+                            disabledContainerColor = Color.Gray
+                        )
+                    ) {
+                        Text("Edit")
                     }
                 }
             }

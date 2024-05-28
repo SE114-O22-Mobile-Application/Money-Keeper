@@ -1,13 +1,8 @@
 package com.uit.moneykeeper.transaction.viewmodel
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
-import com.uit.moneykeeper.global.GlobalFunction
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
 import com.uit.moneykeeper.models.ViModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 
-class NewTransactionViewModel : ViewModel() {
+class TransactionDetailViewModel : ViewModel() {
     private val _date = MutableStateFlow(LocalDate.now())
     val date: StateFlow<LocalDate> = _date.asStateFlow()
 
@@ -111,65 +106,65 @@ class NewTransactionViewModel : ViewModel() {
             }
     }
 
-    fun saveTransaction(navController: NavController, context: Context) {
-        val db = Firebase.firestore
-
-        db.collection("giaoDich")
-            .orderBy("id", Query.Direction.DESCENDING)
-            .limit(1)
-            .get()
-            .addOnSuccessListener { documents ->
-                val highestId = if (documents.isEmpty) {
-                    0
-                } else {
-                    documents.documents[0].getLong("id")?.toInt() ?: 0
-                }
-                    val newId = highestId + 1
-
-                    val selectedCategory =
-                        _category.value.firstOrNull { it.ten.equals(_selectedCatOptionText.value, ignoreCase = true)}
-                    val selectedWallet =
-                        _wallet.value.firstOrNull { it.ten.equals(_selectedWalletOptionText.value, ignoreCase = true)}
-
-
-                    val transactionMap = mapOf(
-                        "id" to newId,
-                        "ten" to name.value,
-                        "soTien" to amount.value.toDouble(),
-                        "ngayGiaoDich" to GlobalFunction.convertLocalDateToTimestamp(date.value),
-                        "ghiChu" to note.value,
-                        "loaiGiaoDich" to selectedCategory?.let {
-                            mapOf(
-                                "id" to it.id,
-                                "ten" to it.ten,
-                                "loai" to it.loai.name,
-                                "mauSac" to it.mauSac.toString(),
-                                "icon" to it.icon.name
-                            )
-                        },
-                        "vi" to selectedWallet?.let {
-                            mapOf(
-                                "id" to it.id,
-                                "ten" to it.ten,
-                                "soDu" to it.soDu
-                            )
-                        }
-                    )
-
-                    db.collection("giaoDich")
-                        .add(transactionMap)
-                        .addOnSuccessListener { documentReference ->
-                            println("DocumentSnapshot added with ID: ${documentReference.id}")
-                            navController.popBackStack()
-                            Toast.makeText(
-                                context,
-                                "Transaction added successfully!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        .addOnFailureListener { e ->
-                            println("Error adding document: $e")
-                        }
-                }
-        }
-    }
+//    fun saveTransaction(navController: NavController, context: Context) {
+//        val db = Firebase.firestore
+//
+//        db.collection("giaoDich")
+//            .orderBy("id", Query.Direction.DESCENDING)
+//            .limit(1)
+//            .get()
+//            .addOnSuccessListener { documents ->
+//                val highestId = if (documents.isEmpty) {
+//                    0
+//                } else {
+//                    documents.documents[0].getLong("id")?.toInt() ?: 0
+//                }
+//                val newId = highestId + 1
+//
+//                val selectedCategory =
+//                    _category.value.firstOrNull { it.ten.equals(_selectedCatOptionText.value, ignoreCase = true)}
+//                val selectedWallet =
+//                    _wallet.value.firstOrNull { it.ten.equals(_selectedWalletOptionText.value, ignoreCase = true)}
+//
+//
+//                val transactionMap = mapOf(
+//                    "id" to newId,
+//                    "ten" to name.value,
+//                    "soTien" to amount.value.toDouble(),
+//                    "ngayGiaoDich" to GlobalFunction.convertLocalDateToTimestamp(date.value),
+//                    "ghiChu" to note.value,
+//                    "loaiGiaoDich" to selectedCategory?.let {
+//                        mapOf(
+//                            "id" to it.id,
+//                            "ten" to it.ten,
+//                            "loai" to it.loai.name,
+//                            "mauSac" to it.mauSac.toString(),
+//                            "icon" to it.icon.name
+//                        )
+//                    },
+//                    "vi" to selectedWallet?.let {
+//                        mapOf(
+//                            "id" to it.id,
+//                            "ten" to it.ten,
+//                            "soDu" to it.soDu
+//                        )
+//                    }
+//                )
+//
+//                db.collection("giaoDich")
+//                    .add(transactionMap)
+//                    .addOnSuccessListener { documentReference ->
+//                        println("DocumentSnapshot added with ID: ${documentReference.id}")
+//                        navController.popBackStack()
+//                        Toast.makeText(
+//                            context,
+//                            "Transaction added successfully!",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                    .addOnFailureListener { e ->
+//                        println("Error adding document: $e")
+//                    }
+//            }
+//    }
+}
