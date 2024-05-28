@@ -38,6 +38,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -219,57 +220,86 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
             if (showDialog) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },
-                    title = { Text("Thêm ví mới",
-                                    textAlign = TextAlign.Center,
-                                    style = TextStyle(fontSize = 20.sp),
-                                    modifier = Modifier
-                                        .fillMaxWidth()) },
                     text = {
-                        Column {
-                            // Ô nhập văn bản
-                            TextField(
-                                value = textInput_ten,
-                                onValueChange = { textInput_ten = it },
-                                label = { Text("Tên ví") }
+                        Column(
+                        ) {
+                            Text(
+                                "Thêm ví mới",
+                                textAlign = TextAlign.Center,
+                                style = TextStyle(fontSize = 20.sp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
                             )
                             Spacer(modifier = Modifier.height(10.dp))
-                            TextField(
+                            // Ô nhập văn bản
+                            androidx.compose.material3.OutlinedTextField(
+                                value = textInput_ten,
+                                onValueChange = { textInput_ten = it },
+                                label = { Text("Tên ví") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedBorderColor = Color.LightGray,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            androidx.compose.material3.OutlinedTextField(
                                 value = textInput_soDu,
-                                onValueChange = {newValue ->
+                                onValueChange = { newValue ->
                                     if(newValue.all { it.isDigit() })
-                                    textInput_soDu = newValue
-                                                },
+                                        textInput_soDu = newValue },
                                 label = { Text("Số dư") },
                                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                                 modifier = Modifier
-                                    .padding(top = 10.dp)
+                                    .fillMaxWidth()
+                                    .background(Color.White),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedBorderColor = Color.LightGray,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent
+                                )
                             )
                         }
                     },
-                    dismissButton = {
-                        Button(
-                            onClick = { showDialog = false
-                                textInput_ten = ""
-                                textInput_soDu = ""
-                                      },
-                            colors = ButtonDefaults.buttonColors(Color(0xFFf25207))
-                        )             {
-                            Text("Huỷ")
-                        }
-                    },
-                    confirmButton = {
-                        // Nút xác nhận
-                        Button( modifier = Modifier,
-                            onClick = {
-                                viewModel.AddNewWallet("Add",walletList = wallets, textInput_ten, textInput_soDu.toDouble())
-                                wallets.add(ViModel(wallets.size+1, textInput_ten, textInput_soDu.toDouble()))
-                                showDialog = false
-                                textInput_ten = ""
-                                textInput_soDu = ""
-                            },
-                            colors = ButtonDefaults.buttonColors(Color(0xFF1cba46))
+                    buttons = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 25.dp) // Padding ngang cho hàng chứa các nút
                         ) {
-                            Text("Thêm")
+                            Button(
+                                onClick = {
+                                    showDialog = false
+                                    textInput_ten = ""
+                                    textInput_soDu = ""
+                                },
+                                colors = ButtonDefaults.buttonColors(Color(0xFFf25207)),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 4.dp) // Khoảng cách giữa hai nút
+                            ) {
+                                Text("Huỷ")
+                            }
+                            Button(
+                                onClick = {
+                                    viewModel.AddNewWallet("Add", walletList = wallets, textInput_ten, textInput_soDu.toDouble())
+                                    wallets.add(ViModel(wallets.size + 1, textInput_ten, textInput_soDu.toDouble()))
+                                    showDialog = false
+                                    textInput_ten = ""
+                                    textInput_soDu = ""
+                                },
+                                colors = ButtonDefaults.buttonColors(Color(0xFF1cba46)),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 4.dp) // Khoảng cách giữa hai nút
+                            ) {
+                                Text("Thêm")
+                            }
                         }
                     }
 
