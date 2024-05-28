@@ -79,17 +79,17 @@ fun NewBudget(navController: NavController, thoiGian: LocalDate) {
     val listLGD = getAllLGDChi()
     val listState = remember { List(listLGD.size) { mutableStateOf("") } }
     val listNS = getListNganSachByMonthYear(thoiGian.minusMonths(1));
-    val listCTNS = if(listNS.size > 0) getListCTNganSachByNS(listNS[0]) else null;
+    val listCTNS = if(listNS.size > 0) getListCTNganSachByNS(listNS[0]) else null
     if(listCTNS != null)
-    for(i in 0 until listCTNS.size) {
-        for(ns in listCTNS) {
-//            println("So sanh: " + ns.LoaiNS.ten + " " + listLGD[i].ten + " " + i + " " + ns.TenNS);
-            if(ns.LoaiNS.equals(listLGD[i])) {
-                listState[i].value = ns.SoTien.toInt().toString()
-                break;
+        for(i in 0 until listCTNS.size) {
+            for(ns in listCTNS) {
+    //            println("So sanh: " + ns.LoaiNS.ten + " " + listLGD[i].ten + " " + i + " " + ns.TenNS);
+                if(ns.LoaiNS.equals(listLGD[i])) {
+                    listState[i].value = ns.SoTien.toInt().toString()
+                    break;
+                }
             }
         }
-    }
     Scaffold(
         topBar = {
             TopAppBar(
