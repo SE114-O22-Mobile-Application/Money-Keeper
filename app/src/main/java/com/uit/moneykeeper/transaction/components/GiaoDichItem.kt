@@ -55,7 +55,7 @@ fun GiaoDichItem(navController: NavController, viewModel: GiaoDichItemViewModel)
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                    navController.navigate("NewTransactionScreen")
+                    navController.navigate("TransactionDetailScreen/${giaoDich.id}")
                 },
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor, // Use the color state here

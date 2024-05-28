@@ -115,7 +115,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                 navigationIcon = {
                     IconButton(onClick = {
                         if (!navController.popBackStack().not()) {
-                            navController.navigate("transaction")
+                            navController.navigate("TransactionDetailScreen/${viewModel.id}")
                         }
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to Transaction screen") } }

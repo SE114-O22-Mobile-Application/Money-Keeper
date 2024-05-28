@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 
-class EditTransactionViewModel : ViewModel() {
+class EditTransactionViewModel (Id: Int): ViewModel() {
+    private val _id = MutableStateFlow(Id)
+    val id: StateFlow<Int> = _id.asStateFlow()
+
     private val _date = MutableStateFlow(LocalDate.now())
     val date: StateFlow<LocalDate> = _date.asStateFlow()
 
@@ -58,6 +61,10 @@ class EditTransactionViewModel : ViewModel() {
             _wallet.value = wallets
             updateWalletOptions()
         }
+    }
+
+    fun setId(newId: Int) {
+        _id.value = newId
     }
 
     fun setDate(newDate: LocalDate) {

@@ -72,13 +72,23 @@ fun MKNavHost(
             showNavigationBar.value = false
             NewTransactionScreen(navController, viewModel = NewTransactionViewModel())
         }
-        composable("EditTransactionScreen") {
+        composable("EditTransactionScreen/{Id}") { backStackEntry ->
             showNavigationBar.value = false
-            EditTransactionScreen(navController, viewModel = EditTransactionViewModel())
+            val Id = backStackEntry.arguments?.getInt("Id")
+            if (Id != null) {
+                EditTransactionScreen(navController, viewModel = EditTransactionViewModel(Id))
+            } else {
+                Text(text = "Error: Id is null")
+            }
         }
-        composable("TransactionDetailScreen"){
+        composable("TransactionDetailScreen/{Id}") { backStackEntry ->
             showNavigationBar.value = false
-            TransactionDetailScreen(navController, viewModel = TransactionDetailViewModel())
+            val Id = backStackEntry.arguments?.getInt("Id")
+            if (Id != null) {
+                TransactionDetailScreen(navController, viewModel = TransactionDetailViewModel(Id))
+            } else {
+                Text(text = "Error: Id is null")
+            }
         }
         composable("transaction") {
             showNavigationBar.value = true
