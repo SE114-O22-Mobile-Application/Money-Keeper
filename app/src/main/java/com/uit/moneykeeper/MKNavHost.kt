@@ -66,7 +66,7 @@ fun MKNavHost(
         }
         composable("WalletDetail") {
             showNavigationBar.value = true
-            WalletDetail(navController = navController, viewModel = DetailWalletViewModel(), viModel = selectedWalletViewModel.getViModel())
+            WalletDetail(navController = navController, viewModel = DetailWalletViewModel(), viModel2 = selectedWalletViewModel.getViModel())
         }
         composable("NewTransactionScreen") {
             showNavigationBar.value = false
@@ -95,7 +95,8 @@ fun MKNavHost(
         }
         composable("account") {
             showNavigationBar.value = true
-            Text(text = "Account")
+//            Text(text = "Account")
+            WalletDetail(navController = navController, viewModel = DetailWalletViewModel(), viModel2 = selectedWalletViewModel.getViModel())
 //            NewBudget(navController = navController, thoiGian = newbudgetViewModel.getTime())
         }
     }

@@ -92,6 +92,7 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
     var textInput_soDu by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
     val listNS: List<NganSachModel> = getListNganSachByMonthYear(LocalDate.now());
+
     LaunchedEffect(key1 = walletList ) {
         print("Launch")
         wallets.clear();
@@ -102,7 +103,7 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
     for(wallet in wallets) {
         total +=  wallet.soDu
     }
-
+//    selectedWalletViewModel.setViModel(ViModel(0, "Tất cả", total))
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Box(modifier = Modifier
@@ -116,7 +117,12 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                         .fillMaxWidth()
                         .clickable {
                             selectedWalletViewModel.setViModel(ViModel(0, "Tất cả", total))
-                            navController.navigate("WalletDetail")
+                            navController.navigate("account") {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         }
                     ) {
                         Row(modifier = Modifier
@@ -404,7 +410,12 @@ fun WalletCardItem(navController: NavController,wallet: ViModel, selectedWalletV
         .padding(8.dp)
         .clickable {
             selectedWalletViewModel.setViModel(wallet)
-            navController.navigate("WalletDetail")
+            navController.navigate("account") {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
         }
     ) {
         Row(modifier = Modifier.fillMaxWidth(),
