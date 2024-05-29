@@ -20,4 +20,12 @@ class DetailWalletViewModel {
     fun getViList(): List<ViModel> {
         return GlobalObject.listVi.value;
     }
+
+    fun checkDeleteWallet(wallet: ViModel): Boolean {
+        val listGD = GlobalObject.listGiaoDich.value
+        println("List GD: " + listGD);
+        println("Wallet: " + wallet);
+        println("Check: " +  listGD.any { it.vi.id == wallet.id })
+        return listGD.any { it.vi.id == wallet.id }
+    }
 }
