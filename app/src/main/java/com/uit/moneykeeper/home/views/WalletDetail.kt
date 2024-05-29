@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import com.uit.moneykeeper.global.GlobalObject
 import com.uit.moneykeeper.home.viewmodel.ListWalletViewModel
 import com.uit.moneykeeper.home.components.Statistical
 import com.uit.moneykeeper.home.viewmodel.DetailWalletViewModel
@@ -48,7 +49,15 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel ,viModel: State<ViModel>) {
+fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel ,viModel2: State<ViModel>) {
+    val listVi = viewModel.getViList();
+    println("List Vi" + listVi)
+    println("ViModel" + viModel2)
+    var viModel = viModel2.value
+    if(viModel2.value.id == 0) {
+        val total = listVi.sumOf { it.soDu }
+        viModel = ViModel(0, "Tất cả", total)
+    }
     val totalCost = ListWalletViewModel().walletList.sumOf { it.soDu }
     val wltmp: MutableList<ViModel> = mutableListOf();
     wltmp.add(ViModel(0, "Tất cả", totalCost));
@@ -57,7 +66,7 @@ fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel 
         wltmp.add(item);
     }
     val walletList = wltmp;
-    val wallet = viModel.value
+    val wallet = viModel
     var isOpenSelectWallet by remember { mutableStateOf(false) }
     var selectedWallet by remember { mutableStateOf(wallet) }
     var selectedTabIndex by remember { mutableStateOf(0)}

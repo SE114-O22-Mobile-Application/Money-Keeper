@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.uit.moneykeeper.global.GlobalObject
 import com.uit.moneykeeper.models.ViModel
 class DetailWalletViewModel {
     private val _viModelList = mutableStateListOf<ViModel>()
@@ -14,5 +15,9 @@ class DetailWalletViewModel {
 
     fun getViModelList(): State<List<ViModel>> {
         return mutableStateOf(_viModelList.toList())
+    }
+
+    fun getViList(): List<ViModel> {
+        return GlobalObject.listVi.value;
     }
 }
