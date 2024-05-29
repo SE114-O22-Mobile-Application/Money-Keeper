@@ -28,6 +28,8 @@ import com.uit.moneykeeper.transaction.viewmodel.CategoryDropdownViewModel
 import com.uit.moneykeeper.transaction.viewmodel.DailyItemViewModel
 import com.uit.moneykeeper.transaction.viewmodel.DailyListViewModel
 import com.uit.moneykeeper.transaction.viewmodel.WalletListDropdownViewModel
+import com.uit.moneykeeper.ui.theme.Do
+import com.uit.moneykeeper.ui.theme.XanhLa
 
 @Composable
 fun DailyList(navController: NavController, viewModel: DailyListViewModel) {
@@ -94,7 +96,7 @@ fun DailyList(navController: NavController, viewModel: DailyListViewModel) {
 
                     Text(
                         text = "+${DoubleToStringConverter.convert(sumIn)}",
-                        color = Color.Green
+                        color = XanhLa
                     )
                 }
             }
@@ -111,7 +113,7 @@ fun DailyList(navController: NavController, viewModel: DailyListViewModel) {
 
                     Text(
                         text = "-${DoubleToStringConverter.convert(sumOut)}",
-                        color = Color.Red
+                        color = Do
                     )
                 }
             }

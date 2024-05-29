@@ -28,6 +28,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.uit.moneykeeper.transaction.viewmodel.CategoryDropdownViewModel
+import com.uit.moneykeeper.ui.theme.Do
+import com.uit.moneykeeper.ui.theme.XanhLa
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,7 +87,7 @@ fun CategoryDropdown(
                             imageVector = Icons.Filled.FileDownload,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp),
-                            tint = Color.Green
+                            tint = XanhLa
                         )
                     },
                     onClick = {
@@ -104,7 +106,7 @@ fun CategoryDropdown(
                             imageVector = Icons.Filled.FileUpload,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp),
-                            tint = Color.Red
+                            tint = Do
                         )
                     },
                     onClick = {

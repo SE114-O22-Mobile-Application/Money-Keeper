@@ -4,6 +4,8 @@ import com.google.firebase.Timestamp
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 
 object GlobalFunction {
 
@@ -27,4 +29,11 @@ object GlobalFunction {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
     }
 
+    fun colorToString(color: Color): String {
+        return "#${Integer.toHexString(color.toArgb())}"
+    }
+
+    fun stringToColor(colorString: String): Color {
+        return Color(android.graphics.Color.parseColor(colorString))
+    }
 }

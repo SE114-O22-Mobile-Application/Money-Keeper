@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.uit.moneykeeper.transaction.viewmodel.MonthlyTabViewModel
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
+import com.uit.moneykeeper.transaction.viewmodel.YearlyTabViewModel
 
 @Composable
 fun TransactionScreen(navController: NavController, viewModel: TransactionViewModel) {
@@ -56,7 +57,7 @@ fun TransactionScreen(navController: NavController, viewModel: TransactionViewMo
             Box {
                 when (selectedTabIndex) {
                     0 -> MonthlyTab(navController,viewModel = MonthlyTabViewModel())
-                    1 -> YearlyTab(viewModel)
+                    1 -> YearlyTab(navController, viewModel = YearlyTabViewModel())
                 }
             }
         }
