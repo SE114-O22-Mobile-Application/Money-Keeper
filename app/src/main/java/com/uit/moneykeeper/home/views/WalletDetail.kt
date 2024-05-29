@@ -54,17 +54,29 @@ import java.time.LocalDate
 @Composable
 fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel ,viModel2: State<ViModel>) {
     val listVi = viewModel.getViList();
-    println("List Vi" + listVi)
-    println("ViMode1: l" + viModel2)
     var viModel = viModel2.value
     if(viModel2.value.id == 0) {
         val total = listVi.sumOf { it.soDu }
         viModel = ViModel(0, "Tất cả", total)
     }
-    val totalCost = ListWalletViewModel().walletList.sumOf { it.soDu }
+    var walletList2 = ListWalletViewModel().walletList
+    val wallets = remember { mutableStateListOf<ViModel>() }
+    LaunchedEffect(key1 = walletList2 ) {
+        println("LaunchWL")
+        wallets.clear();
+        for(wallet in walletList2) {
+            wallets.add(wallet);
+        }
+    }
+    var total = 0.0
+    for(wallet in wallets) {
+        total +=  wallet.soDu
+    }
+    println("List wallet: " + wallets)
+    println("Total: " + total)
     val wltmp: MutableList<ViModel> = mutableListOf();
-    wltmp.add(ViModel(0, "Tất cả", totalCost));
-    ListWalletViewModel().walletList.forEach() {
+    wltmp.add(ViModel(0, "Tất cả", total));
+    wallets.forEach() {
         item ->
         wltmp.add(item);
     }
@@ -487,6 +499,9 @@ fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel 
                         openConfirmDelete = false
                         //Xóa ví chỗ này
                         //Ví cần xoá là selectedWallet
+                        viewModel.DeleteWallet(selectedWallet)
+                        walletList2  = walletList2.filter { it.id != selectedWallet.id }
+                        selectedWallet = ViModel(0, "Tất cả", walletList2.sumOf { it.soDu })
                     }) {
                         Text("Xác nhận")
                     }

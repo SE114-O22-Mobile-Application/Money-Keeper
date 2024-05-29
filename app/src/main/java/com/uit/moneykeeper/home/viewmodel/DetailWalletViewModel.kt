@@ -28,4 +28,9 @@ class DetailWalletViewModel {
         println("Check: " +  listGD.any { it.vi.id == wallet.id })
         return listGD.any { it.vi.id == wallet.id }
     }
+
+    fun DeleteWallet(wallet: ViModel) {
+        val updateWallet = GlobalObject.listVi.value.filter { it.id != wallet.id }
+        GlobalObject.updateListVi(updateWallet)
+    }
 }
