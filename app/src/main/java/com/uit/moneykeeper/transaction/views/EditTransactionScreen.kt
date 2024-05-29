@@ -114,7 +114,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        if (!navController.popBackStack().not()) {
+                        if (!navController.popBackStack()) {
                             navController.navigate("TransactionDetailScreen/${viewModel.id}")
                         }
                     }) {
