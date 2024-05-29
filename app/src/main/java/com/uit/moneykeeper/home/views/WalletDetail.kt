@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.ArrowForwardIos
@@ -35,6 +37,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import com.uit.moneykeeper.home.viewmodel.ListWalletViewModel
@@ -45,7 +49,6 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel ,viModel: State<ViModel>) {
-    println("Duma sao cai nay lai dc goi?");
     val totalCost = ListWalletViewModel().walletList.sumOf { it.soDu }
     val wltmp: MutableList<ViModel> = mutableListOf();
     wltmp.add(ViModel(0, "Tất cả", totalCost));
@@ -177,7 +180,7 @@ fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel 
                 Text(text = "${selectedTime.monthValue}/${selectedTime.year}",
                     modifier = Modifier
                         .padding(top = 10.dp)
-                        .clickable { openSelectMonth = true},
+                        .clickable { openSelectMonth = true },
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp))
             else
                 Text(text = "${selectedTime.year}",
@@ -336,8 +339,8 @@ fun MonthPickerDialog(
     onDismissRequest: () -> Unit,
     onDateSelected: (LocalDate) -> Unit
 ) {
-    var selectedYear by remember { mutableStateOf(initialDate.year) }
-    var selectedMonth by remember { mutableStateOf(initialDate.month.value) }
+    var selectedYear by remember { mutableStateOf(initialDate.year.toString()) }
+    var selectedMonth by remember { mutableStateOf(initialDate.month.value.toString()) }
 
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
@@ -364,8 +367,9 @@ fun MonthPickerDialog(
                 ) {
                     IconButton(
                         onClick = {
-                            if (selectedMonth > 1) {
-                                selectedMonth -= 1
+                            val month = selectedMonth.toIntOrNull() ?: -1
+                            if (month != 1 && month > 1) {
+                                selectedMonth = (month - 1).toString()
                             }
                         }
                     ) {
@@ -373,14 +377,37 @@ fun MonthPickerDialog(
                     }
 
                     Text(
-                        text = "Tháng $selectedMonth",
-                        style = TextStyle(fontSize = 18.sp)
+                        text = "Tháng",
+                        style = TextStyle(fontSize = 20.sp),
+                    )
+                    BasicTextField(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .width(50.dp),
+                        value = selectedMonth,
+                        onValueChange = { newValue ->
+                            if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
+                                val newMonth = newValue.toIntOrNull() ?: 0;
+                                if(newMonth < 1 && newValue.isNotEmpty()) selectedMonth = "1"
+                                else if(newMonth > 12) selectedMonth = "12"
+                                else selectedMonth = newValue;
+                            } },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        textStyle = TextStyle(
+                            color = Color.Black,
+                            fontSize = 20.sp,
+                            // Align text to the bottom
+                            textAlign = TextAlign.Left,
+                            lineHeight = 20.sp // Adjust line height as needed
+                        ),
+
                     )
 
                     IconButton(
                         onClick = {
-                            if (selectedMonth < 12) {
-                                selectedMonth += 1
+                            val month = selectedMonth.toIntOrNull() ?: -1
+                            if (month != 1 && month < 12) {
+                                selectedMonth = (month + 1).toString()
                             }
                         }
                     ) {
@@ -394,8 +421,9 @@ fun MonthPickerDialog(
                 ) {
                     IconButton(
                         onClick = {
-                            if (selectedYear > 1) {
-                                selectedYear -= 1
+                            val year = selectedYear.toIntOrNull() ?: -1
+                            if (year != 1 && year > 0) {
+                                selectedYear = (year - 1).toString()
                             }
                         }
                     ) {
@@ -403,13 +431,37 @@ fun MonthPickerDialog(
                     }
 
                     Text(
-                        text = "Năm $selectedYear",
-                        style = TextStyle(fontSize = 18.sp)
+                        text = "Năm",
+                        style = TextStyle(fontSize = 20.sp)
                     )
+                    BasicTextField(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .width(50.dp),
+                        value = selectedYear,
+                        onValueChange = { newValue ->
+                            if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
+                                val newYear = newValue.toIntOrNull() ?: 0;
+                                if(newYear > LocalDate.now().year) selectedYear = LocalDate.now().year.toString()
+                                else selectedYear = newValue;
+                            } },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        textStyle = TextStyle(
+                            color = Color.Black,
+                            fontSize = 20.sp,
+                            // Align text to the bottom
+                            textAlign = TextAlign.Left,
+                            lineHeight = 20.sp // Adjust line height as needed
+                        ),
+
+                        )
 
                     IconButton(
                         onClick = {
-                            selectedYear += 1
+                            val year = selectedYear.toIntOrNull() ?: -1
+                            if (year != 1 && year < LocalDate.now().year) {
+                                selectedYear = (year + 1).toString()
+                            }
                         }
                     ) {
                         Icon(Icons.Default.ArrowForwardIos, contentDescription = "Next Month")
@@ -427,7 +479,9 @@ fun MonthPickerDialog(
                     }
                     Button(
                         onClick = {
-                            onDateSelected(LocalDate.of(selectedYear, selectedMonth, 1))
+                            val year = selectedYear.toIntOrNull() ?: 0;
+                            val month = selectedMonth.toIntOrNull() ?: 1;
+                            onDateSelected(LocalDate.of(year, month, 1))
                             onDismissRequest()
                         }
                     ) {
@@ -445,7 +499,7 @@ fun YearPickerDialog(
     onDismissRequest: () -> Unit,
     onDateSelected: (LocalDate) -> Unit
 ) {
-    var selectedYear by remember { mutableStateOf(initialDate.year) }
+    var selectedYear by remember { mutableStateOf(initialDate.year.toString()) }
     var selectedMonth by remember { mutableStateOf(initialDate.month.value) }
 
     Dialog(onDismissRequest = onDismissRequest) {
@@ -473,8 +527,9 @@ fun YearPickerDialog(
                 ) {
                     IconButton(
                         onClick = {
-                            if (selectedYear > 1) {
-                                selectedYear -= 1
+                            val year = selectedYear.toIntOrNull() ?: -1
+                            if (year != 1 && year > 0) {
+                                selectedYear = (year - 1).toString()
                             }
                         }
                     ) {
@@ -482,13 +537,37 @@ fun YearPickerDialog(
                     }
 
                     Text(
-                        text = "Năm $selectedYear",
-                        style = TextStyle(fontSize = 18.sp)
+                        text = "Năm",
+                        style = TextStyle(fontSize = 20.sp)
                     )
+                    BasicTextField(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .width(50.dp),
+                        value = selectedYear,
+                        onValueChange = { newValue ->
+                            if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
+                                val newYear = newValue.toIntOrNull() ?: 0;
+                                if(newYear > LocalDate.now().year) selectedYear = LocalDate.now().year.toString()
+                                else selectedYear = newValue;
+                            } },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        textStyle = TextStyle(
+                            color = Color.Black,
+                            fontSize = 20.sp,
+                            // Align text to the bottom
+                            textAlign = TextAlign.Left,
+                            lineHeight = 20.sp // Adjust line height as needed
+                        ),
+
+                        )
 
                     IconButton(
                         onClick = {
-                            selectedYear += 1
+                            val year = selectedYear.toIntOrNull() ?: -1
+                            if (year != 1 && year < LocalDate.now().year) {
+                                selectedYear = (year + 1).toString()
+                            }
                         }
                     ) {
                         Icon(Icons.Default.ArrowForwardIos, contentDescription = "Next Month")
@@ -506,7 +585,8 @@ fun YearPickerDialog(
                     }
                     Button(
                         onClick = {
-                            onDateSelected(LocalDate.of(selectedYear, selectedMonth, 1))
+                            val year = selectedYear.toIntOrNull() ?: 0;
+                            onDateSelected(LocalDate.of(year, selectedMonth, 1))
                             onDismissRequest()
                         }
                     ) {
