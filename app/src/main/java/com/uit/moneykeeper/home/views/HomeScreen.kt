@@ -1,5 +1,11 @@
 package com.uit.moneykeeper.home.views
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +29,8 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -37,6 +45,7 @@ import com.uit.moneykeeper.R
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextField
@@ -55,7 +64,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
+import com.uit.moneykeeper.budget.viewmodel.getListNganSachByMonthYear
+import com.uit.moneykeeper.budget.views.BudgetDetail
 import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
+import com.uit.moneykeeper.models.NganSachModel
+import java.time.LocalDate
 
 
 data class Wallet(val name: String, val amount: Int)
@@ -77,6 +90,8 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
     var showDialog by remember { mutableStateOf(false) }
     var textInput_ten by remember { mutableStateOf("") }
     var textInput_soDu by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+    val listNS: List<NganSachModel> = getListNganSachByMonthYear(LocalDate.now());
     LaunchedEffect(key1 = walletList ) {
         print("Launch")
         wallets.clear();
@@ -94,7 +109,7 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                 .fillMaxWidth()
 //                .height(80.dp)
                 .height(IntrinsicSize.Min)
-                .background(Color(0xFFF8F8F8)))
+                .background(Color(0xFFFFFFF)))
             {
                 Column {
                     Column( modifier = Modifier
@@ -125,18 +140,33 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                             )
                         }
                     }
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        ) {
-                        LazyColumn(modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn( max = 200.dp)) {
-                            items(wallets.size) {index ->
-                                WalletCardItem(navController,wallets[index],selectedWalletViewModel)
+                    for (wallet in wallets.take(4)) {
+                        WalletCardItem(navController, wallet, selectedWalletViewModel)
+                    }
+
+                    AnimatedVisibility(
+                        visible = expanded,
+                        enter = expandVertically(animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)),
+                        exit = shrinkVertically(animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing))
+                    ) {
+                        Column {
+                            for (wallet in wallets.drop(4)) {
+                                WalletCardItem(navController, wallet, selectedWalletViewModel)
                             }
                         }
                     }
+//                    Box(modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(200.dp)
+//                        ) {
+//                        LazyColumn(modifier = Modifier
+//                            .fillMaxWidth()
+//                            .heightIn( max = 200.dp)) {
+//                            items(wallets.size) {index ->
+//                                WalletCardItem(navController,wallets[index],selectedWalletViewModel)
+//                            }
+//                        }
+//                    }
 
                     Button(onClick = { showDialog = true },
                         modifier = Modifier
@@ -163,44 +193,53 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                                 fontSize = 20.sp,)
                         }
                     }
-                }
-
-            }
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-                .padding(top = 30.dp)
-//                .height(IntrinsicSize.Min)
-                .background(Color(0xFFF8F8F8)))
-            {
-                Column {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Chi phí - 7 ngày qua",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
-                    }
-                    Text(text = "Biểu đồ cột")
-                    OutlinedTextField(
-                        value = "",
-                        onValueChange = {  },
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.Red), // Đặt màu nền đỏ ở đây
-                        label = { Text("Nhập văn bản") }
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Button(
+                            onClick = { expanded = !expanded },
+                            modifier = Modifier
+                                .height(50.dp)
+                                .padding(8.dp),
+                            colors = ButtonDefaults.buttonColors(Color(0xFF009adb)),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Icon(
+                                    imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                    contentDescription = if (expanded) "Thu gọn" else "Xem thêm"
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = if (expanded) "Thu gọn" else "Xem thêm",
+                                    fontSize = 15.sp
+                                )
+                            }
+                        }
+                    }
+                    androidx.compose.material.Divider(
+                        color = Color.Black,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(vertical = 8.dp)
                     )
                 }
-            }
+                }
+
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
                 .padding(top = 30.dp)
+                .animateContentSize(animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing))
 //                .height(IntrinsicSize.Min)
-                .background(Color(0xFFF8F8F8)))
+                )
             {
                 Column {
                     Row(modifier = Modifier
@@ -208,15 +247,63 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                         .padding(8.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "Thống kê",
+                        Text(text = "Ngân sách tháng ${LocalDate.now().monthValue}/${LocalDate.now().year}",
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp
                         )
                     }
-                    Text(text = "Phần thống kê")
+                    if(listNS.isNotEmpty())
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                                 BudgetDetail(ngansach = listNS[0])
+                        }
+                    else {
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(top = 100.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ){
+                                Text(text = "Chưa có ngân sách")
+                            }
+                            Button(onClick = {navController.navigate("budget") {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            } },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(70.dp)
+                                    .padding(8.dp),
 
+                                colors = ButtonDefaults.buttonColors(Color(0xFF00c190)),
+                                shape = MaterialTheme.shapes.medium
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                ) {
+                                    Text("Thêm ngân sách tháng này",
+                                        fontSize = 20.sp,)
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
             if (showDialog) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },

@@ -44,7 +44,7 @@ fun MKNavHost(
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
     LaunchedEffect(currentBackStackEntry) {
-        if (previousBackStackEntry?.destination?.route != "home" && currentBackStackEntry?.destination?.route == "WalletDetail") {
+        if (previousBackStackEntry?.destination?.route != "home" && (currentBackStackEntry?.destination?.route == "WalletDetail" )) {
             navController.popBackStack();
         }
 
