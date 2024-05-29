@@ -1,6 +1,7 @@
 package com.uit.moneykeeper.transaction.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.uit.moneykeeper.global.GlobalFunction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,6 +13,10 @@ class TransactionViewModel : ViewModel() {
 
     private val _selectedYear = MutableStateFlow(Calendar.getInstance().get(Calendar.YEAR))
     val selectedYear: StateFlow<Int> = _selectedYear.asStateFlow()
+
+    init {
+        GlobalFunction.updateListGiaoDich()
+    }
 
     fun changeTab(index: Int) {
         _selectedTabIndex.value = index

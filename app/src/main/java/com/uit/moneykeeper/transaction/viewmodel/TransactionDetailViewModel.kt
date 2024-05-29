@@ -1,16 +1,44 @@
 package com.uit.moneykeeper.transaction.viewmodel
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.uit.moneykeeper.global.GlobalFunction
+import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
 import com.uit.moneykeeper.models.ViModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+data class FirestoreGiaoDichModel(
+    var id: Int = 0,
+    var ngayGiaoDich: Timestamp = Timestamp.now(),
+    var soTien: Double = 0.0,
+    var ten: String = "",
+    var loaiGiaoDich: LoaiGiaoDichModel = LoaiGiaoDichModel(),
+    var vi: ViModel = ViModel(),
+    var ghiChu: String = ""
+)
+
 class TransactionDetailViewModel(Id: Int) : ViewModel() {
+    private val _giaoDich = MutableStateFlow<GiaoDichModel?>(null)
+    val giaoDich: StateFlow<GiaoDichModel?> = _giaoDich.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _toastMessage = MutableStateFlow<String?>(null)
+    val toastMessage: StateFlow<String?> = _toastMessage.asStateFlow()
+
     private val _date = MutableStateFlow(LocalDate.now())
     val date: StateFlow<LocalDate> = _date.asStateFlow()
 
@@ -50,6 +78,7 @@ class TransactionDetailViewModel(Id: Int) : ViewModel() {
     }
 
     init {
+    viewModelScope.launch {
         getLoaiGiaoDich { categories ->
             _category.value = categories
             updateCategoryOptions()
@@ -58,7 +87,9 @@ class TransactionDetailViewModel(Id: Int) : ViewModel() {
             _wallet.value = wallets
             updateWalletOptions()
         }
+        getGiaoDich(Id)
     }
+}
 
     fun setDate(newDate: LocalDate) {
         _date.value = newDate
@@ -106,65 +137,66 @@ class TransactionDetailViewModel(Id: Int) : ViewModel() {
             }
     }
 
-//    fun saveTransaction(navController: NavController, context: Context) {
-//        val db = Firebase.firestore
-//
-//        db.collection("giaoDich")
-//            .orderBy("id", Query.Direction.DESCENDING)
-//            .limit(1)
-//            .get()
-//            .addOnSuccessListener { documents ->
-//                val highestId = if (documents.isEmpty) {
-//                    0
-//                } else {
-//                    documents.documents[0].getLong("id")?.toInt() ?: 0
-//                }
-//                val newId = highestId + 1
-//
-//                val selectedCategory =
-//                    _category.value.firstOrNull { it.ten.equals(_selectedCatOptionText.value, ignoreCase = true)}
-//                val selectedWallet =
-//                    _wallet.value.firstOrNull { it.ten.equals(_selectedWalletOptionText.value, ignoreCase = true)}
-//
-//
-//                val transactionMap = mapOf(
-//                    "id" to newId,
-//                    "ten" to name.value,
-//                    "soTien" to amount.value.toDouble(),
-//                    "ngayGiaoDich" to GlobalFunction.convertLocalDateToTimestamp(date.value),
-//                    "ghiChu" to note.value,
-//                    "loaiGiaoDich" to selectedCategory?.let {
-//                        mapOf(
-//                            "id" to it.id,
-//                            "ten" to it.ten,
-//                            "loai" to it.loai.name,
-//                            "mauSac" to it.mauSac.toString(),
-//                            "icon" to it.icon.name
-//                        )
-//                    },
-//                    "vi" to selectedWallet?.let {
-//                        mapOf(
-//                            "id" to it.id,
-//                            "ten" to it.ten,
-//                            "soDu" to it.soDu
-//                        )
-//                    }
-//                )
-//
-//                db.collection("giaoDich")
-//                    .add(transactionMap)
-//                    .addOnSuccessListener { documentReference ->
-//                        println("DocumentSnapshot added with ID: ${documentReference.id}")
-//                        navController.popBackStack()
-//                        Toast.makeText(
-//                            context,
-//                            "Transaction added successfully!",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                    .addOnFailureListener { e ->
-//                        println("Error adding document: $e")
-//                    }
-//            }
-//    }
+    private fun getGiaoDich(Id: Int) {
+        _isLoading.value = true // Set loading state to true at the start of data fetch
+        val db = FirebaseFirestore.getInstance()
+        db.collection("giaoDich").whereEqualTo("id", Id)
+            .get()
+            .addOnSuccessListener { document ->
+                if (!document.isEmpty) {
+                    val firestoreGiaoDichData = document.documents[0].toObject(FirestoreGiaoDichModel::class.java)
+                    if (firestoreGiaoDichData != null) {
+                        val ngayGiaoDich = GlobalFunction.convertTimestampToLocalDate(firestoreGiaoDichData.ngayGiaoDich)
+                        val giaoDichData = GiaoDichModel(
+                            firestoreGiaoDichData.id,
+                            ngayGiaoDich,
+                            firestoreGiaoDichData.soTien,
+                            firestoreGiaoDichData.ten,
+                            firestoreGiaoDichData.loaiGiaoDich,
+                            firestoreGiaoDichData.vi,
+                            firestoreGiaoDichData.ghiChu
+                        )
+                        _giaoDich.value = giaoDichData
+                    } else {
+                        Log.e("TransactionDetailViewModel", "GiaoDichData is null!")
+                    }
+                } else {
+                    Log.e("TransactionDetailViewModel", "Document with id: $Id does not exist !")
+                }
+                _isLoading.value = false // Set loading state to false after data fetch is successful
+            }
+            .addOnFailureListener { exception ->
+                Log.e("TransactionDetailViewModel", "Error getting document: ", exception)
+                _isLoading.value = false // Set loading state to false even if data fetch fails
+            }
+    }
+
+    fun deleteGiaoDich(id: Int?, context: Context) {
+        val db = FirebaseFirestore.getInstance()
+        if (id == null) {
+            Log.w("TransactionDetailViewModel", "Cannot delete document: id is null")
+            return
+        }
+        Log.d("TransactionDetailViewModel", "Attempting to delete document with id: $id")
+        db.collection("giaoDich").whereEqualTo("id", id)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    Log.w("TransactionDetailViewModel", "No document found with id: $id")
+                } else {
+                    documents.documents[0].reference
+                        .delete()
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Transaction successfully deleted!", Toast.LENGTH_SHORT).show()
+                            Log.d("TransactionDetailViewModel", "Transaction successfully deleted!")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("TransactionDetailViewModel", "Error deleting document", e)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TransactionDetailViewModel", "Error finding document", e)
+            }
+    }
 }

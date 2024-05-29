@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -32,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
@@ -49,6 +53,7 @@ import androidx.navigation.NavController
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.uit.moneykeeper.global.GlobalFunction
 import com.uit.moneykeeper.transaction.viewmodel.TransactionDetailViewModel
 import java.time.format.DateTimeFormatter
 
@@ -58,19 +63,17 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun TransactionDetailScreen(navController: NavController, viewModel: TransactionDetailViewModel) {
-    val date by viewModel.date.collectAsState()
-    val amount by viewModel.amount.collectAsState()
-    val name by viewModel.name.collectAsState()
-    val category by viewModel.category.collectAsState()
+    val giaoDich by viewModel.giaoDich.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
     val categoryOptions = viewModel.categoryOptions.collectAsState().value
     var selectedCatOptionText by remember { mutableStateOf(if (categoryOptions.isNotEmpty()) categoryOptions[0] else "") }
-    val wallet by viewModel.wallet.collectAsState()
     val walletOptions = viewModel.walletOptions.collectAsState().value
     var selectedWalletOptionText by remember { mutableStateOf(if (walletOptions.isNotEmpty()) walletOptions[0] else "") }
-    val note by viewModel.note.collectAsState()
 
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val dateString = date.format(formatter)
+
+    val context = LocalContext.current
 
     val focusRequester = remember { FocusRequester() }
     val decoyFocusRequester = remember { FocusRequester() }
@@ -84,253 +87,316 @@ fun TransactionDetailScreen(navController: NavController, viewModel: Transaction
     var expandedCat by remember { mutableStateOf(false) }
     var expandedWallet by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
-    CalendarDialog(
-        state = calendarState,
-        selection = CalendarSelection.Date { selectedDate ->
-            Log.d("Selected date", "$selectedDate")
-            viewModel.setDate(selectedDate)
-            calendarState.hide()
-            isCalendarDialogShowing = false
-            focusManager.clearFocus()
-        },
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            usePlatformDefaultWidth = false
-        ),
-    )
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = {
+                Text(
+                    text = "Confirm Delete",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = { Text("Are you sure you want to delete this transaction?") },
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Chi tiết giao dịch",
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (!navController.popBackStack().not()) {
-                            navController.navigate("transaction")
-                        }
-                    }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to Transaction screen") } }
-            )
-        },
-        modifier = Modifier.fillMaxSize()
-    )
-    {
-        CompositionLocalProvider(LocalFocusManager provides focusManager) {
-            Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxSize()
-                    .padding(top = 70.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
-            )
-            {
-                OutlinedTextField(
-                    value = dateString,
-                    onValueChange = { /* Do nothing */ },
-                    label = { Text("Ngày thực hiện giao dịch") },
-                    readOnly = true,
-                    enabled = false,
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.deleteGiaoDich(giaoDich?.id, context)
+                        showDeleteDialog = false
+                        GlobalFunction.updateListGiaoDich()
+                        navController.navigate("transaction")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Green
+                    ),
+                    modifier = Modifier.fillMaxWidth(0.5f)
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showDeleteDialog = false },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red
+                    ),
+                    modifier = Modifier.fillMaxWidth(0.5f)
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    if(isLoading){
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+            CircularProgressIndicator()
+        }
+    } else {
+        CalendarDialog(
+            state = calendarState,
+            selection = CalendarSelection.Date { selectedDate ->
+                Log.d("Selected date", "$selectedDate")
+                viewModel.setDate(selectedDate)
+                calendarState.hide()
+                isCalendarDialogShowing = false
+                focusManager.clearFocus()
+            },
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+                usePlatformDefaultWidth = false
+            ),
+        )
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Chi tiết giao dịch",
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            if (!navController.popBackStack().not()) {
+                                navController.navigate("transaction")
+                            }
+                        }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to Transaction screen") } }
+                )
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+        {
+            CompositionLocalProvider(LocalFocusManager provides focusManager) {
+                Column(
                     modifier = Modifier
-                        .background(Color.Transparent)
-                        .focusRequester(focusRequester)
-                        .onFocusChanged { focusState: FocusState ->
-                            if (focusState.isFocused) {
-                                calendarState.show()
-                                isCalendarDialogShowing = true
-                                decoyFocusRequester.requestFocus()
+                        .background(Color.White)
+                        .fillMaxSize()
+                        .padding(top = 70.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+                )
+                {
+                    OutlinedTextField(
+                        value = giaoDich?.ngayGiaoDich?.format(formatter) ?: "",
+                        onValueChange = { /* Do nothing */ },
+                        label = { Text("Ngày thực hiện giao dịch") },
+                        readOnly = true,
+                        enabled = false,
+                        modifier = Modifier
+                            .background(Color.Transparent)
+                            .focusRequester(focusRequester)
+                            .onFocusChanged { focusState: FocusState ->
+                                if (focusState.isFocused) {
+                                    calendarState.show()
+                                    isCalendarDialogShowing = true
+                                    decoyFocusRequester.requestFocus()
+                                }
+                            }
+                            .fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.LightGray,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            disabledTextColor = Color.Black,
+                            disabledLabelColor = Color.Black
+                        )
+                    )
+                    OutlinedTextField(
+                        value = giaoDich?.soTien?.toString() ?: "",
+                        onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
+                        label = { Text("Số tiền") },
+                        readOnly = true,
+                        enabled = false,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.LightGray,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            disabledTextColor = Color.Black,
+                            disabledLabelColor = Color.Black
+                        )
+                    )
+                    OutlinedTextField(
+                        value = giaoDich?.ten?: "",
+                        onValueChange = { newName -> viewModel.setName(newName) },
+                        label = { Text("Tên giao dịch") },
+                        readOnly = true,
+                        enabled = false,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.LightGray,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            disabledTextColor = Color.Black,
+                            disabledLabelColor = Color.Black
+                        )
+                    )
+                    ExposedDropdownMenuBox(
+                        expanded = expandedCat,
+                        onExpandedChange = {}
+                    ){
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor()
+                                .background(Color.White)
+                                .focusRequester(catFocusRequester),
+                            readOnly = true,
+                            enabled = false,
+                            value = giaoDich?.loaiGiaoDich?.ten?: "",
+                            onValueChange = {},
+                            label = { Text("Loại giao dịch") },
+                            trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCat)},
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.LightGray,
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                disabledTextColor = Color.Black,
+                                disabledLabelColor = Color.Black
+                            )
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedCat,
+                            onDismissRequest = { expandedCat = false }
+                        ){
+                            categoryOptions.forEach {selectedcatopt ->
+                                DropdownMenuItem(
+                                    text={Text(selectedcatopt) },
+                                    onClick = {
+                                        selectedCatOptionText = selectedcatopt
+                                        viewModel.setSelectedCatOptionText(selectedCatOptionText)
+                                        expandedCat = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                )
                             }
                         }
-                        .fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.LightGray,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
-                OutlinedTextField(
-                    value = amount,
-                    onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
-                    label = { Text("Số tiền") },
-                    readOnly = true,
-                    enabled = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.LightGray,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { newName -> viewModel.setName(newName) },
-                    label = { Text("Tên giao dịch") },
-                    readOnly = true,
-                    enabled = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.LightGray,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
-                ExposedDropdownMenuBox(
-                    expanded = expandedCat,
-                    onExpandedChange = {}
-                ){
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor()
-                            .background(Color.White)
-                            .focusRequester(catFocusRequester),
-                        readOnly = true,
-                        enabled = false,
-                        value = selectedCatOptionText,
-                        onValueChange = {},
-                        label = { Text("Loại giao dịch") },
-                        trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCat)},
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.LightGray,
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent
-                        )
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expandedCat,
-                        onDismissRequest = { expandedCat = false }
-                    ){
-                        categoryOptions.forEach {selectedcatopt ->
-                            DropdownMenuItem(
-                                text={Text(selectedcatopt) },
-                                onClick = {
-                                    selectedCatOptionText = selectedcatopt
-                                    viewModel.setSelectedCatOptionText(selectedCatOptionText)
-                                    expandedCat = false
-                                },
-                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                            )
-                        }
                     }
-                }
-                ExposedDropdownMenuBox(
-                    expanded = expandedWallet,
-                    onExpandedChange = {}
-                ){
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor()
-                            .background(Color.White)
-                            .focusRequester(walletFocusRequester),
-                        readOnly = true,
-                        enabled = false,
-                        value = selectedWalletOptionText,
-                        onValueChange = {},
-                        label = { Text("Ví") },
-                        trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedWallet)},
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.LightGray,
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent
-                        )
-                    )
-                    ExposedDropdownMenu(
+                    ExposedDropdownMenuBox(
                         expanded = expandedWallet,
-                        onDismissRequest = { expandedWallet = false }
+                        onExpandedChange = {}
                     ){
-                        walletOptions.forEach {selectedwalletopt ->
-                            DropdownMenuItem(
-                                text={Text(selectedwalletopt) },
-                                onClick = {
-                                    selectedWalletOptionText = selectedwalletopt
-                                    viewModel.setSelectedWalletOptionText(selectedWalletOptionText)
-                                    expandedWallet = false
-                                },
-                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor()
+                                .background(Color.White)
+                                .focusRequester(walletFocusRequester),
+                            readOnly = true,
+                            enabled = false,
+                            value = giaoDich?.vi?.ten?: "",
+                            onValueChange = {},
+                            label = { Text("Ví") },
+                            trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedWallet)},
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.LightGray,
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                disabledTextColor = Color.Black,
+                                disabledLabelColor = Color.Black
                             )
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedWallet,
+                            onDismissRequest = { expandedWallet = false }
+                        ){
+                            walletOptions.forEach {selectedwalletopt ->
+                                DropdownMenuItem(
+                                    text={Text(selectedwalletopt) },
+                                    onClick = {
+                                        selectedWalletOptionText = selectedwalletopt
+                                        viewModel.setSelectedWalletOptionText(selectedWalletOptionText)
+                                        expandedWallet = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                )
+                            }
                         }
                     }
-                }
-                OutlinedTextField(
-                    value = note,
-                    onValueChange = { newNote -> viewModel.setNote(newNote) },
-                    label = { Text("Ghi chú") },
-                    readOnly = true,
-                    enabled = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.LightGray,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
-                OutlinedTextField(
-                    value = "", //decoy textfield to handle focus
-                    onValueChange = { /* decoy do nothing */ },
-                    readOnly = true,
-                    enabled = false,
-                    label = { Text("") }, // empty label
-                    modifier = Modifier.fillMaxWidth().focusRequester(decoyFocusRequester),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        disabledBorderColor = Color.Transparent,
-                        cursorColor = Color.Transparent
-                    )
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Button(
-                        onClick = { /* DELETE */ },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.White,
-                            disabledContentColor = Color.White,
-                            disabledContainerColor = Color.Gray
+                    OutlinedTextField(
+                        value = giaoDich?.ghiChu?: "",
+                        onValueChange = { newNote -> viewModel.setNote(newNote) },
+                        label = { Text("Ghi chú") },
+                        readOnly = true,
+                        enabled = false,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.LightGray,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            disabledTextColor = Color.Black,
+                            disabledLabelColor = Color.Black
                         )
+                    )
+                    OutlinedTextField(
+                        value = "", //decoy textfield to handle focus
+                        onValueChange = { /* decoy do nothing */ },
+                        readOnly = true,
+                        enabled = false,
+                        label = { Text("") }, // empty label
+                        modifier = Modifier.fillMaxWidth().focusRequester(decoyFocusRequester),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            focusedBorderColor = Color.Transparent,
+                            disabledBorderColor = Color.Transparent,
+                            cursorColor = Color.Transparent
+                        )
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text("Delete")
-                    }
+                        Button(
+                            onClick = { showDeleteDialog = true},
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Red,
+                                contentColor = Color.White,
+                                disabledContentColor = Color.White,
+                                disabledContainerColor = Color.Gray
+                            )
+                        ) {
+                            Text("Delete")
+                        }
 
-                    Button(
-                        onClick = { navController.navigate("EditTransactionScreen") },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Blue,
-                            contentColor = Color.White,
-                            disabledContentColor = Color.White,
-                            disabledContainerColor = Color.Gray
-                        )
-                    ) {
-                        Text("Edit")
+                        Button(
+                            onClick = {
+                                navController.navigate("EditTransactionScreen/${giaoDich?.id}")
+                                Log.e("TransactionDetailScreen", "Id: ${giaoDich?.id}")
+                                      },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Blue,
+                                contentColor = Color.White,
+                                disabledContentColor = Color.White,
+                                disabledContainerColor = Color.Gray
+                            )
+                        ) {
+                            Text("Edit")
+                        }
                     }
                 }
             }
         }
+        }
     }
-}
