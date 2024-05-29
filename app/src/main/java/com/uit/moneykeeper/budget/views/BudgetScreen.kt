@@ -136,7 +136,14 @@ fun MainContent(navController: NavController, newbudgetViewModel: NewBudgetViewM
                     item { BudgetDetail(ngansach = listNS[0]) }
 
             }
-        else
+        else {
+            Row(Modifier
+                .fillMaxSize()
+                .padding(top = 100.dp),
+                horizontalArrangement = Arrangement.Center
+            ){
+                Text(text = "Chưa có ngân sách")
+            }
         FloatingActionButton(
             onClick = {
                 newbudgetViewModel.setTime(selectedTime)
@@ -155,6 +162,7 @@ fun MainContent(navController: NavController, newbudgetViewModel: NewBudgetViewM
                 tint = Color.White
             )
         }
+    }
     }
 }
 
