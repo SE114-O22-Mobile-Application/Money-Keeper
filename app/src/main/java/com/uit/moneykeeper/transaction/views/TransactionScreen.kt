@@ -25,6 +25,7 @@ import com.uit.moneykeeper.transaction.viewmodel.YearlyTabViewModel
 @Composable
 fun TransactionScreen(navController: NavController, viewModel: TransactionViewModel) {
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -56,7 +57,7 @@ fun TransactionScreen(navController: NavController, viewModel: TransactionViewMo
 
             Box {
                 when (selectedTabIndex) {
-                    0 -> MonthlyTab(navController,viewModel = MonthlyTabViewModel())
+                    0 -> MonthlyTab(navController, viewModel = MonthlyTabViewModel())
                     1 -> YearlyTab(navController, viewModel = YearlyTabViewModel())
                 }
             }

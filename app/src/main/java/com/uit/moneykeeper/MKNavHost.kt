@@ -92,19 +92,31 @@ fun MKNavHost(
                 Text(text = "Error: id is null")
             }
         }
+
         composable("transaction") {
+
             showNavigationBar.value = true
             TransactionScreen(navController, viewModel = TransactionViewModel())
         }
+
+//        composable("transaction") { backStackEntry ->
+//            showNavigationBar.value = true
+//            val month = backStackEntry.arguments?.getString("month")?.toIntOrNull()
+//            val year = backStackEntry.arguments?.getString("year")?.toIntOrNull()
+//            TransactionScreen(navController, month, year, viewModel = TransactionViewModel())
+//        }
+
         composable("budget") {
             showNavigationBar.value = true
             BudgetScreen(navController = navController, newbudgetViewModel)
         }
+
         composable("newbudget") {
             showNavigationBar.value = false
 //            Text(text = "Account")
             NewBudget(navController = navController, thoiGian = newbudgetViewModel.getTime())
         }
+
         composable("account") {
             showNavigationBar.value = true
 //            Text(text = "Account")

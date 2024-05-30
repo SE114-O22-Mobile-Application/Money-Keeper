@@ -12,11 +12,13 @@ data class LoaiGiaoDichModel(
     val mauSac: Color,
     val icon: IconEnum
 ){
-    constructor() : this(0, "", PhanLoai.Chi, Color.Black, IconEnum.Null)
+    constructor() : this(-3, "", PhanLoai.Chi, Color.Black, IconEnum.Null)
 
 }
 
 enum class PhanLoai(val isChi: Boolean) {
     Thu(false),
-    Chi(true)
+    Chi(true);
+
+    fun toBool() = isChi
 }

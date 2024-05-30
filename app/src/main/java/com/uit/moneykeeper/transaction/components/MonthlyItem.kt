@@ -2,6 +2,7 @@ package com.uit.moneykeeper.transaction.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,7 +38,12 @@ import java.util.Locale
 @Composable
 fun MonthlyItem (navController: NavController, viewModel: MonthlyItemViewModel) {
     Card (
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+//            .clickable {
+//                navController.navigate("transaction/${viewModel.month}/${viewModel.year}")
+//            }
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),

@@ -12,7 +12,6 @@ import com.uit.moneykeeper.transaction.components.IconEnum
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 
 object GlobalFunction {
@@ -45,7 +44,7 @@ object GlobalFunction {
                         LoaiGiaoDichModel(
                             loaiGiaoDichMap["id"] as? Int ?: 0,
                             loaiGiaoDichMap["ten"] as? String ?: "",
-                            PhanLoai.valueOf(loaiGiaoDichMap["loai"] as? String ?: ""),
+                            if (loaiGiaoDichMap["loai"] as? Boolean == true) PhanLoai.Chi else PhanLoai.Thu,
                             loaiGiaoDichMap["mauSac"]?.let { colorString ->
                                 (colorString as? String)?.let { colorStr ->
                                     val colorValues = colorStr.removeSurrounding("Color(", ")").split(", ").mapNotNull {

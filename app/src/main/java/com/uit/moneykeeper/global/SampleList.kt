@@ -14,9 +14,9 @@ import com.uit.moneykeeper.transaction.components.IconEnum
 import java.time.LocalDate
 
 val loaiGiaoDichList = listOf(
-    LoaiGiaoDichModel(1, "Ăn uống", PhanLoai.Chi, Color.Green, IconEnum.AnUong),
-    LoaiGiaoDichModel(2, "Du lịch", PhanLoai.Chi, Color.Red, IconEnum.DuLich),
-    LoaiGiaoDichModel(3, "Lương", PhanLoai.Thu, Color.Blue, IconEnum.Luong)
+    LoaiGiaoDichModel(1, "Ăn uống", PhanLoai.Chi, Color(0xFF008000), IconEnum.AnUong),
+    LoaiGiaoDichModel(2, "Du lịch", PhanLoai.Chi, Color(0xFFFF0000), IconEnum.DuLich),
+    LoaiGiaoDichModel(3, "Lương", PhanLoai.Thu, Color(0xFF0000FF), IconEnum.Luong)
 )
 
 val viList = listOf(
@@ -28,26 +28,26 @@ val viList = listOf(
 )
 
 val giaoDichList = listOf(
-    GiaoDichModel(1, LocalDate.of(2024, 5, 1), 15000000.0, "An uong", loaiGiaoDichList[0], viList[0], ""),
-    GiaoDichModel(2, LocalDate.of(2024, 5, 1), 500000.0, "Luong", loaiGiaoDichList[2], viList[0], "Nap tien"),
-    GiaoDichModel(3, LocalDate.of(2024, 5, 2), 200000.0, "Du lich", loaiGiaoDichList[1], viList[1], ""),
-    GiaoDichModel(4, LocalDate.of(2024, 5, 2), 75000.0, "Du lich", loaiGiaoDichList[1], viList[0], "Rut tien"),
-    GiaoDichModel(5, LocalDate.of(2024, 5, 3), 150000.0, "Luong", loaiGiaoDichList[2], viList[1], ""),
-    GiaoDichModel(6, LocalDate.of(2024, 5, 3), 100000.0, "An uong", loaiGiaoDichList[0], viList[0], ""),
-    GiaoDichModel(7, LocalDate.of(2024, 5, 4), 500000.0, "Luong", loaiGiaoDichList[2], viList[0], "Nap tien"),
-    GiaoDichModel(8, LocalDate.of(2024, 5, 4), 200000.0, "Du lich", loaiGiaoDichList[1], viList[1], ""),
-    GiaoDichModel(9, LocalDate.of(2024, 5, 5), 7500000.0, "Du lich", loaiGiaoDichList[1], viList[0], "Rut tien"),
-    GiaoDichModel(10, LocalDate.of(2024, 4, 1), 150000.0, "Luong", loaiGiaoDichList[2], viList[1], "Chuyen khoan"),
-    GiaoDichModel(11, LocalDate.of(2024, 4, 2), 1500000.0, "An uong", loaiGiaoDichList[0], viList[0], ""),
-    GiaoDichModel(12, LocalDate.of(2024, 4, 3), 1500000.0, "Luong", loaiGiaoDichList[2], viList[0], "Nap tien"),
-    GiaoDichModel(13, LocalDate.of(2024, 4, 3), 200000.0, "Du lich", loaiGiaoDichList[1], viList[1], ""),
-    GiaoDichModel(14, LocalDate.of(2024, 4, 4), 750000.0, "Du lich", loaiGiaoDichList[1], viList[0], "Rut tien"),
-    GiaoDichModel(15, LocalDate.of(2024, 4, 4), 1500000.0, "Luong", loaiGiaoDichList[2], viList[1], ""),
-    GiaoDichModel(16, LocalDate.of(2024, 6, 5), 150000.0, "An uong", loaiGiaoDichList[0], viList[0], ""),
-    GiaoDichModel(17, LocalDate.of(2024, 6, 6), 500000.0, "Luong", loaiGiaoDichList[2], viList[0], "Nap tien"),
-    GiaoDichModel(18, LocalDate.of(2024, 6, 6), 250000.0, "Du lich", loaiGiaoDichList[1], viList[1], ""),
-    GiaoDichModel(19, LocalDate.of(2024, 6, 7), 750000.0, "Du lich", loaiGiaoDichList[1], viList[0], "Rut tien"),
-    GiaoDichModel(20, LocalDate.of(2024, 6, 8), 150000.0, "Luong", loaiGiaoDichList[2], viList[1], "Chuyen khoan")
+    GiaoDichModel(1, LocalDate.of(2024, 5, 1), 15000000.0, "Ăn uống", loaiGiaoDichList[0], viList[0], ""),
+    GiaoDichModel(2, LocalDate.of(2024, 5, 1), 500000.0, "Lương", loaiGiaoDichList[2], viList[0], "Nạp tiền"),
+    GiaoDichModel(3, LocalDate.of(2024, 5, 2), 200000.0, "Du lịch", loaiGiaoDichList[1], viList[1], ""),
+    GiaoDichModel(4, LocalDate.of(2024, 5, 2), 75000.0, "Du lịch", loaiGiaoDichList[1], viList[0], "Rút tiền"),
+    GiaoDichModel(5, LocalDate.of(2024, 5, 3), 150000.0, "Lương", loaiGiaoDichList[2], viList[1], ""),
+    GiaoDichModel(6, LocalDate.of(2024, 5, 3), 100000.0, "Ăn uống", loaiGiaoDichList[0], viList[0], ""),
+    GiaoDichModel(7, LocalDate.of(2024, 5, 4), 500000.0, "Lương", loaiGiaoDichList[2], viList[0], "Nạp tiền"),
+    GiaoDichModel(8, LocalDate.of(2024, 5, 4), 200000.0, "Du lịch", loaiGiaoDichList[1], viList[1], ""),
+    GiaoDichModel(9, LocalDate.of(2024, 5, 5), 7500000.0, "Du lịch", loaiGiaoDichList[1], viList[0], "Rút tiền"),
+    GiaoDichModel(10, LocalDate.of(2024, 4, 1), 150000.0, "Lương", loaiGiaoDichList[2], viList[1], "Chuyển khoản"),
+    GiaoDichModel(11, LocalDate.of(2024, 4, 2), 1500000.0, "Ăn uống", loaiGiaoDichList[0], viList[0], ""),
+    GiaoDichModel(12, LocalDate.of(2024, 4, 3), 1500000.0, "Lương", loaiGiaoDichList[2], viList[0], "Nạp tiền"),
+    GiaoDichModel(13, LocalDate.of(2024, 4, 3), 200000.0, "Du lịch", loaiGiaoDichList[1], viList[1], ""),
+    GiaoDichModel(14, LocalDate.of(2024, 4, 4), 750000.0, "Du lịch", loaiGiaoDichList[1], viList[0], "Rút tiền"),
+    GiaoDichModel(15, LocalDate.of(2024, 4, 4), 1500000.0, "Lương", loaiGiaoDichList[2], viList[1], ""),
+    GiaoDichModel(16, LocalDate.of(2024, 6, 5), 150000.0, "Ăn uống", loaiGiaoDichList[0], viList[0], ""),
+    GiaoDichModel(17, LocalDate.of(2024, 6, 6), 500000.0, "Lương", loaiGiaoDichList[2], viList[0], ""),
+    GiaoDichModel(18, LocalDate.of(2024, 6, 6), 250000.0, "Du lịch", loaiGiaoDichList[1], viList[1], ""),
+    GiaoDichModel(19, LocalDate.of(2024, 6, 7), 750000.0, "Du lịch", loaiGiaoDichList[1], viList[0], "Rút tiền"),
+    GiaoDichModel(20, LocalDate.of(2024, 6, 8), 150000.0, "Lương", loaiGiaoDichList[2], viList[1], "Chuyển khoản")
 )
 
 val nganSachList = listOf(

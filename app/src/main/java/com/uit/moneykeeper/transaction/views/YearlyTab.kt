@@ -5,15 +5,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -31,11 +36,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.uit.moneykeeper.transaction.components.CategoryDropdown
 import com.uit.moneykeeper.transaction.components.DailyItem
 import com.uit.moneykeeper.transaction.components.DoubleToStringConverter
 import com.uit.moneykeeper.transaction.components.MonthlyItem
+import com.uit.moneykeeper.transaction.components.WalletListDropdown
+import com.uit.moneykeeper.transaction.viewmodel.CategoryDropdownViewModel
 import com.uit.moneykeeper.transaction.viewmodel.DailyItemViewModel
 import com.uit.moneykeeper.transaction.viewmodel.MonthlyItemViewModel
+import com.uit.moneykeeper.transaction.viewmodel.WalletListDropdownViewModel
 import com.uit.moneykeeper.transaction.viewmodel.YearlyTabViewModel
 import com.uit.moneykeeper.ui.theme.Do
 import com.uit.moneykeeper.ui.theme.XanhLa
@@ -74,67 +83,111 @@ fun YearlyTab(navController: NavController, viewModel: YearlyTabViewModel) {
         }
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(all = 8.dp).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (sumIn != 0.0) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Thu",
-                        fontWeight = FontWeight.Bold
-                    )
+            Icon(
+                imageVector = Icons.Filled.AccountBalanceWallet,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+                tint = Color.Gray
+            )
+            WalletListDropdown(
+                viewModel = WalletListDropdownViewModel(),
+                onSelected = {
+                    viewModel.updateWallet(it)
+                },
+                modifier = Modifier.weight(1f)
+            )
 
-                    Text(
-                        text = "+${DoubleToStringConverter.convert(sumIn)}",
-                        color = XanhLa
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.width(8.dp))
 
-            if (sumOut != 0.0) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Chi",
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = "-${DoubleToStringConverter.convert(sumOut)}",
-                        color = Do
-                    )
-                }
-            }
-
-            if (sumIn != 0.0 && sumOut != 0.0) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Tổng",
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = "${if (sum < 0) "" else "+"}${DoubleToStringConverter.convert(sum)}",
-                        color = Color.Black
-                    )
-                }
-            }
+            Icon(
+                imageVector = Icons.Filled.CreditCard,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+                tint = Color.Gray
+            )
+            CategoryDropdown(
+                viewModel = CategoryDropdownViewModel(),
+                onSelected = {
+                    viewModel.updateCategory(it)
+                },
+                modifier = Modifier.weight(1f)
+            )
         }
 
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            monthlyItemList.forEach { monthlyItem ->
-                val monthlyItemViewModel = MonthlyItemViewModel(monthlyItem.first, monthlyItem.second)
-                MonthlyItem(navController = navController, viewModel = monthlyItemViewModel)
+        if (monthlyItemList.isEmpty()) {
+            Text(
+                text = "Chưa có giao dịch",
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 60.dp),
+                fontSize = 18.sp,
+            )
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (sumIn != 0.0) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Thu",
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = "+${DoubleToStringConverter.convert(sumIn)}",
+                            color = XanhLa
+                        )
+                    }
+                }
+
+                if (sumOut != 0.0) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Chi",
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = "-${DoubleToStringConverter.convert(sumOut)}",
+                            color = Do
+                        )
+                    }
+                }
+
+                if (sumIn != 0.0 && sumOut != 0.0) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Tổng",
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = "${if (sum < 0) "" else "+"}${DoubleToStringConverter.convert(sum)}",
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
+
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                monthlyItemList.forEach { monthlyItem ->
+                    val monthlyItemViewModel = MonthlyItemViewModel(monthlyItem.first, monthlyItem.second)
+                    MonthlyItem(navController = navController, viewModel = monthlyItemViewModel)
+                }
             }
         }
     }
