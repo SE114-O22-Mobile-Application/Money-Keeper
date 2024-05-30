@@ -113,8 +113,11 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        if (!navController.popBackStack().not()) {
-                            navController.navigate("transaction")
+                        navController.navigate("transaction"){
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
                         }
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to Transaction screen") } }
