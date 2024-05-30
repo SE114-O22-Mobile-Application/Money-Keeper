@@ -188,5 +188,6 @@ class TransactionDetailViewModel(Id: Int) : ViewModel() {
             .addOnFailureListener { e ->
                 Log.w("TransactionDetailViewModel", "Error finding document", e)
             }
+        GlobalFunction.updateListGiaoDich()
     }
 }
