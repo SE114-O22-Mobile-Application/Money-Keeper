@@ -1,3 +1,4 @@
+
 package com.uit.moneykeeper.components
 
 import android.util.Log
@@ -48,7 +49,7 @@ fun YearPicker() {
 
 
     // State to control the visibility of the picker
-    val (open, setOpen) = remember { mutableStateOf(false) }
+    val (open, setOpen) = remember { mutableStateOf(true) }
 
     Icon(
         imageVector = Icons.Default.CalendarToday,
