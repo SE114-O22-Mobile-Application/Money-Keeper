@@ -12,7 +12,6 @@ import com.uit.moneykeeper.transaction.components.IconEnum
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 
 object GlobalFunction {
@@ -42,10 +41,23 @@ object GlobalFunction {
             val list = result.mapNotNull { document ->
                 document.get("loaiGiaoDich")?.let { map ->
                     (map as? Map<*, *>)?.let { loaiGiaoDichMap ->
+                        val loaiGiaoDichString = loaiGiaoDichMap["loai"] as? String
+                        val phanLoai = if (loaiGiaoDichString != null) {
+                            try {
+                                PhanLoai.valueOf(loaiGiaoDichString)
+                            } catch (e: IllegalArgumentException) {
+                                // Sử dụng giá trị mặc định nếu giá trị không hợp lệ
+                                PhanLoai.Chi // Replace with your default enum value
+                            }
+                        } else {
+                            // Sử dụng giá trị mặc định nếu giá trị là null
+                            PhanLoai.Chi // Replace with your default enum value
+                        }
+
                         LoaiGiaoDichModel(
                             loaiGiaoDichMap["id"] as? Int ?: 0,
                             loaiGiaoDichMap["ten"] as? String ?: "",
-                            PhanLoai.valueOf(loaiGiaoDichMap["loai"] as? String ?: ""),
+                            phanLoai,
                             loaiGiaoDichMap["mauSac"]?.let { colorString ->
                                 (colorString as? String)?.let { colorStr ->
                                     val colorValues = colorStr.removeSurrounding("Color(", ")").split(", ").mapNotNull {
