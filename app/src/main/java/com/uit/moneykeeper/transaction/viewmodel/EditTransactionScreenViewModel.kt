@@ -1,16 +1,27 @@
 package com.uit.moneykeeper.transaction.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.uit.moneykeeper.global.GlobalFunction
+import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
 import com.uit.moneykeeper.models.ViModel
+import com.uit.moneykeeper.models.FirestoreGiaoDichModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 
 class EditTransactionViewModel (Id: Int): ViewModel() {
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _giaoDich = MutableStateFlow<GiaoDichModel?>(null)
+    val giaoDich: StateFlow<GiaoDichModel?> = _giaoDich.asStateFlow()
+
     private val _id = MutableStateFlow(Id)
     val id: StateFlow<Int> = _id.asStateFlow()
 
@@ -61,6 +72,42 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
             _wallet.value = wallets
             updateWalletOptions()
         }
+        Log.d("EditTransactionViewModel", "Id: $Id")
+        getGiaoDich(Id)
+    }
+
+    private fun getGiaoDich(Id: Int) {
+        _isLoading.value = true // Set loading state to true at the start of data fetch
+        val db = FirebaseFirestore.getInstance()
+        db.collection("giaoDich").whereEqualTo("id", Id)
+            .get()
+            .addOnSuccessListener { document ->
+                if (!document.isEmpty) {
+                    val firestoreGiaoDichData = document.documents[0].toObject(FirestoreGiaoDichModel::class.java)
+                    if (firestoreGiaoDichData != null) {
+                        val ngayGiaoDich = GlobalFunction.convertTimestampToLocalDate(firestoreGiaoDichData.ngayGiaoDich)
+                        val giaoDichData = GiaoDichModel(
+                            firestoreGiaoDichData.id,
+                            ngayGiaoDich,
+                            firestoreGiaoDichData.soTien,
+                            firestoreGiaoDichData.ten,
+                            firestoreGiaoDichData.loaiGiaoDich,
+                            firestoreGiaoDichData.vi,
+                            firestoreGiaoDichData.ghiChu
+                        )
+                        _giaoDich.value = giaoDichData
+                    } else {
+                        Log.e("EditTransactionViewModel", "GiaoDichData is null!")
+                    }
+                } else {
+                    Log.e("EditTransactionViewModel", "Document with id: $Id does not exist !")
+                }
+                _isLoading.value = false // Set loading state to false after data fetch is successful
+            }
+            .addOnFailureListener { exception ->
+                Log.e("EditTransactionViewModel", "Error getting document: ", exception)
+                _isLoading.value = false // Set loading state to false even if data fetch fails
+            }
     }
 
     fun setId(newId: Int) {

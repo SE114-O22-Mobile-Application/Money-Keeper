@@ -383,8 +383,7 @@ fun TransactionDetailScreen(navController: NavController, viewModel: Transaction
                         Button(
                             onClick = {
                                 navController.navigate("EditTransactionScreen/${giaoDich?.id}")
-                                Log.e("TransactionDetailScreen", "Id: ${giaoDich?.id}")
-                                      },
+                                Log.e("TransactionDetailScreen", "Id: ${giaoDich?.id}") },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Blue,
                                 contentColor = Color.White,

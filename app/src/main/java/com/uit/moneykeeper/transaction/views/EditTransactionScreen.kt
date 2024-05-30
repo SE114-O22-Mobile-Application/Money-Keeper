@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,19 +59,20 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun EditTransactionScreen(navController: NavController, viewModel: EditTransactionViewModel) {
-    val date by viewModel.date.collectAsState()
-    val amount by viewModel.amount.collectAsState()
-    val name by viewModel.name.collectAsState()
+    val giaoDich by viewModel.giaoDich.collectAsState(initial = null)
+    val isLoading by viewModel.isLoading.collectAsState()
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+    var date by remember(giaoDich) { mutableStateOf(giaoDich?.ngayGiaoDich?.format(formatter) ?: "") }
+    var amount by remember(giaoDich) { mutableStateOf(giaoDich?.soTien?.toString()?:"" ) }
+    var name by remember(giaoDich) { mutableStateOf(giaoDich?.ten ?: "") }
     val category by viewModel.category.collectAsState()
     val categoryOptions = viewModel.categoryOptions.collectAsState().value
-    var selectedCatOptionText by remember { mutableStateOf(if (categoryOptions.isNotEmpty()) categoryOptions[0] else "") }
+    var selectedCatOptionText by remember(giaoDich) { mutableStateOf(giaoDich?.loaiGiaoDich?.ten ?: "") }
     val wallet by viewModel.wallet.collectAsState()
     val walletOptions = viewModel.walletOptions.collectAsState().value
-    var selectedWalletOptionText by remember { mutableStateOf(if (walletOptions.isNotEmpty()) walletOptions[0] else "") }
-    val note by viewModel.note.collectAsState()
-
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val dateString = date.format(formatter)
+    var selectedWalletOptionText by remember(giaoDich) { mutableStateOf(giaoDich?.vi?.ten?: "") }
+    var note by remember(giaoDich) { mutableStateOf(giaoDich?.ghiChu ?: "") }
 
     val focusRequester = remember { FocusRequester() }
     val decoyFocusRequester = remember { FocusRequester() }
@@ -89,6 +91,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
     CalendarDialog(
         state = calendarState,
         selection = CalendarSelection.Date { selectedDate ->
+            date = selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             Log.d("Selected date", "$selectedDate")
             viewModel.setDate(selectedDate)
             calendarState.hide()
@@ -133,7 +136,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
             )
             {
                 OutlinedTextField(
-                    value = dateString,
+                    value = date.toString(),
                     onValueChange = { /* Do nothing as we don't want to allow manual date input */ },
                     label = { Text("Ngày thực hiện giao dịch") },
                     readOnly = true,
@@ -157,7 +160,16 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                 )
                 OutlinedTextField(
                     value = amount,
-                    onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
+                    onValueChange = { newAmount ->
+                        amount = if (newAmount.isEmpty()) {
+                            ""
+                        } else {
+                            newAmount.toDoubleOrNull()?.let {
+                                if (it % 1 == 0.0) it.toInt().toString() else it.toString()
+                            } ?: ""
+                        }
+                        viewModel.setAmount(amount)
+                    },
                     label = { Text("Số tiền") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -172,7 +184,10 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                 )
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { newName -> viewModel.setName(newName) },
+                    onValueChange = { newName ->
+                        name = newName
+                        viewModel.setName(newName)
+                    },
                     label = { Text("Tên giao dịch") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -200,7 +215,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                             .background(Color.White)
                             .focusRequester(catFocusRequester),
                         readOnly = true,
-                        value = selectedCatOptionText,
+                        value = selectedCatOptionText.toString(),
                         onValueChange = {},
                         label = { Text("Loại giao dịch") },
                         trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCat)},
@@ -220,7 +235,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                                 text={Text(selectedcatopt) },
                                 onClick = {
                                     selectedCatOptionText = selectedcatopt
-                                    viewModel.setSelectedCatOptionText(selectedCatOptionText)
+                                    viewModel.setSelectedCatOptionText(selectedCatOptionText as String)
                                     expandedCat = false
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -244,7 +259,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                             .background(Color.White)
                             .focusRequester(walletFocusRequester),
                         readOnly = true,
-                        value = selectedWalletOptionText,
+                        value = selectedWalletOptionText.toString(),
                         onValueChange = {},
                         label = { Text("Ví") },
                         trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedWallet)},
@@ -264,7 +279,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                                 text={Text(selectedwalletopt) },
                                 onClick = {
                                     selectedWalletOptionText = selectedwalletopt
-                                    viewModel.setSelectedWalletOptionText(selectedWalletOptionText)
+                                    viewModel.setSelectedWalletOptionText(selectedWalletOptionText as String)
                                     expandedWallet = false
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -274,7 +289,10 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                 }
                 OutlinedTextField(
                     value = note,
-                    onValueChange = { newNote -> viewModel.setNote(newNote) },
+                    onValueChange = { newNote ->
+                        note = newNote
+                        viewModel.setNote(newNote)
+                    },
                     label = { Text("Ghi chú") },
                     modifier = Modifier
                         .fillMaxWidth()

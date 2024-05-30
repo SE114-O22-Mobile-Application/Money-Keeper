@@ -6,10 +6,10 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.uit.moneykeeper.global.GlobalFunction
+import com.uit.moneykeeper.models.FirestoreGiaoDichModel
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
 import com.uit.moneykeeper.models.ViModel
@@ -18,16 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-
-data class FirestoreGiaoDichModel(
-    var id: Int = 0,
-    var ngayGiaoDich: Timestamp = Timestamp.now(),
-    var soTien: Double = 0.0,
-    var ten: String = "",
-    var loaiGiaoDich: LoaiGiaoDichModel = LoaiGiaoDichModel(),
-    var vi: ViModel = ViModel(),
-    var ghiChu: String = ""
-)
 
 class TransactionDetailViewModel(Id: Int) : ViewModel() {
     private val _giaoDich = MutableStateFlow<GiaoDichModel?>(null)
