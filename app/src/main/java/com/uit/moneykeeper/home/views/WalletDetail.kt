@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -95,6 +96,26 @@ fun WalletDetail(navController: NavController, viewModel: DetailWalletViewModel 
     var textInput_ten by remember { mutableStateOf(selectedWallet.ten) }
     Box(modifier = Modifier.fillMaxSize()) {
         // Combobox ở đây
+        FloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd) // Đặt FAB ở góc dưới cùng bên phải
+                .padding(16.dp)
+                .zIndex(1f),
+            onClick = {navController.navigate("NewTransactionScreen"){
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }},
+            containerColor = MaterialTheme.colorScheme.primary,
+            shape = CircleShape,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add transaction",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()

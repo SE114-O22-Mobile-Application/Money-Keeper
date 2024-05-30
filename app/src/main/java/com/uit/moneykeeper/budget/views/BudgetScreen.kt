@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.ArrowForwardIos
@@ -32,8 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.uit.moneykeeper.budget.viewmodel.NewBudgetViewModel
 import com.uit.moneykeeper.budget.viewmodel.getGiaoDichByLGD
@@ -70,6 +74,26 @@ fun MainContent(navController: NavController, newbudgetViewModel: NewBudgetViewM
     print(listNS);
 //    if(listNS.isEmpty()) navController.navigate("newbudget")
     Box(modifier = Modifier.fillMaxSize()) {
+        FloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd) // Đặt FAB ở góc dưới cùng bên phải
+                .padding(16.dp)
+                .zIndex(1f),
+            onClick = {navController.navigate("NewTransactionScreen"){
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }},
+            containerColor = MaterialTheme.colorScheme.primary,
+            shape = CircleShape,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add transaction",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
         Box(modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
@@ -137,31 +161,48 @@ fun MainContent(navController: NavController, newbudgetViewModel: NewBudgetViewM
 
             }
         else {
-            Row(Modifier
-                .fillMaxSize()
-                .padding(top = 100.dp),
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(text = "Chưa có ngân sách")
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 100.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ){
+                    Text(text = "Chưa có ngân sách",
+                        style = TextStyle(fontSize = 18.sp))
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Button(onClick = {
+                    newbudgetViewModel.setTime(selectedTime)
+                    println("Budget: " + selectedTime)
+                    navController.navigate("newbudget")
+                },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(70.dp)
+                        .padding(8.dp),
+
+                    colors = ButtonDefaults.buttonColors(Color(0xFF00c190)),
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Text("Thêm ngân sách tháng này",
+                            fontSize = 20.sp,)
+                    }
+                }
             }
-        FloatingActionButton(
-            onClick = {
-                newbudgetViewModel.setTime(selectedTime)
-                println("Budget: " + selectedTime)
-                navController.navigate("newbudget")
-                      },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.White
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add",
-                tint = Color.White
-            )
-        }
+
     }
     }
 }
