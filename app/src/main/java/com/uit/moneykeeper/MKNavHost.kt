@@ -2,10 +2,13 @@ package com.uit.moneykeeper
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -16,7 +19,6 @@ import com.uit.moneykeeper.budget.viewmodel.NewBudgetViewModel
 import com.uit.moneykeeper.budget.viewmodel.getListNganSachByMonthYear
 import com.uit.moneykeeper.budget.views.BudgetScreen
 import com.uit.moneykeeper.budget.views.NewBudget
-import com.uit.moneykeeper.global.GlobalObject
 import com.uit.moneykeeper.home.viewmodel.DetailWalletViewModel
 import com.uit.moneykeeper.home.viewmodel.HomeScreenViewModel
 import com.uit.moneykeeper.home.viewmodel.SelectedWalletViewModel
@@ -28,9 +30,9 @@ import com.uit.moneykeeper.transaction.viewmodel.TransactionDetailViewModel
 import com.uit.moneykeeper.transaction.viewmodel.TransactionViewModel
 import com.uit.moneykeeper.transaction.views.EditTransactionScreen
 import com.uit.moneykeeper.transaction.views.NewTransactionScreen
-import java.time.LocalDate
 import com.uit.moneykeeper.transaction.views.TransactionDetailScreen
 import com.uit.moneykeeper.transaction.views.TransactionScreen
+import java.time.LocalDate
 
 @Composable
 fun MKNavHost(
@@ -66,28 +68,28 @@ fun MKNavHost(
         }
         composable("WalletDetail") {
             showNavigationBar.value = true
-            WalletDetail(navController = navController, viewModel = DetailWalletViewModel(), viModel = selectedWalletViewModel.getViModel())
+            WalletDetail(navController = navController, viewModel = DetailWalletViewModel(), viModel2 = selectedWalletViewModel.getViModel())
         }
         composable("NewTransactionScreen") {
             showNavigationBar.value = false
             NewTransactionScreen(navController, viewModel = NewTransactionViewModel())
         }
-        composable("EditTransactionScreen/{Id}") { backStackEntry ->
+        composable("EditTransactionScreen/{id}") { backStackEntry ->
             showNavigationBar.value = false
-            val Id = backStackEntry.arguments?.getInt("Id")
-            if (Id != null) {
-                EditTransactionScreen(navController, viewModel = EditTransactionViewModel(Id))
+            val id = backStackEntry.arguments?.getString("id")?.toInt()
+            if (id != null) {
+                EditTransactionScreen(navController, viewModel = EditTransactionViewModel(id))
             } else {
-                Text(text = "Error: Id is null")
+                Text(text = "Error: id is null")
             }
         }
-        composable("TransactionDetailScreen/{Id}") { backStackEntry ->
+        composable("TransactionDetailScreen/{id}") { backStackEntry ->
             showNavigationBar.value = false
-            val Id = backStackEntry.arguments?.getInt("Id")
-            if (Id != null) {
-                TransactionDetailScreen(navController, viewModel = TransactionDetailViewModel(Id))
+            val id = backStackEntry.arguments?.getString("id")?.toInt()
+            if (id != null) {
+                TransactionDetailScreen(navController, viewModel = TransactionDetailViewModel(id))
             } else {
-                Text(text = "Error: Id is null")
+                Text(text = "Error: id is null")
             }
         }
         composable("transaction") {
@@ -105,7 +107,8 @@ fun MKNavHost(
         }
         composable("account") {
             showNavigationBar.value = true
-            Text(text = "Account")
+//            Text(text = "Account")
+            WalletDetail(navController = navController, viewModel = DetailWalletViewModel(), viModel2 = selectedWalletViewModel.getViModel())
 //            NewBudget(navController = navController, thoiGian = newbudgetViewModel.getTime())
         }
     }

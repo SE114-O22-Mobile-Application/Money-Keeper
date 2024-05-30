@@ -29,9 +29,9 @@ object Budget : MKDestination {
 }
 
 object Account : MKDestination {
-    override val inactivatedIcon = R.drawable.account_circle_fill0_wght400_grad0_opsz24
-    override val activatedIcon = R.drawable.account_circle_fill1_wght400_grad0_opsz24
-    override val label = "Tài khoản"
+    override val inactivatedIcon = R.drawable.baseline_pie_chart_outline_24
+    override val activatedIcon = R.drawable.baseline_pie_chart_24
+    override val label = "Thống kê"
     override val route = "account"
 }
 

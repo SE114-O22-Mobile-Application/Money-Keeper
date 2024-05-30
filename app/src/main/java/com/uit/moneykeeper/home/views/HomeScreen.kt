@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
@@ -46,8 +47,10 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -92,6 +95,7 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
     var textInput_soDu by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
     val listNS: List<NganSachModel> = getListNganSachByMonthYear(LocalDate.now());
+
     LaunchedEffect(key1 = walletList ) {
         print("Launch")
         wallets.clear();
@@ -102,59 +106,103 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
     for(wallet in wallets) {
         total +=  wallet.soDu
     }
+//    selectedWalletViewModel.setViModel(ViModel(0, "Tất cả", total))
+    Box(modifier = Modifier.fillMaxSize()) {
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-//                .height(80.dp)
-                .height(IntrinsicSize.Min)
-                .background(Color(0xFFFFFFF)))
-            {
-                Column {
-                    Column( modifier = Modifier
+        FloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd) // Đặt FAB ở góc dưới cùng bên phải
+                .padding(16.dp)
+                .zIndex(1f),
+            onClick = {navController.navigate("NewTransactionScreen"){
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }},
+            containerColor = MaterialTheme.colorScheme.primary,
+            shape = CircleShape,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add transaction",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+            item {
+                Box(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            selectedWalletViewModel.setViModel(ViModel(0, "Tất cả", total))
-                            navController.navigate("WalletDetail")
-                        }
-                    ) {
-                        Row(modifier = Modifier
+//                .height(80.dp)
+                        .height(IntrinsicSize.Min)
+                        .background(Color(0xFFFFFFF))
+                )
+                {
+                    Column {
+                        Column(modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp),
-                            horizontalArrangement = Arrangement.Center
+                            .clickable {
+                                selectedWalletViewModel.setViModel(ViModel(0, "Tất cả", total))
+                                navController.navigate("account") {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            }
                         ) {
-                            Text(text = "Số dư",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
-                            )
-                        }
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(0.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(text = formatNumberWithCommas(total),
-                                fontSize = 20.sp,
-                                color = Color.Blue
-                            )
-                        }
-                    }
-                    for (wallet in wallets.take(4)) {
-                        WalletCardItem(navController, wallet, selectedWalletViewModel)
-                    }
-
-                    AnimatedVisibility(
-                        visible = expanded,
-                        enter = expandVertically(animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)),
-                        exit = shrinkVertically(animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing))
-                    ) {
-                        Column {
-                            for (wallet in wallets.drop(4)) {
-                                WalletCardItem(navController, wallet, selectedWalletViewModel)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Số dư",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(0.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = formatNumberWithCommas(total),
+                                    fontSize = 20.sp,
+                                    color = Color.Blue
+                                )
                             }
                         }
-                    }
+                        for (wallet in wallets.take(4)) {
+                            WalletCardItem(navController, wallet, selectedWalletViewModel)
+                        }
+
+                        AnimatedVisibility(
+                            visible = expanded,
+                            enter = expandVertically(
+                                animationSpec = tween(
+                                    durationMillis = 1000,
+                                    easing = FastOutSlowInEasing
+                                )
+                            ),
+                            exit = shrinkVertically(
+                                animationSpec = tween(
+                                    durationMillis = 1000,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        ) {
+                            Column {
+                                for (wallet in wallets.drop(4)) {
+                                    WalletCardItem(navController, wallet, selectedWalletViewModel)
+                                }
+                            }
+                        }
 //                    Box(modifier = Modifier
 //                        .fillMaxWidth()
 //                        .height(200.dp)
@@ -168,15 +216,34 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
 //                        }
 //                    }
 
-                    Button(onClick = { showDialog = true },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(70.dp)
-                            .padding(8.dp),
+                        Button(
+                            onClick = { showDialog = true },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(70.dp)
+                                .padding(8.dp),
 
-                        colors = ButtonDefaults.buttonColors(Color(0xFF00c190)),
-                        shape = MaterialTheme.shapes.medium
-                    ) {
+                            colors = ButtonDefaults.buttonColors(Color(0xFF00c190)),
+                            shape = MaterialTheme.shapes.medium
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add, // Replace with your desired icon
+                                    contentDescription = "Home icon"
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    "Thêm ví",
+                                    fontSize = 20.sp,
+                                )
+                            }
+                        }
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -184,109 +251,78 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Add, // Replace with your desired icon
-                                contentDescription = "Home icon"
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Thêm ví",
-                                fontSize = 20.sp,)
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        Button(
-                            onClick = { expanded = !expanded },
-                            modifier = Modifier
-                                .height(50.dp)
-                                .padding(8.dp),
-                            colors = ButtonDefaults.buttonColors(Color(0xFF009adb)),
-                        ) {
-                            Row(
+                            Button(
+                                onClick = { expanded = !expanded },
                                 modifier = Modifier
-                                    .padding(horizontal = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
+                                    .height(50.dp)
+                                    .padding(8.dp),
+                                colors = ButtonDefaults.buttonColors(Color(0xFF009adb)),
                             ) {
-                                Icon(
-                                    imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                                    contentDescription = if (expanded) "Thu gọn" else "Xem thêm"
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = if (expanded) "Thu gọn" else "Xem thêm",
-                                    fontSize = 15.sp
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                ) {
+                                    Icon(
+                                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                        contentDescription = if (expanded) "Thu gọn" else "Xem thêm"
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = if (expanded) "Thu gọn" else "Xem thêm",
+                                        fontSize = 15.sp
+                                    )
+                                }
                             }
                         }
-                    }
-                    androidx.compose.material.Divider(
-                        color = Color.Black,
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-                }
-
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-                .padding(top = 30.dp)
-                .animateContentSize(animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing))
-//                .height(IntrinsicSize.Min)
-                )
-            {
-                Column {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Ngân sách tháng ${LocalDate.now().monthValue}/${LocalDate.now().year}",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
+                        androidx.compose.material.Divider(
+                            color = Color.Black,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(vertical = 8.dp)
                         )
                     }
-                    if(listNS.isNotEmpty())
-                        Column(
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .padding(top = 30.dp)
+                        .animateContentSize(
+                            animationSpec = tween(
+                                durationMillis = 1000,
+                                easing = FastOutSlowInEasing
+                            )
+                        )
+//                .height(IntrinsicSize.Min)
+                )
+                {
+                    Column {
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                                 BudgetDetail(ngansach = listNS[0])
+                            Text(
+                                text = "Ngân sách tháng ${LocalDate.now().monthValue}/${LocalDate.now().year}",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp
+                            )
                         }
-                    else {
-                        Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(top = 100.dp),
-                        ) {
-                            Row(
+                        if (listNS.isNotEmpty())
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                            ){
-                                Text(text = "Chưa có ngân sách")
+                            ) {
+                                BudgetDetail(ngansach = listNS[0])
                             }
-                            Button(onClick = {navController.navigate("budget") {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
-                            } },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(70.dp)
-                                    .padding(8.dp),
-
-                                colors = ButtonDefaults.buttonColors(Color(0xFF00c190)),
-                                shape = MaterialTheme.shapes.medium
+                        else {
+                            Column(
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 100.dp),
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -295,102 +331,147 @@ fun MainContent(navController: NavController, viewModel: HomeScreenViewModel, se
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center,
                                 ) {
-                                    Text("Thêm ngân sách tháng này",
-                                        fontSize = 20.sp,)
+                                    Text(
+                                        text = "Chưa có ngân sách",
+                                        style = TextStyle(fontSize = 18.sp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(20.dp))
+                                Button(
+                                    onClick = {
+                                        navController.navigate("budget") {
+                                            popUpTo(navController.graph.startDestinationId) {
+                                                inclusive = true
+                                            }
+                                            launchSingleTop = true
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(70.dp)
+                                        .padding(8.dp),
+
+                                    colors = ButtonDefaults.buttonColors(Color(0xFF00c190)),
+                                    shape = MaterialTheme.shapes.medium
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center,
+                                    ) {
+                                        Text(
+                                            "Thêm ngân sách tháng này",
+                                            fontSize = 20.sp,
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            if (showDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDialog = false },
-                    text = {
-                        Column(
-                        ) {
-                            Text(
-                                "Thêm ví mới",
-                                textAlign = TextAlign.Center,
-                                style = TextStyle(fontSize = 20.sp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
-                            // Ô nhập văn bản
-                            androidx.compose.material3.OutlinedTextField(
-                                value = textInput_ten,
-                                onValueChange = { textInput_ten = it },
-                                label = { Text("Tên ví") },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Color.White),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedBorderColor = Color.LightGray,
-                                    focusedContainerColor = Color.Transparent,
-                                    unfocusedContainerColor = Color.Transparent,
-                                    disabledContainerColor = Color.Transparent
-                                )
-                            )
-                            Spacer(modifier = Modifier.height(10.dp))
-                            androidx.compose.material3.OutlinedTextField(
-                                value = textInput_soDu,
-                                onValueChange = { newValue ->
-                                    if(newValue.all { it.isDigit() })
-                                        textInput_soDu = newValue },
-                                label = { Text("Số dư") },
-                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Color.White),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedBorderColor = Color.LightGray,
-                                    focusedContainerColor = Color.Transparent,
-                                    unfocusedContainerColor = Color.Transparent,
-                                    disabledContainerColor = Color.Transparent
-                                )
-                            )
-                        }
-                    },
-                    buttons = {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 25.dp) // Padding ngang cho hàng chứa các nút
-                        ) {
-                            Button(
-                                onClick = {
-                                    showDialog = false
-                                    textInput_ten = ""
-                                    textInput_soDu = ""
-                                },
-                                colors = ButtonDefaults.buttonColors(Color(0xFFf25207)),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 4.dp) // Khoảng cách giữa hai nút
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        text = {
+                            Column(
                             ) {
-                                Text("Huỷ")
+                                Text(
+                                    "Thêm ví mới",
+                                    textAlign = TextAlign.Center,
+                                    style = TextStyle(fontSize = 20.sp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                // Ô nhập văn bản
+                                androidx.compose.material3.OutlinedTextField(
+                                    value = textInput_ten,
+                                    onValueChange = { textInput_ten = it },
+                                    label = { Text("Tên ví") },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color.White),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = Color.LightGray,
+                                        focusedContainerColor = Color.Transparent,
+                                        unfocusedContainerColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                androidx.compose.material3.OutlinedTextField(
+                                    value = textInput_soDu,
+                                    onValueChange = { newValue ->
+                                        if (newValue.all { it.isDigit() })
+                                            textInput_soDu = newValue
+                                    },
+                                    label = { Text("Số dư") },
+                                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Color.White),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = Color.LightGray,
+                                        focusedContainerColor = Color.Transparent,
+                                        unfocusedContainerColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent
+                                    )
+                                )
                             }
-                            Button(
-                                onClick = {
-                                    viewModel.AddNewWallet("Add", walletList = wallets, textInput_ten, textInput_soDu.toDouble())
-                                    wallets.add(ViModel(wallets.size + 1, textInput_ten, textInput_soDu.toDouble()))
-                                    showDialog = false
-                                    textInput_ten = ""
-                                    textInput_soDu = ""
-                                },
-                                colors = ButtonDefaults.buttonColors(Color(0xFF1cba46)),
+                        },
+                        buttons = {
+                            Row(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 4.dp) // Khoảng cách giữa hai nút
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 25.dp) // Padding ngang cho hàng chứa các nút
                             ) {
-                                Text("Thêm")
+                                Button(
+                                    onClick = {
+                                        showDialog = false
+                                        textInput_ten = ""
+                                        textInput_soDu = ""
+                                    },
+                                    colors = ButtonDefaults.buttonColors(Color(0xFFf25207)),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(end = 4.dp) // Khoảng cách giữa hai nút
+                                ) {
+                                    Text("Huỷ")
+                                }
+                                Button(
+                                    onClick = {
+                                        viewModel.AddNewWallet(
+                                            "Add",
+                                            walletList = wallets,
+                                            textInput_ten,
+                                            textInput_soDu.toDouble()
+                                        )
+                                        wallets.add(
+                                            ViModel(
+                                                wallets.size + 1,
+                                                textInput_ten,
+                                                textInput_soDu.toDouble()
+                                            )
+                                        )
+                                        showDialog = false
+                                        textInput_ten = ""
+                                        textInput_soDu = ""
+                                    },
+                                    colors = ButtonDefaults.buttonColors(Color(0xFF1cba46)),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 4.dp) // Khoảng cách giữa hai nút
+                                ) {
+                                    Text("Thêm")
+                                }
                             }
                         }
-                    }
 
-                )
+                    )
+                }
             }
         }
     }
@@ -404,7 +485,12 @@ fun WalletCardItem(navController: NavController,wallet: ViModel, selectedWalletV
         .padding(8.dp)
         .clickable {
             selectedWalletViewModel.setViModel(wallet)
-            navController.navigate("WalletDetail")
+            navController.navigate("account") {
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
         }
     ) {
         Row(modifier = Modifier.fillMaxWidth(),

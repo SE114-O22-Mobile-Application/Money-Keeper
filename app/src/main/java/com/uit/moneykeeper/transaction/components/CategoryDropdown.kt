@@ -1,5 +1,6 @@
 package com.uit.moneykeeper.transaction.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -58,8 +59,8 @@ fun CategoryDropdown(
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
                 },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier.menuAnchor()
+                    .background(Color.Transparent),
                 textStyle = TextStyle(fontSize = 14.sp)
             )
 
