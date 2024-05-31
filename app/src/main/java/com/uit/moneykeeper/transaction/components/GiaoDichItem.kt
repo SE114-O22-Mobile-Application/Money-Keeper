@@ -42,8 +42,8 @@ fun GiaoDichItem(navController: NavController, viewModel: GiaoDichItemViewModel)
     var backgroundColor by remember { mutableStateOf(Color.White) }
 
     val amountColor = when (giaoDich.loaiGiaoDich.loai) {
-        PhanLoai.Chi -> XanhLa
-        PhanLoai.Thu -> Do
+        PhanLoai.Chi -> Do
+        PhanLoai.Thu -> XanhLa
     }
 
     val amountPrefix = when (giaoDich.loaiGiaoDich.loai) {
@@ -58,7 +58,7 @@ fun GiaoDichItem(navController: NavController, viewModel: GiaoDichItemViewModel)
                     navController.navigate("TransactionDetailScreen/${giaoDich.id}")
                 },
         colors = CardDefaults.cardColors(
-            containerColor = backgroundColor, // Use the color state here
+            containerColor = backgroundColor,
         ),
     ) {
         Column (
@@ -118,7 +118,6 @@ fun GiaoDichItem(navController: NavController, viewModel: GiaoDichItemViewModel)
                 Text(
                     text = "$amountPrefix${DoubleToStringConverter.convert(giaoDich.soTien)}",
                     color = amountColor,
-                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.CenterVertically),
                     textAlign = TextAlign.Right
                 )

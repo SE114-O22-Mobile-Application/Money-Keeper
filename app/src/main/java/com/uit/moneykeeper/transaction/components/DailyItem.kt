@@ -79,7 +79,8 @@ fun DailyItem(navController: NavController, viewModel: DailyItemViewModel) {
                         Text(
                             text = "+${DoubleToStringConverter.convert(viewModel.currentIn)}",
                             color = XanhLa,
-                            textAlign = TextAlign.Right
+                            textAlign = TextAlign.Right,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
@@ -87,7 +88,8 @@ fun DailyItem(navController: NavController, viewModel: DailyItemViewModel) {
                         Text(
                             text = "–${DoubleToStringConverter.convert(viewModel.currentOut)}",
                             color = Do,
-                            textAlign = TextAlign.Right
+                            textAlign = TextAlign.Right,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }

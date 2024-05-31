@@ -61,7 +61,7 @@ class YearlyTabViewModel : ViewModel()  {
         updateMonthlyItemList()
     }
 
-    private fun changeYear(year: Int) {
+    fun changeYear(year: Int) {
         _selectedYear.value = year
         updateList()
     }

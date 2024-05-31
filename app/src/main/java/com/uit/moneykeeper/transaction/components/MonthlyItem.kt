@@ -36,14 +36,14 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun MonthlyItem (navController: NavController, viewModel: MonthlyItemViewModel) {
+fun MonthlyItem (navController: NavController, viewModel: MonthlyItemViewModel, moveToMonth: (LocalDate) -> Unit) {
     Card (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-//            .clickable {
-//                navController.navigate("transaction/${viewModel.month}/${viewModel.year}")
-//            }
+            .padding(8.dp)
+            .clickable(onClick = { moveToMonth(LocalDate.of(viewModel.year, viewModel.month, 1)) }),
+
+
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
@@ -76,7 +76,8 @@ fun MonthlyItem (navController: NavController, viewModel: MonthlyItemViewModel) 
                         Text(
                             text = "+${DoubleToStringConverter.convert(viewModel.currentIn)}",
                             color = XanhLa,
-                            textAlign = TextAlign.Right
+                            textAlign = TextAlign.Right,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
@@ -84,7 +85,8 @@ fun MonthlyItem (navController: NavController, viewModel: MonthlyItemViewModel) 
                         Text(
                             text = "–${DoubleToStringConverter.convert(viewModel.currentOut)}",
                             color = Do,
-                            textAlign = TextAlign.Right
+                            textAlign = TextAlign.Right,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }

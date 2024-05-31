@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.uit.moneykeeper.global.GlobalFunction.colorToString
 import com.uit.moneykeeper.models.CTNganSachModel
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
@@ -105,7 +106,7 @@ val ctNganSachList = listOf(
 //            "id" to loaiGiaoDich.id,
 //            "ten" to loaiGiaoDich.ten,
 //            "loai" to loaiGiaoDich.loai.toString(),
-//            "mauSac" to loaiGiaoDich.mauSac.toString(),
+//            "mauSac" to colorToString(loaiGiaoDich.mauSac),
 //            "icon" to loaiGiaoDich.icon,
 //
 //        )

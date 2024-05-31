@@ -93,7 +93,6 @@ fun SumEachTypeItem(viewModel: SumEachTypeItemViewModel) {
                 Text(
                     text = "$amountPrefix${DoubleToStringConverter.convert(item.sum)}",
                     color = amountColor,
-                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.CenterVertically),
                     textAlign = TextAlign.Right
                 )

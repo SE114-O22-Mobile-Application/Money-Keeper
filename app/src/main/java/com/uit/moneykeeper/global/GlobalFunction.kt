@@ -75,6 +75,11 @@ object GlobalFunction {
                                     }
                                 }
                             } ?: Color.Black,
+//                            loaiGiaoDichMap["mauSac"]?.let { colorString ->
+//                                (colorString as? String)?.let { colorStr ->
+//                                    stringToColor(colorStr)
+//                                }
+//                            } ?: Color.Black,
                             loaiGiaoDichMap["icon"]?.let { iconString ->
                                 (iconString as? String)?.let { IconEnum.valueOf(it) }
                             } ?: IconEnum.Null // Replace 'Default' with your default enum value
