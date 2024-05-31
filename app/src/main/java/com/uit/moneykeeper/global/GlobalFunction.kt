@@ -57,7 +57,7 @@ object GlobalFunction {
                         LoaiGiaoDichModel(
                             loaiGiaoDichMap["id"] as? Int ?: 0,
                             loaiGiaoDichMap["ten"] as? String ?: "",
-                            phanLoai,
+                            PhanLoai.valueOf(loaiGiaoDichMap["loai"] as? String ?: ""),
                             loaiGiaoDichMap["mauSac"]?.let { colorString ->
                                 (colorString as? String)?.let { colorStr ->
                                     val colorValues = colorStr.removeSurrounding("Color(", ")").split(", ").mapNotNull {

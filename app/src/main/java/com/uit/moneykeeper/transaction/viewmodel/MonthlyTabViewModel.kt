@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 
+//class MonthlyTabViewModel(month: Int? = null, year: Int? = null) : ViewModel() {
+//    private val _selectedMonth = MutableStateFlow(month?.let { year?.let { it1 -> LocalDate.of(it1, it, 1) } } ?: LocalDate.now())
+
 class MonthlyTabViewModel : ViewModel() {
     private val _selectedMonth = MutableStateFlow(LocalDate.now())
     val selectedMonth: StateFlow<LocalDate> = _selectedMonth.asStateFlow()

@@ -29,12 +29,35 @@ class YearlyTabViewModel : ViewModel()  {
     private val _sum = MutableStateFlow(0.0)
     val sum: StateFlow<Double> = _sum.asStateFlow()
 
+    private val _idWallet = MutableStateFlow(0)
+    val idWallet: StateFlow<Int> = _idWallet.asStateFlow()
+
+    private val _idCategory = MutableStateFlow(0)
+    val idCategory: StateFlow<Int> = _idCategory.asStateFlow()
+
     init {
         updateList()
     }
 
     private fun updateList() {
-        _thisYearList.value = GlobalObject.listGiaoDich.value.filter { it.ngayGiaoDich.year == selectedYear.value }
+        val yearSortedList = GlobalObject.listGiaoDich.value.filter { it.ngayGiaoDich.year == selectedYear.value }
+
+        val filterCategory = if (idCategory.value == 0) {
+            yearSortedList
+        } else if (idCategory.value == -1) {
+            yearSortedList.filter { !it.loaiGiaoDich.loai.isChi }
+        } else if (idCategory.value == -2) {
+            yearSortedList.filter { it.loaiGiaoDich.loai.isChi }
+        } else {
+            yearSortedList.filter { it.loaiGiaoDich.id == idCategory.value }
+        }
+
+        _thisYearList.value = if (idWallet.value != 0) {
+            filterCategory.filter { it.vi.id == idWallet.value }
+        } else {
+            filterCategory
+        }
+
         updateMonthlyItemList()
     }
 
@@ -50,6 +73,17 @@ class YearlyTabViewModel : ViewModel()  {
     fun previousYear() {
         changeYear(selectedYear.value - 1)
     }
+
+    fun updateWallet(id: Int) {
+        _idWallet.value = id
+        updateList()
+    }
+
+    fun updateCategory(id: Int) {
+        _idCategory.value = id
+        updateList()
+    }
+
     private fun updateMonthlyItemList() {
         val sortedGiaoDichList = thisYearList.value.sortedByDescending { it.ngayGiaoDich }
 

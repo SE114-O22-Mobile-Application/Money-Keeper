@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.uit.moneykeeper.transaction.viewmodel.CategoryDropdownViewModel
 import com.uit.moneykeeper.transaction.viewmodel.DailyItemViewModel
@@ -80,67 +81,75 @@ fun DailyList(navController: NavController, viewModel: DailyListViewModel) {
             )
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            if (sumIn != 0.0) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Thu",
-                        fontWeight = Bold
-                    )
+        if (dailyItemList.isEmpty()) {
+            Text(
+                text = "Chưa có giao dịch",
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 60.dp),
+                fontSize = 18.sp,
+            )
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (sumIn != 0.0) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Thu",
+                            fontWeight = Bold
+                        )
 
-                    Text(
-                        text = "+${DoubleToStringConverter.convert(sumIn)}",
-                        color = XanhLa
-                    )
+                        Text(
+                            text = "+${DoubleToStringConverter.convert(sumIn)}",
+                            color = XanhLa
+                        )
+                    }
+                }
+
+                if (sumOut != 0.0) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Chi",
+                            fontWeight = Bold
+                        )
+
+                        Text(
+                            text = "-${DoubleToStringConverter.convert(sumOut)}",
+                            color = Do
+                        )
+                    }
+                }
+
+                if (sumIn != 0.0 && sumOut != 0.0) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Tổng",
+                            fontWeight = Bold
+                        )
+
+                        Text(
+                            text = "${if (sum < 0) "" else "+"}${DoubleToStringConverter.convert(sum)}",
+                            color = Color.Black
+                        )
+                    }
                 }
             }
 
-            if (sumOut != 0.0) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Chi",
-                        fontWeight = Bold
-                    )
-
-                    Text(
-                        text = "-${DoubleToStringConverter.convert(sumOut)}",
-                        color = Do
-                    )
-                }
+            dailyItemList.forEach { dailyItem ->
+                val dailyItemViewModel = DailyItemViewModel(dailyItem.first, dailyItem.second)
+                DailyItem(navController = navController, viewModel = dailyItemViewModel)
             }
-
-            if (sumIn != 0.0 && sumOut != 0.0) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Tổng",
-                        fontWeight = Bold
-                    )
-
-                    Text(
-                        text = "${if (sum < 0) "" else "+"}${DoubleToStringConverter.convert(sum)}",
-                        color = Color.Black
-                    )
-                }
-            }
-        }
-
-        dailyItemList.forEach { dailyItem ->
-            val dailyItemViewModel = DailyItemViewModel(dailyItem.first, dailyItem.second)
-            DailyItem(navController = navController, viewModel = dailyItemViewModel)
         }
     }
 }
