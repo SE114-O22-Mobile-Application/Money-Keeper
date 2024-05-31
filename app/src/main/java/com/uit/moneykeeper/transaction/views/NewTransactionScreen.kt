@@ -141,6 +141,7 @@ fun NewTransactionScreen(navController: NavController, viewModel: NewTransaction
                 readOnly = true,
                 modifier = Modifier
                     .background(Color.Transparent)
+                    .fillMaxWidth()
                     .focusRequester(focusRequester)
                     .onFocusChanged { focusState: FocusState ->
                         if (focusState.isFocused) {

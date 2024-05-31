@@ -31,8 +31,28 @@ fun getGiaoDichByLGD(list: List<GiaoDichModel>, lgd: LoaiGiaoDichModel): List<Gi
     return list.filter { it.loaiGiaoDich.equals(lgd) }
 }
 
-fun getAllLGDChi(): List<LoaiGiaoDichModel> {
-    return GlobalObject.listLoaiGiaoDich.value.filter { it.loai == PhanLoai.Chi }
+//fun getAllLGDChi(): List<LoaiGiaoDichModel> {
+//    return GlobalObject.listLoaiGiaoDich.value.filter { it.loai == PhanLoai.Chi }
+//}
+
+fun getAllLGDChi(callback: FirebaseCallback) {
+    val db = Firebase.firestore
+    val lgdList = mutableListOf<LoaiGiaoDichModel>()
+
+    db.collection("loaiGiaoDich")
+        .get()
+        .addOnSuccessListener { result ->
+            for (document in result) {
+                val lgd = document.toObject(LoaiGiaoDichModel::class.java)
+                if (lgd.loai == PhanLoai.Chi) {
+                    lgdList.add(lgd)
+                }
+            }
+            callback.onCallback(lgdList)
+        }
+        .addOnFailureListener { exception ->
+            Log.w(TAG, "Error getting documents.", exception)
+        }
 }
 
 fun AddNewNganSach(thoiGian: LocalDate, tongTien: Double): NganSachModel {

@@ -34,6 +34,7 @@ object GlobalObject {
 
     init {
         updateListVi(viList)
+        getViFromFirebase()
         updateListLoaiGiaoDich(loaiGiaoDichList)
         updateListNganSach(nganSachList)
         updateListCTNganSach(ctNganSachList)
@@ -44,15 +45,18 @@ object GlobalObject {
         _listVi.value = list
     }
 
-    suspend fun getViFromFirebase(): List<ViModel> {
+    fun getViFromFirebase() {
         val db = Firebase.firestore
-        val viList = mutableListOf<ViModel>()
 
-        val result = db.collection("vi").get().await()
-        for (document in result) {
-            document.toObject(ViModel::class.java)?.let { viList.add(it) }
-        }
-        return viList
+        db.collection("vi")
+            .get()
+            .addOnSuccessListener { result ->
+                val viList = result.documents.mapNotNull { it.toObject(ViModel::class.java) }
+                _listVi.value = viList
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
     }
 
     fun updateListLoaiGiaoDich(list: List<LoaiGiaoDichModel>) {

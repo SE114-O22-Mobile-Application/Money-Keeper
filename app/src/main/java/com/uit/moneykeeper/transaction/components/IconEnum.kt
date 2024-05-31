@@ -10,7 +10,11 @@ enum class IconEnum {
     MuaSam,
     Luong,
     DuLich,
-    Game;
+    Game,
+    TietKiem,
+    GiaoDuc,
+    SucKhoe,
+    QuaTang;
 
     fun getIcon(): ImageVector {
         return when (this) {
@@ -19,6 +23,10 @@ enum class IconEnum {
             Luong -> Icons.Filled.Payments
             DuLich -> Icons.Filled.Flight
             Game -> Icons.Filled.SportsEsports
+            TietKiem -> Icons.Filled.AttachMoney
+            GiaoDuc -> Icons.Filled.School
+            SucKhoe -> Icons.Filled.FitnessCenter
+            QuaTang -> Icons.Filled.CardGiftcard
             else -> Icons.Filled.Error
         }
     }

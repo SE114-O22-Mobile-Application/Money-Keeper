@@ -286,29 +286,28 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
     fun deleteGiaoDich(id: Int?, context: Context) {
         val db = FirebaseFirestore.getInstance()
         if (id == null) {
-            Log.w("TransactionDetailViewModel", "Cannot delete document: id is null")
+            Log.w("EditTransactionViewModel", "Cannot delete document: id is null")
             return
         }
-        Log.d("TransactionDetailViewModel", "Attempting to delete document with id: $id")
+        Log.d("EditTransactionViewModel", "Attempting to delete document with id: $id")
         db.collection("giaoDich").whereEqualTo("id", id)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    Log.w("TransactionDetailViewModel", "No document found with id: $id")
+                    Log.w("EditTransactionViewModel", "No document found with id: $id")
                 } else {
                     documents.documents[0].reference
                         .delete()
                         .addOnSuccessListener {
-                            Toast.makeText(context, "Transaction successfully deleted!", Toast.LENGTH_SHORT).show()
-                            Log.d("TransactionDetailViewModel", "Transaction successfully deleted!")
+                            Log.d("EditTransactionViewModel", "Transaction successfully deleted!")
                         }
                         .addOnFailureListener { e ->
-                            Log.w("TransactionDetailViewModel", "Error deleting document", e)
+                            Log.w("EditTransactionViewModel", "Error deleting document", e)
                         }
                 }
             }
             .addOnFailureListener { e ->
-                Log.w("TransactionDetailViewModel", "Error finding document", e)
+                Log.w("EditTransactionViewModel", "Error finding document", e)
             }
         GlobalFunction.updateListGiaoDich()
     }

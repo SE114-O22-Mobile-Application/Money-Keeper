@@ -17,7 +17,13 @@ import java.time.LocalDate
 val loaiGiaoDichList = listOf(
     LoaiGiaoDichModel(1, "Ăn uống", PhanLoai.Chi, Color(0xFF008000), IconEnum.AnUong),
     LoaiGiaoDichModel(2, "Du lịch", PhanLoai.Chi, Color(0xFFFF0000), IconEnum.DuLich),
-    LoaiGiaoDichModel(3, "Lương", PhanLoai.Thu, Color(0xFF0000FF), IconEnum.Luong)
+    LoaiGiaoDichModel(3, "Lương", PhanLoai.Thu, Color(0xFF0000FF), IconEnum.Luong),
+    LoaiGiaoDichModel(4, "Mua sắm", PhanLoai.Chi, Color(0xFF00FFFF), IconEnum.MuaSam),
+    LoaiGiaoDichModel(5, "Tiết kiệm", PhanLoai.Thu, Color(0xFF00FF00), IconEnum.TietKiem),
+    LoaiGiaoDichModel(6, "Giải trí", PhanLoai.Chi, Color(0xFFFF00FF), IconEnum.Game),
+    LoaiGiaoDichModel(7, "Giáo dục", PhanLoai.Chi, Color(0xFF808080), IconEnum.GiaoDuc),
+    LoaiGiaoDichModel(8, "Sức khỏe", PhanLoai.Chi, Color(0xFF800000), IconEnum.SucKhoe),
+    LoaiGiaoDichModel(9, "Quà tặng", PhanLoai.Chi, Color(0xFF008080), IconEnum.QuaTang)
 )
 
 val viList = listOf(
