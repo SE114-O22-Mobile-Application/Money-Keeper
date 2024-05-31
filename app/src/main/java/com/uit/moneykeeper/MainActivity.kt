@@ -8,11 +8,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Observer
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.uit.moneykeeper.budget.viewmodel.NewBudgetViewModel
 import com.uit.moneykeeper.components.MKNavigationBar
+import com.uit.moneykeeper.global.GlobalObject
 //import com.uit.moneykeeper.global.uploadCTNganSachSamples
 //import com.uit.moneykeeper.global.uploadNganSachSamples
 //import com.uit.moneykeeper.global.uploadLoaiGiaoDichSamples

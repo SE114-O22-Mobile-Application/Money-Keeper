@@ -1,5 +1,11 @@
 package com.uit.moneykeeper.global
 
+import android.content.ContentValues.TAG
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import com.uit.moneykeeper.models.CTNganSachModel
 import com.uit.moneykeeper.models.GiaoDichModel
 import com.uit.moneykeeper.models.LoaiGiaoDichModel
@@ -35,6 +41,23 @@ object GlobalObject {
 
     fun updateListVi(list: List<ViModel>) {
         _listVi.value = list
+    }
+
+    fun getViFromFirebase(): LiveData<List<ViModel>> {
+        val db = Firebase.firestore
+        val viListLiveData = MutableLiveData<List<ViModel>>()
+
+        db.collection("vi")
+            .get()
+            .addOnSuccessListener { result ->
+                val viList = result.documents.mapNotNull { it.toObject(ViModel::class.java) }
+                viListLiveData.value = viList
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+            }
+
+        return viListLiveData
     }
 
     fun updateListLoaiGiaoDich(list: List<LoaiGiaoDichModel>) {
