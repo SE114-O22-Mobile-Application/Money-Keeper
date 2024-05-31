@@ -3,6 +3,7 @@ package com.uit.moneykeeper.transaction.viewmodel
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
@@ -32,8 +33,8 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
     private val _date = MutableStateFlow(LocalDate.now())
     val date: StateFlow<LocalDate> = _date.asStateFlow()
 
-    private val _amount = MutableStateFlow(0.0)
-    val amount: StateFlow<Double> = _amount.asStateFlow()
+    private val _amount = MutableStateFlow(0)
+    val amount: StateFlow<Int> = _amount.asStateFlow()
 
     private val _name = MutableStateFlow("")
     val name: StateFlow<String> = _name.asStateFlow()
@@ -67,6 +68,8 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
         _walletOptions.value = _wallet.value.map { it.ten }
     }
 
+
+
     init {
         getLoaiGiaoDich { categories ->
             _category.value = categories
@@ -76,11 +79,13 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
             _wallet.value = wallets
             updateWalletOptions()
         }
-        Log.d("EditTransactionViewModel", "Id: $Id")
+        Log.d("ID nay?", "Id: $Id")
         getGiaoDich(Id)
+
     }
 
     private fun getGiaoDich(Id: Int) {
+        println("isCall")
         _isLoading.value = true // Set loading state to true at the start of data fetch
         val db = FirebaseFirestore.getInstance()
         db.collection("giaoDich").whereEqualTo("id", Id)
@@ -100,6 +105,8 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
                             firestoreGiaoDichData.ghiChu
                         )
                         _giaoDich.value = giaoDichData
+                        println("Giao dich day1?: " + giaoDichData)
+                        println("Giao dich day2?: " + _giaoDich.value)
                     } else {
                         Log.e("EditTransactionViewModel", "GiaoDichData is null!")
                     }
@@ -114,6 +121,16 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
             }
     }
 
+    fun setValue() {
+        _date.value = giaoDich.value?.ngayGiaoDich;
+        _amount.value = giaoDich.value?.soTien?.toInt() ?: 0;
+        _name.value = giaoDich.value?.ten ?: "";
+        _selectedCatOptionText.value = giaoDich.value?.loaiGiaoDich?.ten ?: "";
+        _selectedWalletOptionText.value = giaoDich.value?.vi?.ten ?: "";
+        _note.value = giaoDich.value?.ghiChu ?: "";
+        println("Loai giao dich?: " + giaoDich.value?.loaiGiaoDich?.ten ?: "ABC")
+        println("Vi?: " + giaoDich.value?.vi?.ten ?:"ABC")
+    }
     fun setId(newId: Int) {
         _id.value = newId
     }
@@ -122,7 +139,7 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
         _date.value = newDate
     }
 
-    fun setAmount(newAmount: Double) {
+    fun setAmount(newAmount: Int) {
         _amount.value = newAmount
     }
 
@@ -248,7 +265,12 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
                     .add(transactionMap)
                     .addOnSuccessListener { documentReference ->
                         println("DocumentSnapshot added with ID: ${documentReference.id}")
-                        navController.popBackStack()
+                        navController.navigate("transaction"){
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
                         Toast.makeText(
                             context,
                             "Transaction edited successfully!",
@@ -259,5 +281,35 @@ class EditTransactionViewModel (Id: Int): ViewModel() {
                         println("Error adding document: $e")
                     }
             }
+            deleteGiaoDich(id.value, context)
+    }
+    fun deleteGiaoDich(id: Int?, context: Context) {
+        val db = FirebaseFirestore.getInstance()
+        if (id == null) {
+            Log.w("TransactionDetailViewModel", "Cannot delete document: id is null")
+            return
+        }
+        Log.d("TransactionDetailViewModel", "Attempting to delete document with id: $id")
+        db.collection("giaoDich").whereEqualTo("id", id)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    Log.w("TransactionDetailViewModel", "No document found with id: $id")
+                } else {
+                    documents.documents[0].reference
+                        .delete()
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Transaction successfully deleted!", Toast.LENGTH_SHORT).show()
+                            Log.d("TransactionDetailViewModel", "Transaction successfully deleted!")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("TransactionDetailViewModel", "Error deleting document", e)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TransactionDetailViewModel", "Error finding document", e)
+            }
+        GlobalFunction.updateListGiaoDich()
     }
 }

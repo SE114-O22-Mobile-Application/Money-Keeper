@@ -209,7 +209,7 @@ fun TransactionDetailScreen(navController: NavController, viewModel: Transaction
                         )
                     )
                     OutlinedTextField(
-                        value = giaoDich?.soTien?.toString() ?: "",
+                        value = giaoDich?.soTien?.toInt().toString() ?: "",
                         onValueChange = { newAmount -> viewModel.setAmount(newAmount) },
                         label = { Text("Số tiền") },
                         readOnly = true,
