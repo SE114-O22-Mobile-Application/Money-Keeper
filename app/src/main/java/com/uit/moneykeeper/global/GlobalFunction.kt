@@ -112,6 +112,12 @@ object GlobalFunction {
     }
 
     fun stringToColor(colorString: String): Color {
-        return Color(android.graphics.Color.parseColor(colorString))
+        return try {
+            val argb = colorString.drop(1).toLong(16).toInt()
+            Color(argb)
+        } catch (e: NumberFormatException) {
+            // Return a default color if the color string is invalid
+            Color.Black
+        }
     }
 }
