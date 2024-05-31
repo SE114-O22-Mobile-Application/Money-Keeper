@@ -60,26 +60,9 @@ object GlobalFunction {
                             PhanLoai.valueOf(loaiGiaoDichMap["loai"] as? String ?: ""),
                             loaiGiaoDichMap["mauSac"]?.let { colorString ->
                                 (colorString as? String)?.let { colorStr ->
-                                    val colorValues = colorStr.removeSurrounding("Color(", ")").split(", ").mapNotNull {
-                                        it.split("=").takeIf { split -> split.size > 1 }?.get(1)?.toFloat()
-                                    }
-                                    if (colorValues.size >= 4) {
-                                        Color(
-                                            colorValues[0],
-                                            colorValues[1],
-                                            colorValues[2],
-                                            colorValues[3]
-                                        )
-                                    } else {
-                                        Color.Black
-                                    }
+                                    stringToColor(colorStr)
                                 }
                             } ?: Color.Black,
-//                            loaiGiaoDichMap["mauSac"]?.let { colorString ->
-//                                (colorString as? String)?.let { colorStr ->
-//                                    stringToColor(colorStr)
-//                                }
-//                            } ?: Color.Black,
                             loaiGiaoDichMap["icon"]?.let { iconString ->
                                 (iconString as? String)?.let { IconEnum.valueOf(it) }
                             } ?: IconEnum.Null // Replace 'Default' with your default enum value
@@ -121,7 +104,11 @@ object GlobalFunction {
     }
 
     fun colorToString(color: Color): String {
-        return "#${Integer.toHexString(color.toArgb())}"
+        val alpha = (color.alpha * 255).toInt()
+        val red = (color.red * 255).toInt()
+        val green = (color.green * 255).toInt()
+        val blue = (color.blue * 255).toInt()
+        return String.format("#%02X%02X%02X%02X", alpha, red, green, blue)
     }
 
     fun stringToColor(colorString: String): Color {
