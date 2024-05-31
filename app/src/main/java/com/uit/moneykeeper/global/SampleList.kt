@@ -142,3 +142,56 @@ val ctNganSachList = listOf(
 //            }
 //    }
 //}
+//fun uploadNganSachSamples() {
+//    val db = Firebase.firestore
+//
+//    nganSachList.forEach { nganSach ->
+//        val nganSachMap = mapOf(
+//            "id" to nganSach.id,
+//            "thoiGian" to GlobalFunction.convertLocalDateToTimestamp(nganSach.thoiGian),
+//            "soTien" to nganSach.TongTien
+//        )
+//
+//        db.collection("nganSach")
+//            .add(nganSachMap)
+//            .addOnSuccessListener { documentReference ->
+//                println("DocumentSnapshot added with ID: ${documentReference.id}")
+//            }
+//            .addOnFailureListener { e ->
+//                println("Error adding document: $e")
+//            }
+//    }
+//}
+//
+//fun uploadCTNganSachSamples() {
+//    val db = Firebase.firestore
+//
+//    ctNganSachList.forEach { ctNganSach ->
+//        val ctNganSachMap = mapOf(
+//            "id" to ctNganSach.id,
+//            "nganSach" to mapOf(
+//                "id" to ctNganSach.NganSach.id,
+//                "thoiGian" to GlobalFunction.convertLocalDateToTimestamp(ctNganSach.NganSach.thoiGian),
+//                "soTien" to ctNganSach.NganSach.TongTien
+//            ),
+//            "tenLoaiGiaoDich" to ctNganSach.TenNS,
+//            "loaiGiaoDich" to mapOf(
+//                "id" to ctNganSach.LoaiNS.id,
+//                "ten" to ctNganSach.LoaiNS.ten,
+//                "loai" to ctNganSach.LoaiNS.loai.name,
+//                "mauSac" to colorToString(ctNganSach.LoaiNS.mauSac),
+//                "icon" to ctNganSach.LoaiNS.icon.name
+//            ),
+//            "soTien" to ctNganSach.SoTien
+//        )
+//
+//        db.collection("ctNganSach")
+//            .add(ctNganSachMap)
+//            .addOnSuccessListener { documentReference ->
+//                println("DocumentSnapshot added with ID: ${documentReference.id}")
+//            }
+//            .addOnFailureListener { e ->
+//                println("Error adding document: $e")
+//            }
+//    }
+//}

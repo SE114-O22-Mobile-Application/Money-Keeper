@@ -58,28 +58,28 @@ object GlobalFunction {
                             loaiGiaoDichMap["id"] as? Int ?: 0,
                             loaiGiaoDichMap["ten"] as? String ?: "",
                             PhanLoai.valueOf(loaiGiaoDichMap["loai"] as? String ?: ""),
-                            loaiGiaoDichMap["mauSac"]?.let { colorString ->
-                                (colorString as? String)?.let { colorStr ->
-                                    val colorValues = colorStr.removeSurrounding("Color(", ")").split(", ").mapNotNull {
-                                        it.split("=").takeIf { split -> split.size > 1 }?.get(1)?.toFloat()
-                                    }
-                                    if (colorValues.size >= 4) {
-                                        Color(
-                                            colorValues[0],
-                                            colorValues[1],
-                                            colorValues[2],
-                                            colorValues[3]
-                                        )
-                                    } else {
-                                        Color.Black
-                                    }
-                                }
-                            } ?: Color.Black,
 //                            loaiGiaoDichMap["mauSac"]?.let { colorString ->
 //                                (colorString as? String)?.let { colorStr ->
-//                                    stringToColor(colorStr)
+//                                    val colorValues = colorStr.removeSurrounding("Color(", ")").split(", ").mapNotNull {
+//                                        it.split("=").takeIf { split -> split.size > 1 }?.get(1)?.toFloat()
+//                                    }
+//                                    if (colorValues.size >= 4) {
+//                                        Color(
+//                                            colorValues[0],
+//                                            colorValues[1],
+//                                            colorValues[2],
+//                                            colorValues[3]
+//                                        )
+//                                    } else {
+//                                        Color.Black
+//                                    }
 //                                }
 //                            } ?: Color.Black,
+                            loaiGiaoDichMap["mauSac"]?.let { colorString ->
+                                (colorString as? String)?.let { colorStr ->
+                                    stringToColor(colorStr)
+                                }
+                            } ?: Color.Black,
                             loaiGiaoDichMap["icon"]?.let { iconString ->
                                 (iconString as? String)?.let { IconEnum.valueOf(it) }
                             } ?: IconEnum.Null // Replace 'Default' with your default enum value
@@ -125,6 +125,12 @@ object GlobalFunction {
     }
 
     fun stringToColor(colorString: String): Color {
-        return Color(android.graphics.Color.parseColor(colorString))
+        return try {
+            val argb = colorString.drop(1).toLong(16).toInt()
+            Color(argb)
+        } catch (e: NumberFormatException) {
+            // Return a default color if the color string is invalid
+            Color.Black
+        }
     }
 }

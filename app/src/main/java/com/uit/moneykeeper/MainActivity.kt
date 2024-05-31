@@ -13,6 +13,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.uit.moneykeeper.budget.viewmodel.NewBudgetViewModel
 import com.uit.moneykeeper.components.MKNavigationBar
+//import com.uit.moneykeeper.global.uploadCTNganSachSamples
+//import com.uit.moneykeeper.global.uploadNganSachSamples
 //import com.uit.moneykeeper.global.uploadLoaiGiaoDichSamples
 //import com.uit.moneykeeper.global.uploadViSamples
 //import com.uit.moneykeeper.global.uploadgiaoDichSamples
@@ -50,5 +52,7 @@ class MainActivity : ComponentActivity() {
 //        uploadgiaoDichSamples()
 //        uploadLoaiGiaoDichSamples()
 //        uploadViSamples()
+//        uploadNganSachSamples()
+//        uploadCTNganSachSamples()
     }
 }
