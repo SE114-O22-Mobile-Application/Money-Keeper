@@ -87,7 +87,7 @@ dependencies {
     implementation ("androidx.compose.material3:material3:1.2.0-alpha05")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
-    implementation("com.google.dagger:hilt-android:2.49")
+    implementation("com.google.dagger:hilt-android:2.44.2")
     kapt("com.google.dagger:hilt-android-compiler:2.44.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("io.coil-kt:coil-compose:2.2.2")

@@ -38,13 +38,26 @@ object GlobalFunction {
     fun updateListGiaoDich(){
         val db = Firebase.firestore
         db.collection("giaoDich").get().addOnSuccessListener { result ->
+
             val list = result.mapNotNull { document ->
                 document.get("loaiGiaoDich")?.let { map ->
                     (map as? Map<*, *>)?.let { loaiGiaoDichMap ->
+                        val loaiGiaoDichString = loaiGiaoDichMap["loai"] as? String
+                        val phanLoai = if (loaiGiaoDichString != null) {
+                            try {
+                                PhanLoai.valueOf(loaiGiaoDichString)
+                            } catch (e: IllegalArgumentException) {
+                                // Sử dụng giá trị mặc định nếu giá trị không hợp lệ
+                                PhanLoai.Thu // Replace with your default enum value
+                            }
+                        } else {
+                            // Sử dụng giá trị mặc định nếu giá trị là null
+                            PhanLoai.Chi // Replace with your default enum value
+                        }
                         LoaiGiaoDichModel(
                             loaiGiaoDichMap["id"] as? Int ?: 0,
                             loaiGiaoDichMap["ten"] as? String ?: "",
-                            if (loaiGiaoDichMap["loai"] as? Boolean == true) PhanLoai.Chi else PhanLoai.Thu,
+                            PhanLoai.valueOf(loaiGiaoDichMap["loai"] as? String ?: ""),
                             loaiGiaoDichMap["mauSac"]?.let { colorString ->
                                 (colorString as? String)?.let { colorStr ->
                                     val colorValues = colorStr.removeSurrounding("Color(", ")").split(", ").mapNotNull {
@@ -68,12 +81,19 @@ object GlobalFunction {
                         )
                     }
                 }?.let {
+                    val soTien = document.get("soTien")
+                    val soTienDouble = if (soTien is Number) {
+                        soTien.toDouble()
+                    } else {
+                        // Handle the error when 'soTien' is not a valid number
+                        null
+                    }
                     GiaoDichModel(
                         (document.get("id") as? Long)?.toInt() ?: 0,
                         convertTimestampToLocalDate(
                             document.getTimestamp("ngayGiaoDich") ?: Timestamp.now()
                         ),
-                        document.getDouble("soTien") ?: 0.0,
+                        soTienDouble ?: 0.0,
                         document.getString("ten") ?: "",
                         // Convert Map to LoaiGiaoDichModel
                         it,
