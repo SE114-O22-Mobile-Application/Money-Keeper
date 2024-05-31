@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,13 +65,26 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
     val amount by viewModel.amount.collectAsState()
     val name by viewModel.name.collectAsState()
     val category by viewModel.category.collectAsState()
+    val selectedCategory by viewModel.selectedCatOptionText.collectAsState()
+    val selectedWallet by viewModel.selectedWalletOptionText.collectAsState()
     val categoryOptions = viewModel.categoryOptions.collectAsState().value
     var selectedCatOptionText by remember { mutableStateOf(if (categoryOptions.isNotEmpty()) categoryOptions[0] else "") }
     val wallet by viewModel.wallet.collectAsState()
     val walletOptions = viewModel.walletOptions.collectAsState().value
     var selectedWalletOptionText by remember { mutableStateOf(if (walletOptions.isNotEmpty()) walletOptions[0] else "") }
     val note by viewModel.note.collectAsState()
+    val giaoDich by viewModel.giaoDich.collectAsState()
 
+    LaunchedEffect(giaoDich) {
+        if (giaoDich != null) {
+            println("Giao dich?: $giaoDich")
+            viewModel.setValue()
+            selectedCatOptionText = viewModel.selectedCatOptionText.value
+            selectedWalletOptionText = viewModel.selectedWalletOptionText.value
+            println("Category: " + selectedCategory)
+            println("Wallet: " + selectedWallet)
+        }
+    }
     val focusRequester = remember { FocusRequester() }
     val decoyFocusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -159,7 +173,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                     value = amount?.toString() ?: "",
                     onValueChange = { newAmount: String ->
                         isUserInputStarted = true
-                        newAmount.toDoubleOrNull()?.let { it1 -> viewModel.setAmount(it1) }
+                        newAmount.toIntOrNull()?.let { it1 -> viewModel.setAmount(it1) }
                     },
                     label = { Text("Số tiền") },
                     modifier = Modifier
@@ -208,7 +222,7 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                             .background(Color.White)
                             .focusRequester(catFocusRequester),
                         readOnly = true,
-                        value = selectedCatOptionText.toString(),
+                        value = selectedCatOptionText,
                         onValueChange = {},
                         label = { Text("Loại giao dịch") },
                         trailingIcon = {ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCat)},
@@ -316,7 +330,8 @@ fun EditTransactionScreen(navController: NavController, viewModel: EditTransacti
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(
-                        onClick = { viewModel.saveEditedTransaction(context, navController) },
+                        onClick = { viewModel.saveEditedTransaction(context, navController)
+                            },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Green,
                             contentColor = Color.White,
