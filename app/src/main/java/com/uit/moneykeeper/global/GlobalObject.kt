@@ -32,7 +32,10 @@ object GlobalObject {
     val listCTNganSach: StateFlow<List<CTNganSachModel>> = _listCTNganSach.asStateFlow()
 
     init {
-        updateListVi(viList)
+//        updateListVi(viList)
+        getViFromFirebase().observeForever {
+            updateListVi(it)
+        }
         updateListLoaiGiaoDich(loaiGiaoDichList)
         updateListNganSach(nganSachList)
         updateListCTNganSach(ctNganSachList)
