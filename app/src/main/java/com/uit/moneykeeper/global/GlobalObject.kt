@@ -14,6 +14,7 @@ import com.uit.moneykeeper.models.ViModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.tasks.await
 
 object GlobalObject {
     internal val _listGiaoDich = MutableStateFlow<List<GiaoDichModel>>(emptyList())
@@ -32,10 +33,7 @@ object GlobalObject {
     val listCTNganSach: StateFlow<List<CTNganSachModel>> = _listCTNganSach.asStateFlow()
 
     init {
-//        updateListVi(viList)
-        getViFromFirebase().observeForever {
-            updateListVi(it)
-        }
+        updateListVi(viList)
         updateListLoaiGiaoDich(loaiGiaoDichList)
         updateListNganSach(nganSachList)
         updateListCTNganSach(ctNganSachList)
@@ -46,21 +44,15 @@ object GlobalObject {
         _listVi.value = list
     }
 
-    fun getViFromFirebase(): LiveData<List<ViModel>> {
+    suspend fun getViFromFirebase(): List<ViModel> {
         val db = Firebase.firestore
-        val viListLiveData = MutableLiveData<List<ViModel>>()
+        val viList = mutableListOf<ViModel>()
 
-        db.collection("vi")
-            .get()
-            .addOnSuccessListener { result ->
-                val viList = result.documents.mapNotNull { it.toObject(ViModel::class.java) }
-                viListLiveData.value = viList
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
-
-        return viListLiveData
+        val result = db.collection("vi").get().await()
+        for (document in result) {
+            document.toObject(ViModel::class.java)?.let { viList.add(it) }
+        }
+        return viList
     }
 
     fun updateListLoaiGiaoDich(list: List<LoaiGiaoDichModel>) {
